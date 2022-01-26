@@ -1,0 +1,344 @@
+openapi: '3.0.0'
+info:
+  title: "Connected Device Framework: Auto Facade"
+  description: |
+
+    The CDF Auto Facade provides an API for the provisoning and activation of TCU's.
+
+  version: 1.0.0
+
+tags:
+- name: 'Device Assembly'
+  description: |
+   TODO.
+      
+paths:
+
+  /suppliers/{supplierId}/devices/{deviceId}/register:
+    parameters:
+    - $ref: '#/components/parameters/supplierId'
+    - $ref: '#/components/parameters/deviceId'
+      
+    post:
+      tags:
+      - Device Registration
+      summary: |
+        Registers a device.
+      operationId: "registerDevice"
+      requestBody:
+        required: true
+        content:
+          application/vnd.aws-cdf-v1.0+json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistrationRequest'
+            examples:
+              registerNewTcuDevice:
+                $ref: '#/components/examples/NewDevice'
+      responses:
+        201:
+          $ref: '#/components/schemas/DeviceRegistrationResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          $ref: '#/components/responses/Conflict'
+                
+
+  /suppliers/{supplierId}/devices/{deviceId}/activate:
+    parameters:
+    - $ref: '#/components/parameters/supplierId'
+    - $ref: '#/components/parameters/deviceId'
+      
+    post:
+      tags:
+      - Device Activation
+      summary: |
+        Activates a device.
+      operationId: "activateDevice"
+      requestBody:
+        required: true
+        content:
+          application/vnd.aws-cdf-v1.0+json:
+            schema:
+              $ref: '#/components/schemas/DeviceActivationRequest'
+            examples:
+              activateTcuDevice:
+                $ref: '#/components/examples/ActivateDevice'
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+  
+  /users:
+      
+    post:
+      tags:
+      - User Registration
+      summary: |
+        Registers a user.
+      operationId: "registerUser"
+      requestBody:
+        required: true
+        content:
+          application/vnd.aws-cdf-v1.0+json:
+            schema:
+              $ref: '#/components/schemas/UserModel'
+            examples:
+              registerNewUser:
+                $ref: '#/components/examples/NewUser'
+      responses:
+        201:
+          $ref: '#/components/responses/Created'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          $ref: '#/components/responses/Conflict'
+
+  /vehicles/{vehicleId}/owner/{userId}:
+    parameters:
+    - $ref: '#/components/parameters/vehicleId'
+    - $ref: '#/components/parameters/userId'
+      
+    put:
+      tags:
+      - Vehicle Ownership
+      summary: |
+        Registers an owner of a vehicle, optionally activating the devices telemetry.
+      operationId: "registerVehicleOwner"
+      requestBody:
+        required: true
+        content:
+          application/vnd.aws-cdf-v1.0+json:
+            schema:
+              $ref: '#/components/schemas/NewVehicleOwnerRequest'
+            examples:
+              newVehicleOwner:
+                $ref: '#/components/examples/NewVehicleOwner'
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+          
+
+
+components:
+  schemas:
+  
+    DeviceRegistrationRequest:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        templateId:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: true
+        csr:
+          type: string
+  
+    DeviceRegistrationResponse:
+      type: object
+      properties:
+        certificatePem:
+          type: string
+        certificateId:
+          type: string
+        thingArn:
+          type: string
+  
+    DeviceActivationRequest:
+      type: object
+      properties:
+        vehicle:
+          type: object
+          properties:
+            make:
+              type: string
+            model:
+              type: string
+            modelYear:
+              type: number
+            vin:
+              type: string
+            marketCode:
+              type: string
+            countryCode:
+              type: string
+            bodyType:
+              type: string
+            fuelType:
+              type: string
+            transmissionType:
+              type: string
+            transmissionAutoType:
+              type: string
+            transmissionManualType:
+              type: string
+            colorCode:
+              type: string
+            iviType:
+              type: string
+            ecus:
+              type: array
+              items: 
+                $ref: '#/components/schemas/ECUModel'
+              
+    ECUModel:
+      type: object
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        softwareVersion:
+          type: string
+          
+    NewVehicleOwnerRequest:
+      type: object
+      properties:
+        pairingCode:
+          type: string
+          
+    UserModel:
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        phone:
+          type: string
+        
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+  examples:
+  
+    NewDevice:
+      summary: An example of registering a new TCU
+      value:
+        deviceId: GYT534R5T
+        csr: Processed Events
+  
+    ActivateDevice:
+      summary: An example of registering a new TCU
+      value:
+        deviceId: GYT534R5T
+        csr: Processed Events
+        
+    NewVehicleOwner:
+      summary: An example of pairing a vehicle with a new owner
+      value:
+        pairingCode: 162427
+        
+    NewUser:
+      summary: An example of creating a new user
+      value:
+        username: joedirt
+        firstName: Joe
+        lastName: Dirt
+        email: <email>
+        addressLine1: 123 Main Street
+        city: Somewhere
+
+  parameters:
+  
+    supplierId:
+      name: supplierId
+      in: path
+      description: Supplier ID
+      required: true
+      schema:
+        type: string
+    deviceId:
+      name: deviceId
+      in: path
+      description: Device ID
+      required: true
+      schema:
+        type: string
+    vehicleId:
+      name: vehicleId
+      in: path
+      description: Vehicle ID
+      required: true
+      schema:
+        type: string
+    userId:
+      name: userId
+      in: path
+      description: User ID
+      required: true
+      schema:
+        type: string
+        
+  responses:   
+  
+    Created:
+      description: Created successfully
+      headers:
+        location:
+          description:  URI of the created resource
+          schema:
+            type: string    
+    NoContent:
+      description: No Content
+    Deleted:
+      description: Deleted successfully
+    BadRequest:
+      description: Invalid input
+      content:
+        application/vnd.aws-cdf-v1.0+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found
+      content:
+        application/vnd.aws-cdf-v1.0+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Conflict
+      content:
+        application/vnd.aws-cdf-v1.0+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/vnd.aws-cdf-v1.0+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/vnd.aws-cdf-v1.0+json:
+          schema:
+            $ref: '#/components/schemas/Error'

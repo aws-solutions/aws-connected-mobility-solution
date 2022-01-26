@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: CMS - Authorizer
+
+Parameters:
+  CloudfrontDomain:
+    Description: Cloudfront Distribution Domain
+    Type: String
+
+Resources:
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName:
+        Fn::Join:
+          - "-"
+          - - cms-admins
+            - Ref: AWS::AccountId
+      UserPoolAddOns:
+        AdvancedSecurityMode: ENFORCED
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        InviteMessageTemplate:
+          EmailMessage:
+            Fn::Sub: |
+              <p>You are invited to join the CMS. Your temporary password is as follows:</p>
+              <p>
+              Password: <strong>{####}</strong><br />
+              id: {username}
+              </p>
+              <p>
+              Please sign in to the CMS with your email address and temporary password provided above at: <br />
+              https://${CloudfrontDomain}
+              </p>
+          EmailSubject: Your CMS login
+          SMSMessage: Your username is {username} and temporary password is {####}.
+        UnusedAccountValidityDays: 7
+      AliasAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: Your CMS verification code is {####}.
+      EmailVerificationSubject: Your CMS verification code
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: true
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName:
+        Fn::Join:
+          - "-"
+          - - client-website
+            - Ref: AWS::AccountId
+      GenerateSecret: false
+      WriteAttributes:
+        - address
+        - email
+        - phone_number
+      ReadAttributes:
+        - name
+        - family_name
+        - given_name
+        - middle_name
+        - preferred_username
+        - updated_at
+        - email
+        - email_verified
+        - address
+        - phone_number
+        - phone_number_verified
+      RefreshTokenValidity: 1
+      UserPoolId:
+        Ref: UserPool
+
+Outputs:
+  StackName:
+    Description: Stack Name
+    Value: !Sub "${AWS::StackName}"
+  UserPoolId:
+    Description: CMS Cognito User Pool
+    Value: !Ref UserPool
+  UserPoolArn:
+    Description: CMS Cognito User Pool Arn
+    Value: !GetAtt UserPool.Arn
+  UserPoolClientId:
+    Description: CMS Cognito User Pool Client ID
+    Value: !Ref UserPoolClient
+  AuthType:
+    Description: Authentication Type
+    Value: 'Cognito'

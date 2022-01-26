@@ -1,0 +1,20 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "errno": 224,
+    "code": "ELIFECYCLE",
+    "pkgid": "ui-framework-helper@0.0.1",
+    "stage": "bundle",
+    "script": "npm run build:init && pnpm i --shamefully-hoist --force && npm run build:zip && npm run build",
+    "pkgname": "ui-framework-helper",
+    "err": {
+      "name": "pnpm",
+      "message": "ui-framework-helper@0.0.1 bundle: `npm run build:init && pnpm i --shamefully-hoist --force && npm run build:zip && npm run build`\nExit status 224",
+      "code": "ELIFECYCLE",
+      "stack": "pnpm: ui-framework-helper@0.0.1 bundle: `npm run build:init && pnpm i --shamefully-hoist --force && npm run build:zip && npm run build`\nExit status 224\n    at EventEmitter.<anonymous> (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:103397:20)\n    at EventEmitter.emit (events.js:400:28)\n    at ChildProcess.<anonymous> (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:91337:18)\n    at ChildProcess.emit (events.js:400:28)\n    at maybeClose (internal/child_process.js:1058:16)\n    at Process.ChildProcess._handle.onexit (internal/child_process.js:293:5)"
+    }
+  },
+  "2 warn pnpm:global": " Local package.json exists, but node_modules missing, did you mean to install?"
+}

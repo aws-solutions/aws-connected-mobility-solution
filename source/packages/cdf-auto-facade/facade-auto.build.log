@@ -1,0 +1,2 @@
+Invoking: npx tsc -b && npx shx cp -R 'src/config' 'dist/' 
+

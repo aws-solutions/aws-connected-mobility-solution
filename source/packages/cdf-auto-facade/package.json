@@ -1,0 +1,90 @@
+{
+  "name": "@cdf/facade-auto",
+  "version": "0.0.1",
+  "description": "CDF Facade - Auto",
+  "author": "Andrew Givens",
+  "config": {
+    "environment": "development",
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "clean": "rm -rf dist build tsconfig.tsbuildinfo",
+    "reset": "rm -rf cli node_modules package-lock.json",
+    "commit": "npx git-cz",
+    "lint": "tslint \"src/**/*.ts\"",
+    "build": "npx tsc -b && npx shx cp -R 'src/config' 'dist/'",
+    "test": "rushx lint && NODE_ENV= NODE_CONFIG_DIR='./src/config' jest --silent",
+    "start": "rushx build && NODE_CONFIG=$(cat ${CONFIG_LOCATION}/facade-auto/${npm_package_config_environment}-config.json) NODE_CONFIG_DIR='./src/config' ",
+    "prebundle": "npx shx rm -rf ../../deploy/facade-auto bundle.zip && npx shx mkdir -p ../../deploy/facade-auto",
+    "bundle": "rush deploy --overwrite --project @cdf/facade-auto --target-folder ../../deploy/facade-auto",
+    "postbundle": "cd ../../deploy/facade-auto && zip --symlinks -rq ../../packages/cdf-auto-facade/bundle.zip * && cd -"
+  },
+  "dependencies": {
+    "@cdf/errors": "2.1.0",
+    "@cdf/logger": "2.1.0",
+    "@cdf/lambda-invoke": "1.1.1",
+    "@cdf/assetlibrary-client": "3.3.5",
+    "@cdf/config-inject": "2.1.0",
+    "@cdf/provisioning-client": "3.4.1",
+    "aws-sdk": "2.804.0",
+    "aws-serverless-express": "3.3.6",
+    "body-parser": "1.19.0",
+    "config": "3.2.4",
+    "express": "4.17.1",
+    "inversify": "5.1.1",
+    "inversify-binding-decorators": "4.0.0",
+    "inversify-express-utils": "6.3.2",
+    "js-yaml": "3.13.1",
+    "jszip": "3.2.2",
+    "logform": "2.1.2",
+    "math": "0.0.3",
+    "multer": "1.4.2",
+    "ow": "0.15.0",
+    "reflect-metadata": "0.1.13",
+    "superagent": "7.0.2",
+    "@types/aws-serverless-express": "3.3.2",
+    "@types/busboy": "0.2.3",
+    "@types/config": "0.0.38",
+    "@types/jest": "24.9.0",
+    "@types/node": "14.6.1",
+    "@types/body-parser": "1.17.1",
+    "@types/express": "4.17.2",
+    "uuid": "^7.0.0",
+    "winston": "3.2.1",
+    "winston-transport": "4.3.0"
+  },
+   "peerDependencies": {
+      "jest": "24.9.0"
+  },
+  "jest": {
+    "globals": {
+      "NODE_CONFIG_DIR": "./src/config"
+    },
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "<rootDir>/**/?(*.)+(spec|test).ts?(x)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "private": true,
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}

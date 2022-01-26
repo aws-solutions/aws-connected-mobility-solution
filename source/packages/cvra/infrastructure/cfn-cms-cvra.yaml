@@ -1,0 +1,852 @@
+#---------------------------------------------------------------------------------------------------------------------
+#  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.                                           *
+#                                                                                                                    *
+#  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance    *
+#  with the License. A copy of the License is located at                                                             *
+#                                                                                                                    *
+#      http://www.apache.org/licenses/LICENSE-2.0                                                                    *
+#                                                                                                                    *
+#  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES *
+#  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions    *
+#  and limitations under the License.                                                                                *
+#---------------------------------------------------------------------------------------------------------------------
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: CMS - CVRA Stack
+
+Parameters:
+
+  ApplicationConfigurationOverride:
+    Description: This allows you to override any configuration application configuration. Must be a JSON formatted string. Any configurations contained in this will override the configurations found and merged from the config files.
+    Type: String
+    MinLength: 1
+
+  AssetLibraryFunctionName:
+    Description: CDF Core Asset Library Service API Function Name
+    Type: String
+    MinLength: 1
+
+  Environment:
+    Description:  Name of environment.  Used to name the created resources.
+    Type: String
+    MinLength: 1
+
+  KmsKeyId:
+    Description: CMS KMS Encrpytion Key
+    Type: String
+    MinLength: 1
+
+Conditions:
+  KmsKeyIdProvided: !Not [ !Equals [ !Ref KmsKeyId, "" ] ]
+
+Resources:
+  # Lambda Functions
+  DriverSafetyServiceFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "Cloudwatch permission is already added to the role."
+    Properties:
+      CodeUri: ../bundle.zip
+      Handler: packages/cvra/dist/index.driverSafetyScoreService
+      Runtime: nodejs14.x
+      Role: !GetAtt DriverSafetyServiceRole.Arn
+      Timeout: 300
+      MemorySize: 256
+      Environment:
+        Variables:
+          NODE_CONFIG_DIR: 'packages/cvra/dist/config'
+          NODE_CONFIG: !Ref ApplicationConfigurationOverride
+          VEHICLE_TRIP_TBL: !Ref VehicleTripTable
+
+  AnomalyServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: "Anomaly processing Service function"
+      CodeUri: ../bundle.zip
+      Handler: packages/cvra/dist/index.anomalyService
+      Runtime: nodejs14.x
+      Role: !GetAtt AnomalyServiceRole.Arn
+      Timeout: 300
+      MemorySize: 256
+      Environment:
+        Variables:
+          NODE_CONFIG_DIR: 'packages/cvra/dist/config'
+          NODE_CONFIG: !Ref ApplicationConfigurationOverride
+          VEHICLE_ANOMALY_TBL: !Ref VehicleAnomalyTable
+
+  ConnectedVehicleHelper:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: packages/cvra/dist/helpers/index.handler
+      CodeUri: ../bundle.zip
+      Description: "Custom Resource Handler helper function"
+      Runtime: nodejs14.x
+      Timeout: 300
+      MemorySize: 256
+      Role: !GetAtt ConnectedVehicleHelperRole.Arn
+      Environment:
+        Variables:
+          NODE_CONFIG_DIR: 'packages/cvra/dist/config'
+          NODE_CONFIG: !Ref ApplicationConfigurationOverride
+
+  AssetLibraryDTCFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "Cloudwatch permission is already added to the role."
+    Properties:
+      Description: "Asset Library DTC function"
+      CodeUri: ../bundle.zip
+      Handler: packages/cvra/dist/assetLibraryDTC/dtcUpdate.handler
+      Runtime: nodejs14.x
+      Timeout: 30
+      MemorySize: 256
+      Role: !GetAtt DTCUpdateServiceRole.Arn
+      Environment:
+        Variables:
+          NODE_CONFIG_DIR: 'packages/cvra/dist/config'
+          NODE_CONFIG: !Ref ApplicationConfigurationOverride
+          CVRA_ASSETLIBRARY_APIFUNCTIONNAME: !Ref AssetLibraryFunctionName
+
+  # DynamoDB Tables
+  VehicleTripTable:
+    Type: AWS::DynamoDB::Table
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W73
+            reason: "Billing mode needs to be determined by customer."
+    DeletionPolicy: "Delete"
+    Properties:
+      SSESpecification:
+        Fn::If:
+          - KmsKeyIdProvided
+          - KMSMasterKeyId: !Ref KmsKeyId
+            SSEEnabled: true
+            SSEType: KMS
+          - Ref: AWS::NoValue
+      AttributeDefinitions:
+        - AttributeName: "vin"
+          AttributeType: "S"
+        - AttributeName: "trip_id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "vin"
+          KeyType: "HASH"
+        - AttributeName: "trip_id"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 30
+        WriteCapacityUnits: 30
+
+  VehicleAnomalyTable:
+    Type: "AWS::DynamoDB::Table"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W73
+            reason: "Billing mode needs to be determined by customer."
+    DeletionPolicy: "Delete"
+    Properties:
+      SSESpecification:
+        Fn::If:
+          - KmsKeyIdProvided
+          - KMSMasterKeyId: !Ref KmsKeyId
+            SSEEnabled: true
+            SSEType: KMS
+          - Ref: AWS::NoValue
+      AttributeDefinitions:
+        - AttributeName: "pk"
+          AttributeType: "S"
+        - AttributeName: "sk"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "pk"
+          KeyType: "HASH"
+        - AttributeName: "sk"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 30
+        WriteCapacityUnits: 30
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+  # IAM Roles
+  DriverSafetyServiceRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "Added the managed policies below, warning is still there."
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+
+  DTCUpdateServiceRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "Added the managed policies below, warning is still there."
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+      Policies:
+        - PolicyName: "ApplicationPolicies"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: lambda
+                Action:
+                  - "lambda:Invoke*"
+                Effect: Allow
+                Resource:
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AssetLibraryFunctionName}'
+
+  TelemetricsIotActionsRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "iot.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+
+  TelemetricsDeliveryStreamRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "firehose.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+
+  AnomalyServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "AnomalyServicePolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:BatchGetItem"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:Query"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !Join ["", ["arn:aws:dynamodb:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":table/", Ref: VehicleAnomalyTable]]
+                  - !Join ["", ["arn:aws:dynamodb:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":table/", Ref: VehicleAnomalyTable, "/index/vin-trip_id-index"]]
+              - Effect: "Allow"
+                Action:
+                  - "kinesis:DescribeStream"
+                  - "kinesis:GetRecords"
+                  - "kinesis:GetShardIterator"
+                  - "kinesis:ListStreams"
+                Resource:
+                  - "*"
+              - Effect: "Allow"
+                Action:
+                  - "kms:Decrypt"
+                  - "kms:DescribeKey"
+                Resource:
+                  - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "The * resource allows the AnomalyServiceRole to exchange information with solution resources."
+
+  ConnectedVehicleHelperRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "ConnectedVehicleHelperPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/", Ref: "AWS::StackName", "-connected-vehicle-helper:*"]]
+              - Effect: "Allow"
+                Action:
+                  - "iot:CreateTopicRule"
+                  - "iot:DeleteTopicRule"
+                Resource:
+                  - "*"
+              - Effect: "Allow"
+                Action:
+                  - "iam:PassRole"
+                Resource:
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/${TelemetricsIotActionsRole}"
+                  - !Sub "arn:aws:iam::${AWS::AccountId}:role/${TelemetricsAnomalyAnalyticsRole}"
+              - Effect: "Allow"
+                Action:
+                  - "kinesisanalytics:CreateApplication"
+                  - "kinesisanalytics:DeleteApplication"
+                  - "kinesisanalytics:DescribeApplication"
+                  - "kinesisanalytics:StartApplication"
+                Resource:
+                  - !Sub "arn:aws:kinesisanalytics:${AWS::Region}:${AWS::AccountId}:application/*"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "The * resource allows the CustomResourceHelperRole to exchange information with solution resources."
+          - id: W28
+            reason: "Resource name validated and found to be non-explicit."
+
+  TelemetricsAnomalyAnalyticsRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "kinesisanalytics.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "TelemetricsAnomalyAnalyticsPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "firehose:DescribeDeliveryStream"
+                  - "firehose:Get*"
+                Resource:
+                  - Fn::Sub: "arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${TelemetricsDeliveryStream}"
+              - Effect: "Allow"
+                Action:
+                  - "kinesis:DescribeStream"
+                  - "kinesis:PutRecord"
+                  - "kinesis:PutRecords"
+                Resource:
+                  - Fn::Sub: "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/${AnomalyStream}"
+              - Effect: "Allow"
+                Action:
+                  - "kms:GenerateDataKey"
+                Resource:
+                  - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F3
+            reason: "The wildcard action in the TelemetricsAnomalyAnalyticsPolicy permits the TelemetricsAnomalyAnalyticsRole to read Kinesis Firehose streams and inputs."
+
+  # IAM Policies
+  DriverSafetyServicePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: "The * resource allows the DriverSafetyServiceRole to exchange information with solution resources."
+          - id: W58
+            reason: "Cloudwatch managed policy is added already."
+    Properties:
+      Description: "Policy for the driver safety microservice Lambda function."
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource:
+              !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/", !Ref DriverSafetyServiceFunction,":*"]]
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:BatchGetItem"
+              - "dynamodb:BatchWriteItem"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:Query"
+              - "dynamodb:Scan"
+              - "dynamodb:UpdateItem"
+            Resource:
+              !Join ["", ["arn:aws:dynamodb:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":table/", Ref: VehicleTripTable]]
+      Roles:
+        - Ref: "DriverSafetyServiceRole"
+
+  DTCUpdateServicePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: "The * resource allows the DTCUpdateServiceRole to exchange information with solution resources."
+          - id: W58
+            reason: "The permission is already added to the Role."
+          
+    Properties:
+      Description: "Policy for the driver safety microservice Lambda function."
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource:
+              !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/", !Ref AssetLibraryDTCFunction,":*"]]
+      Roles:
+        - Ref: "DTCUpdateServiceRole"
+
+
+
+  TelemetricsIotActionsPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: "Policy for the iot actions in the cvra telemetrics platform."
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "firehose:PutRecord"
+            Resource:
+              - Fn::Sub: "arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${TelemetricsDeliveryStream}"
+              - Fn::Sub: "arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${TripsDeliveryStream}"
+              - Fn::Sub: "arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DTCDeliveryStream}"
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:PutItem"
+            Resource:
+              - Fn::Sub: "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${VehicleTripTable}"
+
+      Roles:
+        - Ref: "TelemetricsIotActionsRole"
+
+  TelemetricsDeliveryStreamPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: "Policy for the telemetrics firehose delivery stream."
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "glue:GetTable"
+              - "glue:GetTableVersion"
+              - "glue:GetTableVersions"
+            Resource:
+              - "*"
+          - Effect: "Allow"
+            Action:
+              - "kinesis:DescribeStream"
+              - "kinesis:GetShardIterator"
+              - "kinesis:GetRecords"
+            Resource:
+              - Fn::Sub: "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/%FIREHOSE_STREAM_NAME%"
+          - Effect: "Allow"
+            Action:
+              - "s3:AbortMultipartUpload"
+              - "s3:GetBucketLocation"
+              - "s3:GetObject"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:PutObject"
+            Resource:
+              - Fn::Sub: "arn:aws:s3:::${RawDataBucket}"
+              - Fn::Sub: "arn:aws:s3:::${RawDataBucket}/*"
+              - "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%"
+              - "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+          - Effect: "Allow"
+            Action:
+              - "lambda:InvokeFunction"
+              - "lambda:GetFunctionConfiguration"
+            Resource:
+              - Fn::Sub: "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%"
+          - Effect: "Allow"
+            Action:
+              - "logs:PutLogEvents"
+            Resource:
+              - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/cvra-telemetry:log-stream:*"
+          - Effect: "Allow"
+            Action:
+              - "kms:Decrypt"
+              - "kms:GenerateDataKey"
+            Resource:
+              - Fn::Sub: "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+            Condition:
+              StringEquals: 
+                "kms:ViaService": !Sub "s3.${AWS::Region}.amazonaws.com"
+              StringLike:  
+                "kms:EncryptionContext:aws:s3:arn": !Sub "arn:aws:s3:::${RawDataBucket}/*"
+      Roles:
+        - Ref: "TelemetricsDeliveryStreamRole"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: "The * resource allows the TelemetricsDeliveryStreamPolicy to exchange information with solution resources."
+
+  # IoT Core Rules
+  TelemetricsDriverScoreRule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      TopicRulePayload:
+        RuleDisabled: "false"
+        Description: "Processing cvra driver score."
+        Sql: >-
+          SELECT * FROM 'dt/cvra/+/trip'
+        Actions:
+          - Lambda:
+              FunctionArn: !GetAtt DriverSafetyServiceFunction.Arn
+
+  TelemetricsRawStorageRule:
+    Type: "AWS::IoT::TopicRule"
+    Properties:
+      TopicRulePayload:
+        RuleDisabled: "false"
+        Description: "Persistent storage of cvra telematics data."
+        Sql: >-
+          SELECT * FROM 'dt/cvra/+/cardata'
+        Actions:
+          -
+            Firehose:
+              DeliveryStreamName: !Ref TelemetricsDeliveryStream
+              RoleArn: !GetAtt TelemetricsIotActionsRole.Arn
+              Separator: "\n"
+
+  TripsRawStorageRule:
+    Type: "AWS::IoT::TopicRule"
+    Properties:
+      TopicRulePayload:
+        RuleDisabled: "false"
+        Description: "Persistent storage of cvra telematics data."
+        Sql: >-
+          SELECT * FROM 'dt/cvra/+/trip'
+        Actions:
+          - Firehose:
+              DeliveryStreamName: !Ref TripsDeliveryStream
+              RoleArn: !GetAtt TelemetricsIotActionsRole.Arn
+              Separator: "\n"
+
+  DTCRawStorageRule:
+    Type: "AWS::IoT::TopicRule"
+    Properties:
+      TopicRulePayload:
+        RuleDisabled: "false"
+        Description: "Persistent storage of cvra telematics data."
+        Sql: >-
+          SELECT * FROM 'dt/cvra/+/dtc'
+        Actions:
+          - Firehose:
+              DeliveryStreamName: !Ref DTCDeliveryStream
+              RoleArn: !GetAtt TelemetricsIotActionsRole.Arn
+              Separator: "\n"
+
+  DTCUpdateRule:
+    Type: "AWS::IoT::TopicRule"
+    Properties:
+      TopicRulePayload:
+        RuleDisabled: "false"
+        Description: "Update Asset Library with changed DTC info."
+        Sql: >-
+          SELECT VIN, DTC.Code as dtc FROM 'dt/cvra/+/dtc' WHERE DTC.Changed=true
+        Actions:
+          - Lambda:
+              FunctionArn: !GetAtt AssetLibraryDTCFunction.Arn
+
+  # Streams
+  TelemetricsDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Sub "cvra-telemetry-${Environment}"
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyType: AWS_OWNED_CMK
+      S3DestinationConfiguration:
+        BucketARN: !GetAtt RawDataBucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 300
+          SizeInMBs: 5
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Sub "/aws/kinesisfirehose/cvra-telemetry-${Environment}"
+          LogStreamName: "telemetricsDelivery"
+        CompressionFormat: "GZIP"
+        Prefix: "telemetry/"
+        RoleARN: !GetAtt TelemetricsDeliveryStreamRole.Arn
+        EncryptionConfiguration:
+          KMSEncryptionConfig:
+            AWSKMSKeyARN: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+
+  TripsDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Sub "cvra-trips-${Environment}"
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyType: AWS_OWNED_CMK
+      S3DestinationConfiguration:
+        BucketARN: !GetAtt RawDataBucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 300
+          SizeInMBs: 5
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Sub "/aws/kinesisfirehose/cvra-trips-${Environment}"
+          LogStreamName: "tripssDelivery"
+        CompressionFormat: "GZIP"
+        Prefix: "trips/"
+        RoleARN: !GetAtt TelemetricsDeliveryStreamRole.Arn
+        EncryptionConfiguration:
+          KMSEncryptionConfig:
+            AWSKMSKeyARN: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+
+  DTCDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Sub "cvra-dtc-${Environment}"
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyType: AWS_OWNED_CMK
+      S3DestinationConfiguration:
+        BucketARN: !GetAtt RawDataBucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 300
+          SizeInMBs: 5
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Sub "/aws/kinesisfirehose/cvra-dtc-${Environment}"
+          LogStreamName: "dtcDelivery"
+        CompressionFormat: "GZIP"
+        Prefix: "dtc/"
+        RoleARN: !GetAtt TelemetricsDeliveryStreamRole.Arn
+        EncryptionConfiguration:
+          KMSEncryptionConfig:
+            AWSKMSKeyARN: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+
+  EventsDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Sub "cvra-events-${Environment}"
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyType: AWS_OWNED_CMK
+      S3DestinationConfiguration:
+        BucketARN: !GetAtt RawDataBucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 300
+          SizeInMBs: 5
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Sub "/aws/kinesisfirehose/cvra-events-${Environment}"
+          LogStreamName: "eventsDelivery"
+        CompressionFormat: "GZIP"
+        Prefix: "events/"
+        RoleARN: !GetAtt TelemetricsDeliveryStreamRole.Arn
+        EncryptionConfiguration:
+          KMSEncryptionConfig:
+            AWSKMSKeyARN: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${KmsKeyId}"
+
+  AnomalyStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      ShardCount: 2
+      StreamEncryption:
+        Fn::If:
+          - KmsKeyIdProvided
+          - EncryptionType: KMS
+            KeyId: !Ref KmsKeyId
+          - Ref: AWS::NoValue
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: "Resource name validated and found to be non-explicit."
+
+  AnomalyServiceEventSource:
+    DependsOn: AnomalyServiceFunction
+    Type: "AWS::Lambda::EventSourceMapping"
+    Properties:
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt AnomalyStream.Arn
+      FunctionName: !GetAtt AnomalyServiceFunction.Arn
+      StartingPosition: TRIM_HORIZON
+
+  # S3 Buckets
+  RawDataBucket:
+    Type: AWS::S3::Bucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W51
+            reason: "Customer may determine if additional bucket policy is required."
+          - id: W35
+            reason: "RawDataBucket validated and does not require access logging to be configured."
+#    DeletionPolicy: Retain
+    Properties:
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID : !Ref KmsKeyId
+              SSEAlgorithm : aws:kms
+    # Metadata:
+    #   cfn_nag:
+    #     rules_to_suppress:
+    #       - id: W35
+    #         reason: "RawDataBucket validated and does not require access logging to be configured."
+
+  # Permissions
+  LambdaInvokeDriverScorePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt DriverSafetyServiceFunction.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: "iot.amazonaws.com"
+      SourceArn: !Sub "arn:aws:iot:${AWS::Region}:${AWS::AccountId}:rule/${TelemetricsDriverScoreRule}"
+      SourceAccount: !Sub "${AWS::AccountId}"
+
+  LambdaInvokeDTCUpdatePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt AssetLibraryDTCFunction.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: "iot.amazonaws.com"
+      SourceArn: !Sub "arn:aws:iot:${AWS::Region}:${AWS::AccountId}:rule/${DTCUpdateRule}"
+      SourceAccount: !Sub "${AWS::AccountId}"
+
+  # Custom Resources
+  # Todo: refactor to be cloudformation resource not a custom resource
+  TelemetricsAnomalyAnalyticsApplication:
+    Type: "Custom::LoadLambda"
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - "ConnectedVehicleHelper"
+          - "Arn"
+      Region:
+        - Ref: "AWS::Region"
+      name: "ConnectedVehicleAnomalyDetectionApp"
+      anomalyStream: !GetAtt AnomalyStream.Arn
+      deliveryStream: !Sub "arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${TelemetricsDeliveryStream}"
+      roleArn: !GetAtt TelemetricsAnomalyAnalyticsRole.Arn
+      customAction: "kinesisApplication"
+
+  # Todo: refactor to be cloudformation resource not a custom resource
+  TelemetricsAggregationRule:
+    Type: "Custom::LoadLambda"
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - "ConnectedVehicleHelper"
+          - "Arn"
+      Region:
+        - Ref: "AWS::Region"
+      name: "ConnectedVehicleTrip"
+      tableName: !Ref VehicleTripTable
+      roleArn: !GetAtt TelemetricsIotActionsRole.Arn
+      sql: "SELECT * FROM 'dt/cvra/+/trip'"
+      description: "Processing cvra aggregated trip telematics."
+      customAction: "dynamoDBv2IotRule"
+
+
+#  TelemetricsAggregationRule:
+#    Type: "AWS::IoT::TopicRule"
+#    Properties:
+#      TopicRulePayload:
+#        Actions:
+#          -
+#            DynamoDBv2:
+#              PutItem:
+#                TableName: !Ref VehicleTripTable
+#              RoleArn: !GetAtt TelemetricsIotActionsRole.Arn
+#        Description: "Processing cvra aggregated trip telematics."
+#        AwsIotSqlVersion: "2016-03-23"
+#        RuleDisabled: "false"
+#        Sql: "SELECT * FROM 'dt/cvra/+/trip'"
+
+Outputs:
+  VehicleTripTable:
+    Description: "Vehicle Trip table"
+    Value: !Ref VehicleTripTable
+  VehicleAnomalyTable:
+    Description: "Vehicle Anomaly table"
+    Value: !Ref VehicleAnomalyTable
+  VehicleAnomalyTableStreamArn:
+    Description: "Vehicle Anomaly Table Stream Arn"
+    Value: !GetAtt VehicleAnomalyTable.StreamArn
+

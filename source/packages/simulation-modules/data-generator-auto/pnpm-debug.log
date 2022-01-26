@@ -1,0 +1,22 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1,
+    "workspacePrefix": "/Users/hkhokhar/Projects/cdf/cdf-simulator"
+  },
+  "1 error pnpm": {
+    "message": {
+      "errno": 12,
+      "code": "ELIFECYCLE",
+      "pkgid": "@cdf/data-generator-auto@1.0.0",
+      "stage": "rebundle",
+      "script": "npm run build && cd dist && rm -rf node_modules && zip -urq ../build/build.zip * && rm -f ../build/data-generator-auto.zip && cp ../build/build.zip ../build/data-generator.zip",
+      "pkgname": "@cdf/data-generator-auto"
+    },
+    "err": {
+      "name": "Error",
+      "message": "@cdf/data-generator-auto@1.0.0 rebundle: `npm run build && cd dist && rm -rf node_modules && zip -urq ../build/build.zip * && rm -f ../build/data-generator-auto.zip && cp ../build/build.zip ../build/data-generator.zip`\nExit status 12",
+      "code": "ELIFECYCLE",
+      "stack": "Error: @cdf/data-generator-auto@1.0.0 rebundle: `npm run build && cd dist && rm -rf node_modules && zip -urq ../build/build.zip * && rm -f ../build/data-generator-auto.zip && cp ../build/build.zip ../build/data-generator.zip`\nExit status 12\n    at EventEmitter.proc.on (/Users/hkhokhar/.nvm/versions/node/v8.10.0/lib/node_modules/pnpm/lib/node_modules/@zkochan/npm-lifecycle/index.js:302:16)\n    at emitTwo (events.js:126:13)\n    at EventEmitter.emit (events.js:214:7)\n    at ChildProcess.<anonymous> (/Users/hkhokhar/.nvm/versions/node/v8.10.0/lib/node_modules/pnpm/lib/node_modules/@zkochan/npm-lifecycle/lib/spawn.js:55:14)\n    at emitTwo (events.js:126:13)\n    at ChildProcess.emit (events.js:214:7)\n    at maybeClose (internal/child_process.js:925:16)\n    at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)"
+    }
+  }
+}

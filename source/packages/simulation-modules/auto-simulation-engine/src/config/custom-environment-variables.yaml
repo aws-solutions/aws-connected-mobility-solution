@@ -1,0 +1,33 @@
+#---------------------------------------------------------------------------------------------------------------------
+#  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.                                           *
+#                                                                                                                    *
+#  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance    *
+#  with the License. A copy of the License is located at                                                             *
+#                                                                                                                    *
+#      http://www.apache.org/licenses/LICENSE-2.0                                                                    *
+#                                                                                                                    *
+#  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES *
+#  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions    *
+#  and limitations under the License.                                                                                *
+#---------------------------------------------------------------------------------------------------------------------
+aws:  
+  iot:
+    keyPath: CDF_SIMULATION_ENGINE_AWS_IOT_KEYPATH
+    certPath: CDF_SIMULATION_ENGINE_AWS_IOT_CERTPATH
+    caPath: CDF_SIMULATION_ENGINE_AWS_IOT_CAPATH
+    host: CDF_SIMULATION_ENGINE_AWS_IOT_HOST
+
+cvra:
+  templates:
+    carData: CDF_SIMULATION_ENGINE_CVRA_TEMPLATES_CARDATA
+    dtc: CDF_SIMULATION_ENGINE_CVRA_TEMPLATES_DTC
+    event: CDF_SIMULATION_ENGINE_CVRA_TEMPLATES_EVENT
+    trip: CDF_SIMULATION_ENGINE_CVRA_TEMPLATES_TRIP
+  topics:
+    carData: CDF_SIMULATION_ENGINE_CVRA_TOPICS_CARDATA
+    dtc: CDF_SIMULATION_ENGINE_CVRA_TOPICS_DTC
+    event: CDF_SIMULATION_ENGINE_CVRA_TOPICS_EVENT
+    trip: CDF_SIMULATION_ENGINE_CVRA_TOPICS_TRIP
+  samplerIntervals:
+    carData: CDF_SIMULATION_ENGINE_CVRA_SAMPLERINTERVALS_CARDATA
+    dtc: CDF_SIMULATION_ENGINE_CVRA_SAMPLERINTERVALS_DTC

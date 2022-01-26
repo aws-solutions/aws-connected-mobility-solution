@@ -1,0 +1,14 @@
+aws:
+  accountId:
+  region:
+
+cdf:
+  assetLibrary:
+    paths:
+      vehicles: "/auto/vehicles"
+
+assetLibrary:
+  mode: lambda
+
+logging:
+  level: debug

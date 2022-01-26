@@ -1,0 +1,410 @@
+{
+  "0 warn pnpm": {
+    "message": "using --force I sure hope you know what you are doing",
+    "prefix": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra"
+  },
+  "1 debug pnpm:scope": {
+    "selected": 1
+  },
+  "2 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "@cdf/cvra",
+      "version": "0.0.1",
+      "description": "CVRA Microservices",
+      "config": {
+        "environment": "development"
+      },
+      "typings": "dist/index.d.ts",
+      "scripts": {
+        "clean": "rm -rf dist build tsconfig.tsbuildinfo",
+        "reset": "rm -rf cli node_modules package-lock.json",
+        "lint": "tslint \"src/**/*.ts\"",
+        "build": "tsc -b tsconfig.json",
+        "test": "npm run lint && NODE_ENV= NODE_CONFIG_DIR='./src/config' nyc jest && pnpm run bundle:package",
+        "prebundle:prepare": "mkdir dist && mkdir dist/config/ && cp src/config/* dist/config/ && mkdir build && mkdir dist/node_modules && pnpm run bundle:package",
+        "bundle:package": "cd dist && zip -rq ../build/build.zip * && zip -urq ../build/build.zip ../package.json && zip -urq ../build/build.zip ../node_modules",
+        "prebundle:quick": "pnpm i --force && pnpm run build && pnpm run prebundle:prepare",
+        "bundle": "pnpm i --force && pnpm run build && pnpm run prebundle:prepare",
+        "postbundle:quick": "pnpm i --force",
+        "semantic-release": "npx semantic-release -e semantic-release-monorepo"
+      },
+      "dependencies": {
+        "@cdf/errors": "workspace:^2.0.0",
+        "@cdf/logger": "workspace:^2.0.0",
+        "@cdf/lambda-invoke": "workspace:^1.0.0",
+        "@cdf/assetlibrary-client": "workspace:^3.0.0",
+        "@cdf/config-inject": "workspace:^2.0.0",
+        "aws-sdk": "2.626.0",
+        "cfn-response-promise": "1.0.1",
+        "config": "3.2.6",
+        "inversify": "5.1.1",
+        "inversify-binding-decorators": "4.0.0",
+        "inversify-express-utils": "6.3.2",
+        "jest": "24.9.0",
+        "js-yaml": "3.13.1",
+        "logform": "2.1.2",
+        "moment": "2.24.0",
+        "ow": "^0.17.0",
+        "readable-stream": "2.3.6",
+        "reflect-metadata": "0.1.13",
+        "shortid": "2.2.15",
+        "superagent": "7.0.2",
+        "underscore": "1.9.2",
+        "winston": "3.2.1",
+        "winston-transport": "4.3.0"
+      },
+      "devDependencies": {
+        "@commitlint/cli": "8.2.0",
+        "@commitlint/config-conventional": "8.2.0",
+        "@semantic-release/changelog": "3.0.6",
+        "@semantic-release/git": "7.0.18",
+        "@semantic-release/release-notes-generator": "7.3.5",
+        "@types/config": "0.0.36",
+        "@types/jest": "24.0.23",
+        "@types/node": "12.12.17",
+        "@types/shortid": "0.0.29",
+        "@types/superagent": "4.1.4",
+        "@types/underscore": "^1.9.4",
+        "commitizen": "4.0.3",
+        "concurrently": "5.0.1",
+        "cpy-cli": "3.0.0",
+        "del-cli": "3.0.0",
+        "husky": "3.1.0",
+        "jest": "24.9.0",
+        "jest-create-mock-instance": "1.1.0",
+        "jest-express": "1.10.1",
+        "jest-haste-map": "24.9.0",
+        "jest-mock": "24.9.0",
+        "jest-resolve": "24.9.0",
+        "make-dir-cli": "2.0.0",
+        "nodemon": "2.0.2",
+        "nyc": "14.1.1",
+        "@octokit/core": "^3.0.0",
+        "semantic-release": "15.13.31",
+        "semantic-release-monorepo": "6.1.1",
+        "ts-jest": "24.2.0",
+        "tslint": "5.20.1",
+        "typescript": "3.7.3"
+      }
+    },
+    "prefix": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra"
+  },
+  "3 debug pnpm:context": {
+    "currentLockfileExists": false,
+    "storeDir": "/home/ubuntu/.pnpm-store/v3",
+    "virtualStoreDir": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra/node_modules/.pnpm"
+  },
+  "4 debug pnpm:stage": {
+    "prefix": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "stage": "resolution_started"
+  },
+  "5 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/config/0.0.36",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/config",
+      "rawSpec": "0.0.36"
+    }
+  },
+  "6 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/config/0.0.36",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "7 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@semantic-release/changelog/3.0.6",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@semantic-release/changelog",
+      "rawSpec": "3.0.6"
+    }
+  },
+  "8 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@semantic-release/changelog/3.0.6",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "9 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@semantic-release/release-notes-generator/7.3.5",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@semantic-release/release-notes-generator",
+      "rawSpec": "7.3.5"
+    }
+  },
+  "10 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@semantic-release/release-notes-generator/7.3.5",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "11 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/shortid/0.0.29",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/shortid",
+      "rawSpec": "0.0.29"
+    }
+  },
+  "12 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/shortid/0.0.29",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "13 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/jest/24.0.23",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/jest",
+      "rawSpec": "24.0.23"
+    }
+  },
+  "14 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/jest/24.0.23",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "15 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/superagent/4.1.4",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/superagent",
+      "rawSpec": "4.1.4"
+    }
+  },
+  "16 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/superagent/4.1.4",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "17 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/concurrently/5.0.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "concurrently",
+      "rawSpec": "5.0.1"
+    }
+  },
+  "18 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/concurrently/5.0.1",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "19 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/commitizen/4.0.3",
+    "wanted": {
+      "dependentId": ".",
+      "name": "commitizen",
+      "rawSpec": "4.0.3"
+    }
+  },
+  "20 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/commitizen/4.0.3",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "21 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/cpy-cli/3.0.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "cpy-cli",
+      "rawSpec": "3.0.0"
+    }
+  },
+  "22 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/cpy-cli/3.0.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "23 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/del-cli/3.0.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "del-cli",
+      "rawSpec": "3.0.0"
+    }
+  },
+  "24 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/del-cli/3.0.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "25 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@semantic-release/git/7.0.18",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@semantic-release/git",
+      "rawSpec": "7.0.18"
+    }
+  },
+  "26 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@semantic-release/git/7.0.18",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "27 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@commitlint/config-conventional/8.2.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@commitlint/config-conventional",
+      "rawSpec": "8.2.0"
+    }
+  },
+  "28 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@commitlint/config-conventional/8.2.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "29 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/husky/3.1.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "husky",
+      "rawSpec": "3.1.0"
+    }
+  },
+  "30 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/husky/3.1.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "31 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@commitlint/cli/8.2.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@commitlint/cli",
+      "rawSpec": "8.2.0"
+    }
+  },
+  "32 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@commitlint/cli/8.2.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "33 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest/24.9.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest",
+      "rawSpec": "24.9.0"
+    }
+  },
+  "34 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest/24.9.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "35 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest-haste-map/24.9.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest-haste-map",
+      "rawSpec": "24.9.0"
+    }
+  },
+  "36 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest-haste-map/24.9.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "37 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest-create-mock-instance/1.1.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest-create-mock-instance",
+      "rawSpec": "1.1.0"
+    }
+  },
+  "38 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest-create-mock-instance/1.1.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "39 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest-mock/24.9.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest-mock",
+      "rawSpec": "24.9.0"
+    }
+  },
+  "40 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest-mock/24.9.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "41 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest-resolve/24.9.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest-resolve",
+      "rawSpec": "24.9.0"
+    }
+  },
+  "42 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest-resolve/24.9.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "43 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/jest-express/1.10.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "jest-express",
+      "rawSpec": "1.10.1"
+    }
+  },
+  "44 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/jest-express/1.10.1",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "45 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/make-dir-cli/2.0.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "make-dir-cli",
+      "rawSpec": "2.0.0"
+    }
+  },
+  "46 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/make-dir-cli/2.0.0",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "47 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/nodemon/2.0.2",
+    "wanted": {
+      "dependentId": ".",
+      "name": "nodemon",
+      "rawSpec": "2.0.2"
+    }
+  },
+  "48 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/nodemon/2.0.2",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "49 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/nyc/14.1.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "nyc",
+      "rawSpec": "14.1.1"
+    }
+  },
+  "50 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/nyc/14.1.1",
+    "requester": "/home/ubuntu/environment/aws-connected-mobility-solution/source/packages/cvra",
+    "status": "resolved"
+  },
+  "51 error pnpm": {
+    "code": "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
+    "pkgsStack": [],
+    "err": {
+      "name": "pnpm",
+      "message": "In : No matching version found for @cdf/errors@^2.0.0 inside the workspace",
+      "code": "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
+      "stack": "pnpm: In : No matching version found for @cdf/errors@^2.0.0 inside the workspace\n    at tryResolveFromWorkspace (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:85233:15)\n    at resolveNpm (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:85124:39)\n    at Object.resolve (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:85356:40)\n    at ctx.requestsQueue.add.priority (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:71340:75)\n    at run (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:71087:90)\n    at PQueue._tryToStartAnother (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:71041:13)\n    at PQueue._next (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:70990:14)\n    at run (/home/ubuntu/.nvm/versions/node/v14.18.1/lib/node_modules/pnpm/dist/pnpm.cjs:71097:18)"
+    }
+  }
+}

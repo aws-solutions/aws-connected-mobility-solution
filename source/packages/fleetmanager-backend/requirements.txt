@@ -1,0 +1,11 @@
+crhelper==2.0.5
+boto3==1.12.26
+elasticsearch==7.6.0
+more_itertools==8.2.0
+polyline==1.4.0
+collections-extended==1.0.3
+requests-aws4auth==0.9
+marshmallow==3.5.1
+DateTime==4.3
+mercantile==1.1.4
+chalice==1.14.1
