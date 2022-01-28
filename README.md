@@ -7,7 +7,7 @@ In the terminal window (bash shell), the following steps will setup the necessar
 ```
 nvm install 14
 npm install -g @microsoft/rush
-sudo apt install -y jq
+sudo yum install -y jq
 ```
 
 For some of the AWS CLI commands to work below as expected (namely the KMS key owner) please configure the executing account to have an IAM user associated using ```aws configure``` to ensure the CLI commands work correctly.
