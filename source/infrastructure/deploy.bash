@@ -82,7 +82,7 @@ while getopts ":e:E:K:k:b:l:h:BYR:P:" opt; do
     k  ) KMS_KEY_ID=$OPTARG;;
     K  ) KMS_KEY_OWNER=$OPTARG;;
     b  ) ARTIFACTS_BUCKET=$OPTARG;;
-    l  ) CDF_CORE_STACK_NAME=$OPTARG;;
+    l  ) CDF_CORE_ENVIRONMENT=$OPTARG;;
     h  ) ADMIN_EMAIL=$OPTARG;;
 
     B  ) BYPASS_BUNDLE=true;;
@@ -141,15 +141,15 @@ AWS_ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account' $AW
 
 config_message="
 **********************************************************
-*****   Connected Device Framework                  ******
+*****   AWS Connected Mobility Solution             ******
 **********************************************************
 
-The Connected Device Framework (CDF) will install using the following configuration:
+The AWS Connected Mobility Solution (CMS) will install using the following configuration:
 
     -e (ENVIRONMENT)                    : $ENVIRONMENT
     -E (CONFIG_ENVIRONMENT)             : $CONFIG_ENVIRONMENT
 
-    -l (CDF_CORE_STACK_NAME)            : $CDF_CORE_STACK_NAME
+    -l (CDF_CORE_ENVIRONMENT)           : $CDF_CORE_ENVIRONMENT
     -b (ARTIFACTS_BUCKET)               : $ARTIFACTS_BUCKET
     -h (ADMIN_EMAIL)                    : $ADMIN_EMAIL
     -k (KMS_KEY_ID)                     : $KMS_KEY_ID
@@ -191,12 +191,12 @@ aws cloudformation package \
 logTitle 'CMS packaging complete!'
 
 stack_exports=$(aws cloudformation list-exports $AWS_ARGS)
-assetlibrary_invoke_apifunctionname_export="cdf-assetlibrary-$CDF_CORE_STACK_NAME-restApiFunctionName"
-commands_invoke_apifunctionname_export="cdf-commands-$CDF_CORE_STACK_NAME-restApiFunctionName"
-provisioning_invoke_apifunctionname_export="cdf-provisioning-$CDF_CORE_STACK_NAME-restApiFunctionName"
-vpcId_export="cdf-network-$CDF_CORE_STACK_NAME-VpcId"
-privateSubnets_export="cdf-network-$CDF_CORE_STACK_NAME-PrivateSubnetIds"
-securityGroup_export="cdf-network-$CDF_CORE_STACK_NAME-SecurityGroupId"
+assetlibrary_invoke_apifunctionname_export="cdf-assetlibrary-$CDF_CORE_ENVIRONMENT-restApiFunctionName"
+commands_invoke_apifunctionname_export="cdf-commands-$CDF_CORE_ENVIRONMENT-restApiFunctionName"
+provisioning_invoke_apifunctionname_export="cdf-provisioning-$CDF_CORE_ENVIRONMENT-restApiFunctionName"
+vpcId_export="cdf-network-$CDF_CORE_ENVIRONMENT-VpcId"
+privateSubnets_export="cdf-network-$CDF_CORE_ENVIRONMENT-PrivateSubnetIds"
+securityGroup_export="cdf-network-$CDF_CORE_ENVIRONMENT-SecurityGroupId"
 
 assetlibrary_invoke_apifunctionname=$(echo ${stack_exports} \
     | jq -r --arg assetlibrary_invoke_apifunctionname_export "$assetlibrary_invoke_apifunctionname_export" \
@@ -359,13 +359,11 @@ cms_apigateway_url=$(echo ${stack_exports} \
   '.Exports[] | select(.Name==$cms_apigateway_url_export) | .Value'
 )
 
-
 appVariables="$root_dir/packages/fleetmanager-ui/build/assets/appVariables.js"
 sed -i -e "s/%%USER_POOL_ID%%/$cms_userpool_id/g" $appVariables
 sed -i -e "s/%%USER_POOL_CLIENT_ID%%/$cms_userpool_client_id/g" $appVariables
 sed -i -e "s#%%CDF_AUTO_ENDPOINT%%#${cms_apigateway_url}#g" $appVariables
 sed -i -e "s/%%REGION%%/$AWS_REGION/g" $appVariables
-
 
 aws s3 sync --delete "$root_dir/packages/fleetmanager-ui/build" s3://$cms_ui_bucket  $AWS_ARGS
 
