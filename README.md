@@ -1,56 +1,62 @@
 # AWS Connected Mobility Solution (CMS)
 Connected Mobility Solution (CMS) enters its next generation of well architected design, following the original Connected Vehicle Reference Architecture in 2017. CMS has added capability based on lessons learned from hundreds of partner engagements and thousands of activations. CMS aids OEMs and suppliers in their journey to becoming mobility service providers. It includes the broadest and most advanced set of building blocks to accelerate the development and global scale deployment on a pay-as-you-go basis for these capabilities. 
 
-## Install Prerequisites
-In the terminal window (bash shell), the following steps will setup the necessary prerequisite packages.  We recommend using your Cloud9 environment to build and deploy CMS.  Additionally, some of the commands below require [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html), and Python 3.7, if not using Cloud9 as your IDE and [Git](https://git-scm.com/downloads), please configure as appropriate.
+## Prerequisites
+We recommend using your [AWS Cloud9 IDE](https://aws.amazon.com/cloud9) to build and deploy CMS. In all the other cases, make sure you have installed Python 3.7, [Git](https://git-scm.com/downloads) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
-```
-nvm install 14
-npm install -g @microsoft/rush
-sudo apt install -y jq
-```
+1. [Create a AWS Cloud9 environment](https://console.aws.amazon.com/cloud9/home/create) in the region of your choice, preferibly selecting a  *m5.large* instance type. 
 
-For some of the AWS CLI commands to work below as expected (namely the KMS key owner) please configure the executing account to have an IAM user associated using ```aws configure``` to ensure the CLI commands work correctly.
+2. During the creation of the AWS Cloud9 environment, it's not possible to choose the root volume size and the default (10 GiB) is not big enough to complete all the installation steps. So open your newly created AWS Cloud9 environment and [increase](https://docs.aws.amazon.com/cloud9/latest/user-guide/move-environment.html#move-environment-resize) the root volume to 25 GiB.
 
-The CMS solution requires the [AWS Connected Device Framework (CDF)](https://github.com/aws/aws-connected-device-framework) to be installed in the same account.  Please follow the instructions [here](https://github.com/aws/aws-connected-device-framework/blob/main/source/docs/deployment.md) to install and configure the AWS Connected Device Framwork. Once this is configured and installed, you will pass in the name of the CDF stack into your deploy process for CMS. The recommended deployment method of CDF for CMS is the ```deploy-core-single-stack.bash``` script (ensure the -c parameter is not passed for ease of installation), ensure both buckets are named the same development artifacts.
-
-## Build + Deploy Connected Device Framework
-The following steps will allow you to build and deploy CMS into your account.
-
-1. Setup S3 bucket
-
+3. Install nodejs v14, rush and jq
     ```
-    # change to desired region if needed
-    export region=us-west-2
-
-    export acct_id=$(aws sts get-caller-identity --query 'Account' --output text)
-
-    export s3_bucket_name=$(aws s3api create-bucket --bucket cms-demo-refactored-$acct_id --create-bucket-configuration LocationConstraint=$region | jq '.Location' | tr -d "\"" | cut -d "." -f1 | cut -d "/" -f3)
+    nvm install 14 --default
+    npm install -g @microsoft/rush
+    sudo yum install -y jq
     ```
 
-2. Create EC2 keypair. Alternatively, an existing keypair can be re-used. Simply set the variable $keypair_name to the existing pair.
+## Install AWS Connected Device Framework
+AWS CMS requires the [AWS Connected Device Framework (CDF)](https://github.com/aws/aws-connected-device-framework) to be installed in the same account.
+The following steps will guide you to build and install AWS CDF. Feel free to refer back to [CDF deployment doc](https://github.com/aws/aws-connected-device-framework/blob/main/source/docs/deployment.md) for more details.
+
+1. Set some environmental variables and then create an S3 bucket
+
+    ```
+    export ENV_NAME=development
+    export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+    export CMS_BUCKET_NAME=cms-$ENV_NAME-$AWS_ACCOUNT_ID
+
+    aws s3 mb s3://$CMS_BUCKET_NAME
+    ```
+
+2. Create EC2 keypair. Alternatively, an existing keypair can be re-used. Simply set the variable $keypair_name to the existing pair
 
     ```
     # change the name below if desired 
-    export keypair_name=myDemoKP
-    rm -f ~/.ssh/$keypair_name.pem
-    aws ec2 create-key-pair --key-name $keypair_name --query 'KeyMaterial' --output text >~/.ssh/$keypair_name.pem
-    chmod 400 ~/.ssh/$keypair_name.pem
+    export KEYPAIR_NAME=my-cms-development-key
+    rm -f ~/.ssh/$KEYPAIR_NAME.pem
+    aws ec2 create-key-pair --key-name $KEYPAIR_NAME --query 'KeyMaterial' --output text >~/.ssh/$KEYPAIR_NAME.pem
+    chmod 400 ~/.ssh/$KEYPAIR_NAME.pem
+    ```
+3. Clone CDF repo
+
+    ```
+    git clone https://github.com/aws/aws-connected-device-framework.git
     ```
 
-3. Use the below commannd to then deploy CDF from the ```source``` directory:
+3. Use the below commannd to then deploy CDF
 
-```
+    ```
+    cd ~/environment/aws-connected-device-framework/source 
     ./infrastructure/deploy-core-single-stack.bash \
-        -e development \
-        -b $s3_bucket_name \
-        -p $keypair_name \
-        -R $region \
-        -y s3://$s3_bucket_name/template-snippets/ \
+        -e $ENV_NAME \
+        -b $CMS_BUCKET_NAME \
+        -p $KEYPAIR_NAME \
+        -y s3://$CMS_BUCKET_NAME/template-snippets/ \
         -i 0.0.0.0/0 
-```
+    ```
 
-## Build + Deploy Connected Mobility Solution
+## Install AWS Connected Mobility Solution
 The following steps will allow you to build and deploy CMS into your account.
 
 1. Clone the CMS repository using the following command
@@ -66,86 +72,57 @@ The following steps will allow you to build and deploy CMS into your account.
     rush bundle
     ```
 
-3. Set environment variables. Set your email to be the CMS admin in the Cloud Formation stack.
+3. Set the email of the CMS admin and the IAM user that will own the KMS key
 
     ```
-    export env_name=development 
-    export aws_profile=default
-
-    export kms_key_owner=$(aws iam get-user --query 'User.UserName' --output text)
     # BE SURE TO PASTE YOUR EMAIL BELOW
-    export cms_admin_email=PASTE_YOUR_EMAIL_HERE
-    export acct_id=$(aws sts get-caller-identity --query 'Account' --output text) 
-    export cdf_core_stack_name=$env_name
+    export CMS_ADMIN_EMAIL=PASTE_YOUR_EMAIL_HERE
+    # To get current IAM username you can use command "aws iam get-user --query 'User.UserName' --output text" 
+    # otherwise you would need to create one and insert it below
+    export KMS_KEY_OWNER=INSERT_IAM_USERNAME
     ```
 
 4. Deploy CMS
 
-  ```
-  cd ~/environment/aws-connected-mobility-solution/source
-
-  ./infrastructure/deploy.bash -e $env_name -k $keypair_name -K $kms_key_owner -h $cms_admin_email -b $s3_bucket_name -B -P $aws_profile -l $cdf_core_stack_name -R $region
-  
-  ```
-
-## Run Simulations
-The quickest way to simulate a fleet of vehicles in CMS is to use the provided simulation module.  This package will provision vehicles into your CMS account and simulate routes, events and telemetry within a geographical bounding box provided in the inputs
-
-### Simulation prerequisites
-• Download and install [Postman](https://www.postman.com/downloads/), then import the [collection](/source/packages/simulation-modules/CMS-Simulators.postman_collection.json) before proceeding.
-• Log in to the Fleet Manager UI with the access credentials you wish to use.
-• Mapbox API token (as described in “Build and Deploy CMS from Source”
- 
- ### Step 1—Provision Simulation Capacity
-
- 1. Open the request in Postman - `CMS Simulators - Create Simulation`
-
- 2. Create an *Environment* in Postman specific to your project and create these global variables:
-    - simulation_manager_base_url
-    - mapboxToken
-    - certificateId
-    - facadeApiFunctionName
-    - simulation_id
-    - cognito_id_token
-
-3. Locate the following parameters from the CloudFormation Outputs: **apiGatewayUrl**,**certificateId**, **façade-restApiFunctionName**.
-    • From the Cloud9 Terminal window, the following commands will extract these names. Alternatively, they can be found from the CloudFormation console. However, many of the outputs have similar names and using these commands will help to avoid errors.
-
     ```
-    echo "simulation_manager_base_url:"  $(aws cloudformation list-exports --query "Exports[?Name=='cdf-simulation-manager-development-apigatewayurl'].Value" --output text) && echo "certificateId:" $(aws cloudformation list-exports --query "Exports[?Name=='cms-$env_name-certificateId'].Value" --output text) && echo "facadeApiFunctionName:" $(aws cloudformation list-exports --query "Exports[?Name=='cms-$env_name-facade-restApiFunctionName'].Value" --output text) 
-
+    ./infrastructure/deploy.bash \
+        -e $ENV_NAME \
+        -l $ENV_NAME \
+        -K $KMS_KEY_OWNER \
+        -h $CMS_ADMIN_EMAIL \
+        -b $CMS_BUCKET_NAME \
+        -B
     ```
 
-4. Copy the values and paste into the 'Current Value's for each of these variables in Postman. Leave cognito_id_token and simulation_id blank. All other values should be filled out in the Postman environment.
+5. After the installation is completed, an email will be sent to CMS_ADMIN_EMAIL address with the url of the Fleet Manager app and a temporary password. Login with using CMS_ADMIN_EMAIL as username and the password indicated in the email you received. At first login, you will be asked to change the temporary password and insert a [Mapbox access token](https://docs.mapbox.com/help/getting-started/access-tokens/) you can get free of charge from MapBox. 
 
-5. Login to the FleetManager app and capture the cognito id token from the browser by
-    • Open debugger in the web browser (Developer tools in Chrome/Firefox)
-    • Inspect "Local Storage" from the "Application" tab
-    • Look for "CognitoIdentity....idToken" and copy the Value— be sure to "Select All" and Copy, otherwise, intermediate word breaks may copy only part of the token.
-    • paste the value into the cognito_id_token Postman environment variable.
+## Let's get things moving
+We proposed two ways to onboard some vehicles and simulate them while they move around, generating events and other telemetry data.
 
-6. Send the POST request to Create the initial Simulation. A succesful request will return a response body of the below, but with a unique and different simulation Id.  This will automatically be saved to the variables for the Run Simulation request.
-
-```
-/simulations/2-6QR4Qmo
+### Simulation Manager
+---
+CMS has a build-in vehicle simulator which is based on CDF base modules. Download and install [Postman](https://www.postman.com/downloads/) and import the [collection](/source/packages/simulation-modules/CMS-Simulators.postman_collection.json) before proceeding.
  
-2-6QR4Qmo
-```
+ 1. Create an new *Environment* in Postman add the following variables
 
-7. Inspect the body of the Run Simulations request and adjust deviceCount, region1, and region2 properties as desired. 
+    |Variable|How to get it|
+    |-|-|
+    |simulation_manager_base_url|run in a terminal in Cloud9 <br>```aws cloudformation list-exports --query "Exports[?Name=='cdf-simulation-manager-development-apigatewayurl'].Value" --output text```|
+    |certificateId|run from a terminal in Cloud9 <br>```aws cloudformation list-exports --query "Exports[?Name=='cms-$ENV_NAME-certificateId'].Value" --output text```|
+    |facadeApiFunctionName|run in a terminal in Cloud9 <br>```aws cloudformation list-exports --query "Exports[?Name=='cms-$ENV_NAME-facade-restApiFunctionName'].Value" --output text```|
+    |mapboxToken|run in a terminal in Cloud9 <br>```aws ssm get-parameter --name mapboxToken \| jq -r ".Parameter.Value"```|
+    |cognito_id_token|From the FleetManager app:<br> - Open debugger in the web browser (Developer tools in Chrome/Firefox) <br> - Inspect "Local Storage" from the "Application" tab<br> - Look for "CognitoIdentity....idToken" and copy the Value. Make sure to "Select All" and Copy, otherwise, intermediate word breaks may copy only part of the token.<br>**Please also note that this token will expire and you would have to get a new one**|
+    |simulation_id | Leave it blank as it will be populated when we create the simulation at the next step |
 
-**When Provisioning is complete, the requested number of 'cars' should be visible on the map in initial locations, but will not be moving.**
 
-### Step 2—Start the Simulation
+2. Send a **Create Simulation** request. A successful request is the one that returns with the code 204
 
-1. Open the `2 - Run Simulation` request in Postman. Review the deviceCount parameter in the `body` of the request. If this number is greater than the number provisioned in Step 1, a timeout could occur.
-2. If you recently provisioned the simulation, simply 'Send' the request. If it has been some time, or if you receive and authorization error, refresh the cognito_id_token value as in Step 1. If you wish to run a simulation with a different ID, change the simulation_id value in the environment.
+    > **_NOTE:_**  The simulation provisioning takes 5 min or longer depending from the number of vehicles. If the provisioning has not been completed the request to run the simulation at following point will timeout
 
-If you receive a Timeout error from the Request, it is likely that the simulations have not yet finished being provisioned. Wait until the cars are visible on the map—generally about 5 - 10 minutes, but could be longer for a large number of devices.
+3. Send a **Run Simulation** request after reviewing the deviceCount parameter in the body of the request. If this number is greater than the number provisioned in Step 1, a timeout could occur. A successful request is the one that returns with the code 204. 
 
-A '204' response indicates the simulations have been successfully started.
-
-## Create a manual fleet
+### Manual fleet
+---
 If you need more control over the creation of your fleet, AWS provides a sample set of tooling for creating single vehicles and posting sample telemetry called the [AWS CMS Telemetry Demo](https://github.com/aws-samples/aws-cms-telemetry-demo). This repository allows more control over the types of vehicles you create, and provides an automated way to provision all required attributes of vehicles into the Connected Mobility System on AWS.
 
 The above repository automates using Python scripts the below process, if you wish to perform provisioning manually, follow the below steps.
