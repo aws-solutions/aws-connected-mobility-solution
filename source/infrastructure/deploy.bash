@@ -170,7 +170,7 @@ asksure "$config_message" $BYPASS_PROMPT
 
 if [ -z "$BYPASS_BUNDLE" ]; then
     logTitle 'Bundling applications'
-    $root_dir/bundle.bash
+    $root_dir/infrastructure/bundle.bash
 fi
 
 logTitle 'Packaging the CMS CloudFormation template and uploading to S3'
