@@ -47,7 +47,7 @@ The following steps will guide you to build and install AWS CDF. Feel free to re
 4. Apply patch to fix simulator provisioning service in CDF.
 
     ```
-    cd ~/environment/aws-connected-device-framework/source/packages/services/provisioning/dist/config
+    cd ~/environment/aws-connected-device-framework/source/packages/services/provisioning/src/config
     wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
     git apply provisioning.patch
     ```
@@ -125,9 +125,9 @@ CMS has a build-in vehicle simulator which is based on CDF base modules. Downloa
 
 2. Send a **Create Simulation** request. A successful request is the one that returns with the code 204
 
-    > **_NOTE:_**  The simulation provisioning takes 5 min or longer depending from the number of vehicles. If the provisioning has not been completed the request to run the simulation at following point will timeout
-
 3. Send a **Run Simulation** request after reviewing the deviceCount parameter in the body of the request. If this number is greater than the number provisioned in Step 1, a timeout could occur. A successful request is the one that returns with the code 204. 
+
+    > **_NOTE:_**  The simulation provisioning takes 5 min or longer depending from the number of vehicles. If the provisioning has not been completed the request to run the simulation at following point will timeout, this is expected behavior.
 
 ### Manual fleet
 ---
