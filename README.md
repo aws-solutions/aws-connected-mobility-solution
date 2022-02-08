@@ -44,7 +44,7 @@ The following steps will guide you to build and install AWS CDF. Feel free to re
     git clone https://github.com/aws/aws-connected-device-framework.git
     ```
 
-3a. Apply patch to fix simulator provisioning service in CDF.
+4. Apply patch to fix simulator provisioning service in CDF.
 
     ```
     cd ~/environment/aws-connected-device-framework/source/packages/services/provisioning/dist/config
@@ -52,7 +52,7 @@ The following steps will guide you to build and install AWS CDF. Feel free to re
     git apply provisioning.patch
     ```
 
-4. Use the below commannd to then deploy CDF
+5. Use the below commannd to then deploy CDF
 
     ```
     cd ~/environment/aws-connected-device-framework/source 
