@@ -70,7 +70,7 @@ The following steps will allow you to build and deploy CMS into your account.
 1. Clone the CMS repository using the following command
 
     ```
-    git clone https://github.com/aws-solutions/aws-connected-mobility-solution
+    git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git
     ```
 
 2. Build CMS (approximately 10 minutes)
@@ -167,30 +167,28 @@ o verify the 204 response code
 Done. You may now publish telemetry on dt/cvra/{thingName}/cardata.
 
 ## File Structure 
-//TODO: update
 ```
 |-deployment/
   |-build-s3-dist.sh             [ shell script for packaging distribution assets ]
   |-run-unit-tests.sh            [ shell script for executing unit tests ]
 |-source/
   |-packages         
-    |-cdf-auto-cvra                     [ CVRA module ]
+    |-cvra                              [ CVRA module ]
     |-cdf-auto-facade                   [ CDF Facade module ]
     |-cdf-auto-fleetmanager-backend     [ CMS Fleetmanager backend ]
     |-cdf-auto-fleetmanager-ui          [ CMS Fleetmanager UI ]
-    |-cdf-auto-infrastructure           [ CDF Infrastructure module ]
     |-cdf-auto-simulation-modules       [ CDF Simulation Modules ]
         |-auto-route-gen                [ CMS Route Generation Module ]
         |-auto-simulation-engine        [ CMS Simulation Engine ]
         |-data-generator-auto           [ CMS Data generator ]
-    |-cdf-auto-clients                  [ CDF Clients Module ]
+    |-cdf-clients                       [ CDF Clients Module ]
 
 ```
 
 ***
 
 
-Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Licensed under the Apache License Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
 
