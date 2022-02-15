@@ -30,7 +30,7 @@ OPTIONAL ARGUMENTS
 EOF
 }
 
-while getopts ":r:z" opt; do
+while getopts ":r:s" opt; do
   case $opt in
 
     r  ) export RELEASE_PREP=true;;
