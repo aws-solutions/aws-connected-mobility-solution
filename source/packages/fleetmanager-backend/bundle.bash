@@ -39,7 +39,6 @@ while getopts ":s" opt; do
   esac
 done
 
-
 cwd=$(dirname "$0")
 if [ -z "$SOURCE_DIR" ]; then
     root_dir=$SOURCE_DIR
