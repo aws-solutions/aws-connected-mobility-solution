@@ -33,7 +33,6 @@ while getopts ":r:s" opt; do
   case $opt in
 
     r  ) export RELEASE_PREP=true;;
-    s  ) export SOURCE_DIR=$OPTARG;;
 
     \? ) echo "Unknown option: -$OPTARG" >&2; help_message; exit 1;;
     :  ) echo "Missing option argument for -$OPTARG" >&2; help_message; exit 1;;
