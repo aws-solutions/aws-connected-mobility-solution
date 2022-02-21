@@ -26,7 +26,6 @@ DESCRIPTION
     Bundles the CMS core services as well as any dependant lambda layers, ready for deployment.
 OPTIONAL ARGUMENTS
     -r (flag)     Prepare Bundle for Release
-    -s     Base source directory of code for rush bundle
 EOF
 }
 
@@ -43,11 +42,8 @@ while getopts ":r:s" opt; do
 done
 
 cwd=$(dirname "$0")
-if [ -z "$SOURCE_DIR" ]; then
-    root_dir=$SOURCE_DIR
-else
-    root_dir=$(pwd)
-fi
+root_dir=$(pwd)
+
 
 cd $root_dir
 rush purge                      # delete all rush temp files
