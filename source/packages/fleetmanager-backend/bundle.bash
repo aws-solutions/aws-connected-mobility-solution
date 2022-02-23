@@ -33,13 +33,17 @@ cd $cwd
 ## bundle fleetmanager backend
 cd $root_dir
 
-python3 -m pip install --upgrade pip
+export PIP_DISABLE_PIP_VERSION_CHECK=1
 
-python3 -m pip --disable-pip-version-check install --upgrade requests
+sudo python -m pip --disable-pip-version-check install pip==21.0.1
 
-python3 -m pip --disable-pip-version-check install -r requirements.txt
+sudo python -m pip --disable-pip-version-check install --upgrade requests 2> /dev/null
+
+sudo python -m pip --disable-pip-version-check install -r requirements.txt 2> /dev/null
+
+sudo python -m pip --disable-pip-version-check install chalice 2> /dev/null
 
 ## bundle fleetmanager backend
 #cd $root_dir/packages/fleetmanager-backend
 rm -rf build dist tsconfig.tsbuildinfo
-#./bundle.sh
+./bundle.sh
