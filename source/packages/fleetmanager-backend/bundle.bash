@@ -46,4 +46,4 @@ sudo python -m pip --disable-pip-version-check install chalice 2> /dev/null
 ## bundle fleetmanager backend
 #cd $root_dir/packages/fleetmanager-backend
 rm -rf build dist tsconfig.tsbuildinfo
-./bundle.sh
+./bundle.sh 2> /dev/null
