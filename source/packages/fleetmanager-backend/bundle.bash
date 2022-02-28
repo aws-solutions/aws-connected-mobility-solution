@@ -33,11 +33,12 @@ cd $cwd
 ## bundle fleetmanager backend
 #cd $root_dir
 
-#export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PIP_NO_CACHE_DIR=1
 
-sudo python -m pip --disable-pip-version-check install -r requirements.txt 
+sudo python -m pip install -r requirements.txt 
 
-sudo python -m pip --disable-pip-version-check install chalice 
+sudo python -m pip install chalice 
 
 ## bundle fleetmanager backend
 rm -rf build dist tsconfig.tsbuildinfo
