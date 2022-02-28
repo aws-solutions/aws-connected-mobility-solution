@@ -57,7 +57,7 @@ rush update --full                    # as temp files deleted, need to refresh d
 
 echo "Completed rush update"
 
-rush build --verbose 2> /dev/null # compile
+rush build # compile
 
 echo "Completed rush build"
 # create the deployment packages

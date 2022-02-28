@@ -67,8 +67,8 @@ mkdir -p $cwd/build
 logTitle 'Packaging the CMS CloudFormation template and uploading to S3'
 
 ## bundle fleetmanager backend
-cd $root_dir/packages/cdf-auto-fleetmanager-backend
-./package.bash
+#cd $root_dir/packages/cdf-auto-fleetmanager-backend
+#./package.bash
 
 cd $root_dir
 

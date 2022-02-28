@@ -176,8 +176,8 @@ fi
 logTitle 'Packaging the CMS CloudFormation template and uploading to S3'
 
 ## package fleetmanager backend
-cd $root_dir/packages/fleetmanager-backend
-./package.bash
+#cd $root_dir/packages/fleetmanager-backend
+#./package.bash
 
 cd $root_dir
 
@@ -232,12 +232,12 @@ privateSubnets=$(echo $privateSubnets | sed -e 's/\,/\\\,/')
 
 stack_name="cms-$ENVIRONMENT"
 
-existing_stack=$(aws cloudformation describe-stacks --stack-name "$stack_name" $AWS_ARGS || true)
-if [ -z "$existing_stack" ]; then
+#existing_stack=$(aws cloudformation describe-stacks --stack-name "$stack_name" $AWS_ARGS || true)
+#if [ -z "$existing_stack" ]; then
     change_set_type=CREATE
-else
-    change_set_type=UPDATE
-fi
+#else
+#    change_set_type=UPDATE
+#fi
 
 ## NOTE: creating stack and using change-sets rather than the simpler
 ## higher level package / deploy methods so that we can disable rollback
