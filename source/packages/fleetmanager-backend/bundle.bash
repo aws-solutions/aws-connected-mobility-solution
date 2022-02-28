@@ -35,10 +35,6 @@ cd $root_dir
 
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 
-sudo python -m pip --disable-pip-version-check install pip==21.0.1
-
-sudo python -m pip --disable-pip-version-check install --upgrade requests 2> /dev/null
-
 sudo python -m pip --disable-pip-version-check install -r requirements.txt 2> /dev/null
 
 sudo python -m pip --disable-pip-version-check install chalice 2> /dev/null
