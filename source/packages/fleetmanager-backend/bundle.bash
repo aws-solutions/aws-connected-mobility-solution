@@ -36,11 +36,9 @@ cd $cwd
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PIP_NO_CACHE_DIR=1
 
-sudo pip install --upgrade pip
+sudo python3 -m pip install --user --no-warn-script-location  --no-cache-dir --disable-pip-version-check -r requirements.txt 
 
-sudo python -m pip install --user  --no-cache-dir --disable-pip-version-check -r requirements.txt 
-
-sudo python -m pip  install --user --no-cache-dir --disable-pip-version-check chalice 
+sudo python3 -m pip  install --user --no-warn-script-location --no-cache-dir --disable-pip-version-check chalice 
 
 ## bundle fleetmanager backend
 rm -rf build dist tsconfig.tsbuildinfo
@@ -111,4 +109,4 @@ echo '
 *******  CMS Fleetmanager: Packaging CF Template  ********
 **********************************************************
 '
-/usr/local/bin/chalice package --merge-template ./infrastructure/cfn-cms-fleetmanager-backend-resources.json ./infrastructure/build 
+chalice package --merge-template ./infrastructure/cfn-cms-fleetmanager-backend-resources.json ./infrastructure/build 
