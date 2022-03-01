@@ -36,9 +36,11 @@ cd $cwd
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PIP_NO_CACHE_DIR=1
 
-sudo python -m pip install -r requirements.txt 
+sudo pip install --upgrade pip
 
-sudo python -m pip install chalice 
+sudo python -m pip install --user  --no-cache-dir --disable-pip-version-check -r requirements.txt 
+
+sudo python -m pip  install --user --no-cache-dir --disable-pip-version-check chalice 
 
 ## bundle fleetmanager backend
 rm -rf build dist tsconfig.tsbuildinfo
