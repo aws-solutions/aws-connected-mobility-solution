@@ -36,9 +36,9 @@ cd $cwd
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PIP_NO_CACHE_DIR=1
 
-sudo python3 -m pip install --user --no-warn-script-location  --no-cache-dir --disable-pip-version-check -r requirements.txt 
+pip3 install --user --no-warn-script-location  --no-cache-dir --disable-pip-version-check -r requirements.txt 2>/dev/null
 
-sudo python3 -m pip  install --user --no-warn-script-location --no-cache-dir --disable-pip-version-check chalice 
+pip3 install --user --no-warn-script-location --no-cache-dir --disable-pip-version-check chalice 2>/dev/null
 
 ## bundle fleetmanager backend
 rm -rf build dist tsconfig.tsbuildinfo
