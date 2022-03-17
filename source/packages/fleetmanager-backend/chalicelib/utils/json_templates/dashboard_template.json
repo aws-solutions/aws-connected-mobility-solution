@@ -1,0 +1,17 @@
+{
+    "location": [""],
+    "vehicle": {
+        "vin": [""],
+        "make": [""],
+        "model": [""],
+        "year": [""]
+    },
+    "ignition": {
+        "on": true,
+        "off": false
+    },
+    "tirePressure": {
+       "lowPressure": false,
+       "highRoC": false
+    }
+}

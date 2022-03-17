@@ -1,0 +1,169 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "jobs": [
+                {
+                    "jobArn": "arn:aws:iot:us-west-2:798706540840:job/cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                    "jobId": "cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                    "targetSelection": "SNAPSHOT",
+                    "status": "IN_PROGRESS",
+                    "createdAt": 1604468839.793,
+                    "lastUpdatedAt": 1604468843.267
+                },
+                {
+                    "jobArn": "arn:aws:iot:us-west-2:798706540840:job/cdf-e70db120-1e60-11eb-aa44-3119b74fb61d",
+                    "jobId": "cdf-e70db120-1e60-11eb-aa44-3119b74fb61d",
+                    "targetSelection": "SNAPSHOT",
+                    "status": "IN_PROGRESS",
+                    "createdAt": 1604468712.452,
+                    "lastUpdatedAt": 1604468715.704
+                }
+            ],
+            "nextToken": "AnBMjJYX41J/oDXs2eYNVUxypZ668E6qHreTxHyzTjgyjRLlQcTGv74B2zHrxNRpBwLYctQMMy7ADa3zMaqmVH4HRDIqyBDMyI7gkjk4H8nR7kCsXPIlHIo8FKpMbwCnh3UKbgo1IqoPVlMNuxAzxIl4k6AIUd2+GiJxvp8d0zyzbi47K6TDeQwzFtdrG2mmsE3XH53WHd2qo7+VFvCWeFfRPprxohXCWoehJUKEybmHcikhSfvIdU9XLgE3chRVzwkuuRehgO/PbZNBQDZCJk+ROFY6QEC0oqLCI+Ppmp5uShkZUSV580yjq4ZUmtEqJ2ybs+FgtOuX75cFukEgP8HIPrJQc161JDoqdTZ5ETyQWhohx3I1o54="
+        }
+    ],
+    "required": [
+        "jobs",
+        "nextToken"
+    ],
+    "properties": {
+        "jobs": {
+            "$id": "#/properties/jobs",
+            "type": "array",
+            "title": "The jobs schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "jobArn": "arn:aws:iot:us-west-2:798706540840:job/cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                        "jobId": "cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                        "targetSelection": "SNAPSHOT",
+                        "status": "IN_PROGRESS",
+                        "createdAt": 1604468839.793,
+                        "lastUpdatedAt": 1604468843.267
+                    },
+                    {
+                        "jobArn": "arn:aws:iot:us-west-2:798706540840:job/cdf-e70db120-1e60-11eb-aa44-3119b74fb61d",
+                        "jobId": "cdf-e70db120-1e60-11eb-aa44-3119b74fb61d",
+                        "targetSelection": "SNAPSHOT",
+                        "status": "IN_PROGRESS",
+                        "createdAt": 1604468712.452,
+                        "lastUpdatedAt": 1604468715.704
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/jobs/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/jobs/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "jobArn": "arn:aws:iot:us-west-2:798706540840:job/cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                                "jobId": "cdf-33044170-1e61-11eb-aa44-3119b74fb61d",
+                                "targetSelection": "SNAPSHOT",
+                                "status": "IN_PROGRESS",
+                                "createdAt": 1604468839.793,
+                                "lastUpdatedAt": 1604468843.267
+                            }
+                        ],
+                        "required": [
+                            "jobArn",
+                            "jobId",
+                            "targetSelection",
+                            "status",
+                            "createdAt",
+                            "lastUpdatedAt"
+                        ],
+                        "properties": {
+                            "jobArn": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/jobArn",
+                                "type": "string",
+                                "title": "The jobArn schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "arn:aws:iot:us-west-2:798706540840:job/cdf-33044170-1e61-11eb-aa44-3119b74fb61d"
+                                ]
+                            },
+                            "jobId": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/jobId",
+                                "type": "string",
+                                "title": "The jobId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "cdf-33044170-1e61-11eb-aa44-3119b74fb61d"
+                                ]
+                            },
+                            "targetSelection": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/targetSelection",
+                                "type": "string",
+                                "title": "The targetSelection schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "SNAPSHOT"
+                                ]
+                            },
+                            "status": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/status",
+                                "type": "string",
+                                "title": "The status schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "IN_PROGRESS"
+                                ]
+                            },
+                            "createdAt": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/createdAt",
+                                "type": "number",
+                                "title": "The createdAt schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0.0,
+                                "examples": [
+                                    1604468839.793
+                                ]
+                            },
+                            "lastUpdatedAt": {
+                                "$id": "#/properties/jobs/items/anyOf/0/properties/lastUpdatedAt",
+                                "type": "number",
+                                "title": "The lastUpdatedAt schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0.0,
+                                "examples": [
+                                    1604468843.267
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "nextToken": {
+            "$id": "#/properties/nextToken",
+            "type": "string",
+            "title": "The nextToken schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "AnBMjJYX41J/oDXs2eYNVUxypZ668E6qHreTxHyzTjgyjRLlQcTGv74B2zHrxNRpBwLYctQMMy7ADa3zMaqmVH4HRDIqyBDMyI7gkjk4H8nR7kCsXPIlHIo8FKpMbwCnh3UKbgo1IqoPVlMNuxAzxIl4k6AIUd2+GiJxvp8d0zyzbi47K6TDeQwzFtdrG2mmsE3XH53WHd2qo7+VFvCWeFfRPprxohXCWoehJUKEybmHcikhSfvIdU9XLgE3chRVzwkuuRehgO/PbZNBQDZCJk+ROFY6QEC0oqLCI+Ppmp5uShkZUSV580yjq4ZUmtEqJ2ybs+FgtOuX75cFukEgP8HIPrJQc161JDoqdTZ5ETyQWhohx3I1o54="
+            ]
+        }
+    },
+    "additionalProperties": true
+}

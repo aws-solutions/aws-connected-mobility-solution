@@ -11,9 +11,9 @@
  *  and limitations under the License.                                                                                *
  *********************************************************************************************************************/
  window.appVariables = {
-  USER_POOL_ID: "%%USER_POOL_ID%%",
-  USER_POOL_CLIENT_ID: "%%USER_POOL_CLIENT_ID%%",
-  CDF_AUTO_ENDPOINT: "%%CDF_AUTO_ENDPOINT%%",
-  REGION: "%%REGION%%"
+  USER_POOL_ID: "us-east-1_nbnLpKjwU",
+  USER_POOL_CLIENT_ID: "2rd2f26tggdcu23vhgijpuqm01",
+  CDF_AUTO_ENDPOINT: "https://2vm8sa75ra.execute-api.us-east-1.amazonaws.com/Prod",
+  REGION: "us-east-1"
 };
 

@@ -17,6 +17,10 @@ import userReducer from "./reducers/userReducer";
 import mapReducer from "./reducers/mapReducer";
 import dataReducer from "./reducers/dataReducer";
 import filtersReducer from "./reducers/filtersReducer";
+import dashboardFiltersReducer from "./reducers/dashboardFiltersReducer";
+import dashboardDataReducer from "./reducers/dashboardDataReducer";
+import tableSettingsReducer from "./reducers/tableSettingsReducer";
+import analyticsDataReducer from "./reducers/analyticsDataReducer";
 import { USER_LOG_OUT } from "actions/types";
 
 const inDevMode = process.env.NODE_ENV === "development";
@@ -26,7 +30,11 @@ const appReducer = combineReducers({
   user: userReducer,
   map: mapReducer,
   data: dataReducer,
-  filters: filtersReducer
+  filters: filtersReducer,
+  dashboardFilters: dashboardFiltersReducer,
+  tableSettings: tableSettingsReducer,
+  dashboardData: dashboardDataReducer,
+  analyticsData: analyticsDataReducer,
 });
 
 const rootReducer = (state, action) => {

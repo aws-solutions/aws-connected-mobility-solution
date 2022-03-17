@@ -1,0 +1,287 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "trips": [
+                {
+                    "tripId": "D7SJG5oY6",
+                    "startTime": "2020-11-04T16:28:39.768Z",
+                    "duration": 32.7701,
+                    "fuel": 0.17656431784615603,
+                    "startLocation": [
+                        -115.21898,
+                        36.17389
+                    ],
+                    "endLocation": [
+                        -115.1504299947544,
+                        36.001390089831986
+                    ],
+                    "distance": {
+                        "miles": 19.23333587712779
+                    },
+                    "fuelEconomy": {
+                        "mpg": 108.93104627111676
+                    }
+                }
+            ],
+            "offset": null
+        }
+    ],
+    "required": [
+        "trips",
+        "offset"
+    ],
+    "properties": {
+        "trips": {
+            "$id": "#/properties/trips",
+            "type": "array",
+            "title": "The trips schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "tripId": "D7SJG5oY6",
+                        "startTime": "2020-11-04T16:28:39.768Z",
+                        "duration": 32.7701,
+                        "fuel": 0.17656431784615603,
+                        "startLocation": [
+                            -115.21898,
+                            36.17389
+                        ],
+                        "endLocation": [
+                            -115.1504299947544,
+                            36.001390089831986
+                        ],
+                        "distance": {
+                            "miles": 19.23333587712779
+                        },
+                        "fuelEconomy": {
+                            "mpg": 108.93104627111676
+                        }
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/trips/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/trips/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "tripId": "D7SJG5oY6",
+                                "startTime": "2020-11-04T16:28:39.768Z",
+                                "duration": 32.7701,
+                                "fuel": 0.17656431784615603,
+                                "startLocation": [
+                                    -115.21898,
+                                    36.17389
+                                ],
+                                "endLocation": [
+                                    -115.1504299947544,
+                                    36.001390089831986
+                                ],
+                                "distance": {
+                                    "miles": 19.23333587712779
+                                },
+                                "fuelEconomy": {
+                                    "mpg": 108.93104627111676
+                                }
+                            }
+                        ],
+                        "required": [
+                            "tripId",
+                            "startTime",
+                            "duration",
+                            "fuel",
+                            "startLocation",
+                            "endLocation",
+                            "distance",
+                            "fuelEconomy"
+                        ],
+                        "properties": {
+                            "tripId": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/tripId",
+                                "type": "string",
+                                "title": "The tripId schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "D7SJG5oY6"
+                                ]
+                            },
+                            "startTime": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/startTime",
+                                "type": "string",
+                                "title": "The startTime schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "2020-11-04T16:28:39.768Z"
+                                ]
+                            },
+                            "duration": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/duration",
+                                "type": "number",
+                                "title": "The duration schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0.0,
+                                "examples": [
+                                    32.7701
+                                ]
+                            },
+                            "fuel": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/fuel",
+                                "type": "number",
+                                "title": "The fuel schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0.0,
+                                "examples": [
+                                    0.17656431784615603
+                                ]
+                            },
+                            "startLocation": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/startLocation",
+                                "type": "array",
+                                "title": "The startLocation schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        -115.21898,
+                                        36.17389
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/trips/items/anyOf/0/properties/startLocation/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/trips/items/anyOf/0/properties/startLocation/items/anyOf/0",
+                                            "type": "number",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": 0.0,
+                                            "examples": [
+                                                -115.21898,
+                                                36.17389
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "endLocation": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/endLocation",
+                                "type": "array",
+                                "title": "The endLocation schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        -115.1504299947544,
+                                        36.001390089831986
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/trips/items/anyOf/0/properties/endLocation/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/trips/items/anyOf/0/properties/endLocation/items/anyOf/0",
+                                            "type": "number",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": 0.0,
+                                            "examples": [
+                                                -115.1504299947544,
+                                                36.001390089831986
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "distance": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/distance",
+                                "type": "object",
+                                "title": "The distance schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "miles": 19.23333587712779
+                                    }
+                                ],
+                                "required": [
+                                    "miles"
+                                ],
+                                "properties": {
+                                    "miles": {
+                                        "$id": "#/properties/trips/items/anyOf/0/properties/distance/properties/miles",
+                                        "type": "number",
+                                        "title": "The miles schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            19.23333587712779
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            },
+                            "fuelEconomy": {
+                                "$id": "#/properties/trips/items/anyOf/0/properties/fuelEconomy",
+                                "type": "object",
+                                "title": "The fuelEconomy schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "mpg": 108.93104627111676
+                                    }
+                                ],
+                                "required": [
+                                    "mpg"
+                                ],
+                                "properties": {
+                                    "mpg": {
+                                        "$id": "#/properties/trips/items/anyOf/0/properties/fuelEconomy/properties/mpg",
+                                        "type": "number",
+                                        "title": "The mpg schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            108.93104627111676
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "offset": {
+            "$id": "#/properties/offset",
+            "type": "null",
+            "title": "The offset schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+                null
+            ]
+        }
+    },
+    "additionalProperties": true
+}

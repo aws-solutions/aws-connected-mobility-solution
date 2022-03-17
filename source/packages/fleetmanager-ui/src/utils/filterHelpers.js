@@ -12,6 +12,7 @@
  *********************************************************************************************************************/
 import update from "immutability-helper";
 import { filterComponents } from "components/filters/Filters";
+import { filterComponents as dashboardFilterComponents } from "components/filters/DashboardFilters";
 
 export const mergeFilterSelections = (newOptions = [], prevOptions = []) => {
   const prevSelectedIdMap = prevOptions.reduce((map, { id, selected }) => {
@@ -28,7 +29,7 @@ export const mergeFilterSelections = (newOptions = [], prevOptions = []) => {
 
   const unmatchedPrevOptions = prevOptions
     .filter(({ id }) => !newOptionsIdMap[id])
-    .map(option => ({ ...option, count: 0 }));
+    .map((option) => ({ ...option, count: 0 }));
 
   return updatedNewOptions.concat(unmatchedPrevOptions);
 };
@@ -38,27 +39,40 @@ export const buildOptionUpdatePayload = ({ filterData, optionIdx, selected }) =>
     options: {
       [optionIdx]: {
         $merge: {
-          selected
-        }
-      }
-    }
+          selected,
+        },
+      },
+    },
   });
 
 export const newUniqueLocation = (newLoc = {}, currLocations = []) =>
   currLocations.every(({ id }) => id !== newLoc.id);
 
-export const buildIsFilteringMap = (filters = {}) =>
-  filterComponents.reduce((map, { keyName, isFilteringFunc }) => {
-    const filterData = filters[keyName];
-    const isFiltering = isFilteringFunc(filterData);
-    map[keyName] = isFiltering;
-    return map;
-  }, {});
+export const buildIsFilteringMap = (filters = {}, type) => {
+  if (type) {
+    return dashboardFilterComponents.reduce(
+      (map, { keyName, isFilteringFunc }) => {
+        const filterData = filters[keyName];
+        const isFiltering = isFilteringFunc(filterData);
+        map[keyName] = isFiltering;
+        return map;
+      },
+      {}
+    );
+  } else {
+    return filterComponents.reduce((map, { keyName, isFilteringFunc }) => {
+      const filterData = filters[keyName];
+      const isFiltering = isFilteringFunc(filterData);
+      map[keyName] = isFiltering;
+      return map;
+    }, {});
+  }
+};
 
 export const clearCheckboxSelections = (options = []) =>
-  options.map(op => ({
+  options.map((op) => ({
     ...op,
-    selected: false
+    selected: false,
   }));
 
 export const getApplyingMultFilters = (filters = {}) =>

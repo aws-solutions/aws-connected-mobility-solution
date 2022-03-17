@@ -1,4 +1,14 @@
 {
-    "swVersion": "",
-    "deviceId" : ""
+    "base": {
+        "swVersion": "",
+        "deviceId" : "",
+        "devicetype": ""
+    },
+    "sensor": {
+        "model": "",
+        "position": "",
+        "type": "",
+        "deviceid": "",
+        "devicetype": ""
+    }
 }

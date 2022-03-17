@@ -13,6 +13,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import { NavLink } from "react-router-dom";
 import UserAccountDropdown from "./UserAccountDropdown";
 import { appBar } from "assets/dimensions";
 import awsLogo from "assets/img/aws-logo.svg";
@@ -24,9 +25,35 @@ const Navbar = ({ children }) => {
   return (
     <div className={classes.root}>
       <div className={classes.appBar}>
-        <div className={classes.appNameBox}>
-          <img src={awsLogo} alt="AWS" className={classes.appLogo} />
-          Fleet Manager
+        <div style={{ display: "flex" }}>
+          <div className={classes.appNameBox}>
+            <img src={awsLogo} alt="AWS" className={classes.appLogo} />
+            Fleet Manager
+          </div>
+          <div>
+            <NavLink
+              className={classes.link}
+              activeClassName={classes.activeLink}
+              exact={true}
+              to="/"
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              className={classes.link}
+              activeClassName={classes.activeLink}
+              to="/map"
+            >
+              Map
+            </NavLink>
+            <NavLink
+              className={classes.link}
+              activeClassName={classes.activeLink}
+              to="/analytics"
+            >
+              Analytics
+            </NavLink>
+          </div>
         </div>
         <UserAccountDropdown />
       </div>
@@ -36,17 +63,17 @@ const Navbar = ({ children }) => {
 };
 
 Navbar.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default Navbar;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    width: "100%"
+    width: "100%",
   },
   appBar: {
     flex: `0 0 ${appBar.height}`,
@@ -57,29 +84,40 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    userSelect: "none"
+    userSelect: "none",
   },
   appNameBox: {
     display: "flex",
     alignItems: "center",
-    fontSize: "0.84rem"
+    fontSize: "0.84rem",
+    marginRight: "4rem",
   },
   appLogo: {
     marginTop: "0.25rem",
     alignSelf: "middle",
     height: "0.83rem",
-    marginRight: "0.84rem"
+    marginRight: "0.84rem",
+  },
+  link: {
+    textDecoration: "none",
+    color: colors.white,
+    marginRight: "1rem",
+    paddingBottom: ".4rem",
+  },
+  activeLink: {
+    borderBottom: "4px solid #7986CB;",
+    borderRadius: 1,
   },
   avatarIcon: {
     height: "1.69rem",
     "&:hover": {
-      cursor: "pointer"
-    }
+      cursor: "pointer",
+    },
   },
   mainWrapper: {
     flex: 1,
     backgroundColor: colors.veryLightGray,
     position: "relative",
-    width: "100%"
-  }
+    width: "100%",
+  },
 }));

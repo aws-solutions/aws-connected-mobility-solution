@@ -20,8 +20,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { darkNavyText, offPink } from "assets/colors";
 import dtcMappings from "assets/mappings/dtcMappings";
 import vehicleMappings, { vehicleKeys } from "assets/mappings/vehicleMappings";
-import { ZOOMED_UPDATE_INTERVAL } from "assets/appConfig";
-
 
 const VehicleDetails = ({ vin, dataCacheRef, scrollTo }) => {
   const classes = useStyles();
@@ -34,13 +32,6 @@ const VehicleDetails = ({ vin, dataCacheRef, scrollTo }) => {
   const renderMetadataByKey = keyName => {
     const value = _get(vehicleData, keyName);
     const annotations = vehicleMappings[keyName];
-    if (annotations !== undefined && annotations === 'layout.section') {
-      const { label } = annotations
-      return (
-        <div className={classes.row} key={label}>
-        </div>
-      )
-    }
     if (value === undefined || !annotations) return null;
     const { label, unit } = annotations;
 
@@ -80,17 +71,15 @@ const VehicleDetails = ({ vin, dataCacheRef, scrollTo }) => {
       } else {
         setVehicleData(null);
         setLoading(true);
-        setInterval( () => {
-          getSingleVehicle(vin)
-            .then(vehicle => isMounted.current && setVehicleData(vehicle))
-            .catch(() => null)
-            .finally(() => {
-              if (isMounted.current) {
-                setLoading(false);
-                scrollTo({ details: true });
-              }
-            });
-        }, ZOOMED_UPDATE_INTERVAL );
+        getSingleVehicle(vin)
+          .then(vehicle => isMounted.current && setVehicleData(vehicle))
+          .catch(() => null)
+          .finally(() => {
+            if (isMounted.current) {
+              setLoading(false);
+              scrollTo({ details: true });
+            }
+          });
       }
     }
   }, [vin, isMounted, dataCacheRef, scrollTo]);

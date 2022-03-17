@@ -22,7 +22,7 @@
     },
     "EndpointURL": {
       "Value": {
-        "Fn::Sub": "https://${RestAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+        "Fn::Sub": "https://${RestAPI}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/"
       }
     },
     "FleetmanagerApiGatewayUrl": {
@@ -52,541 +52,6 @@
             "https"
           ],
           "paths": {
-            "/vehicles/aggregate": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns aggregated vehicle data (geohash) for UI map",
-                "description": "    and paginated vehicle data (detailed) for UI list.\n    Incoming bbox: [left,bottom,right,top]\nReturns:\nObeject:\n    - filters: object\n            - results:\n                    - list of vehicle objects\n                    - list of geohashes and counts\n\n    {\n            \"clusters\":[\n                    {\n                            \"coordinates\":[-120.756226, 44.083639],\n                            \"properties\":{\n                                    \"bbox\":[-124.541016, 42.032974, -116.982422,46.073231],\n                                    \"key\":\"u17gh\",\n                                    \"count\":1\n                            }\n                    }\n            ],\n            \"vehicles\":[],\n            \"nextTokens\":[]\n            }\n\n    ",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
-            "/vehicles/filter": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns filtered set of vehicles.",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
-            "/vehicles/{vin}": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns data for single vehicle per vin",
-                "description": "Returns:\n        Obeject:\n                - troubleCodes: list\n                - swVersion: string\n                - metadata: list\n                - results: list containing 1 object",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ],
-                "parameters": [
-                  {
-                    "name": "vin",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
-            "/vehicles/{vin}/trips": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns all trip data per vin param and possible pagination param.",
-                "description": "Params:\n        - vin: QAPBQ88CXEA10002\n        - (Initial request = not required. All other requests = required)\n        pagination: [xxxxxxxxxxxx, yBbQ9XAB3_tVhPD0DI6e]\n        - dates: \"{\"date\":{\"start\":null,\"end\":null}}\"\nReturns:\n        Object:\n                trips: list of trip objects",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ],
-                "parameters": [
-                  {
-                    "name": "vin",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
-            "/vehicles/{vin}/events": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns all event data per vin param and possible",
-                "description": "pagination param.\nParams:\n        - vin: QAPBQ88CXEA10002\n        - (Initial request = not required. All other requests = required)\n        pagination: [xxxxxxxxxxxx, yBbQ9XAB3_tVhPD0DI6e]\n        - dates: \"{\"date\":{\"start\":null,\"end\":null}}\"\nReturns:\n        Object:\n                events: list of event objects",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ],
-                "parameters": [
-                  {
-                    "name": "vin",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
-            "/vehicles/route/{trip_id}": {
-              "get": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200"
-                    }
-                  },
-                  "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "httpMethod": "POST",
-                  "contentHandling": "CONVERT_TO_TEXT",
-                  "type": "aws_proxy"
-                },
-                "summary": "returns route for vehicle",
-                "description": "Params:\n        - trip_id: bf638266-237b-11ea-9e0d-0242ac110002\nReturns:\n        Object:\n        geometry: encoded polyline (set of geo-coordinates)",
-                "security": [
-                  {
-                    "AuthPool": []
-                  }
-                ],
-                "parameters": [
-                  {
-                    "name": "trip_id",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                  }
-                ]
-              },
-              "options": {
-                "consumes": [
-                  "application/json"
-                ],
-                "produces": [
-                  "application/json"
-                ],
-                "responses": {
-                  "200": {
-                    "description": "200 response",
-                    "schema": {
-                      "$ref": "#/definitions/Empty"
-                    },
-                    "headers": {
-                      "Access-Control-Allow-Methods": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Origin": {
-                        "type": "string"
-                      },
-                      "Access-Control-Allow-Headers": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "x-amazon-apigateway-integration": {
-                  "responses": {
-                    "default": {
-                      "statusCode": "200",
-                      "responseParameters": {
-                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                        "method.response.header.Access-Control-Allow-Origin": "'*'",
-                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
-                      }
-                    }
-                  },
-                  "requestTemplates": {
-                    "application/json": "{\"statusCode\": 200}"
-                  },
-                  "passthroughBehavior": "when_no_match",
-                  "type": "mock",
-                  "contentHandling": "CONVERT_TO_TEXT"
-                }
-              }
-            },
             "/config": {
               "get": {
                 "consumes": [
@@ -610,7 +75,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -618,7 +83,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "GET: retrieves configuration values required by application,",
-                "description": "SSM.getParameter\n?parameter=mapboxToken\n\nResponse:\n{\n    mapboxToken: \"string\"\n}\n\nPUT: creates or overwrites a config value.\nSSM.putParameter",
+                "description": "SSM.getParameter\n?parameter=mapboxToken\n\nResponse:\n{mapboxToken: \"string\"}\n\nPUT: creates or overwrites a config value.\nSSM.putParameter",
                 "security": [
                   {
                     "AuthPool": []
@@ -647,7 +112,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -655,7 +120,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "GET: retrieves configuration values required by application,",
-                "description": "SSM.getParameter\n?parameter=mapboxToken\n\nResponse:\n{\n    mapboxToken: \"string\"\n}\n\nPUT: creates or overwrites a config value.\nSSM.putParameter",
+                "description": "SSM.getParameter\n?parameter=mapboxToken\n\nResponse:\n{mapboxToken: \"string\"}\n\nPUT: creates or overwrites a config value.\nSSM.putParameter",
                 "security": [
                   {
                     "AuthPool": []
@@ -708,6 +173,98 @@
                 }
               }
             },
+            "/vehicles/{vin}/events": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns all event data per vin param and possible",
+                "description": "pagination param.\nParams:\n    - vin: QAPBQ88CXEA10002\n    - (Initial request = not required. All other requests = required)\n    pagination: [xxxxxxxxxxxx, yBbQ9XAB3_tVhPD0DI6e]\n    - dates: \"{\"date\":{\"start\":null,\"end\":null}}\"\nReturns:\n    Object:\n        events: list of event objects",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "vin",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
             "/ota/create": {
               "post": {
                 "consumes": [
@@ -731,7 +288,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -815,7 +372,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -823,7 +380,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "Creates job for single device per device_id.",
-                "description": "    Body:\n    {\n\"desiredVersion\": \"5.1\"\n    }\n    Response: { jobId }\n    ",
+                "description": "Body:\n{\n\"desiredVersion\": \"5.1\"\n  }\nResponse: { jobId }",
                 "security": [
                   {
                     "AuthPool": []
@@ -907,7 +464,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -915,7 +472,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "Return List of current jobs",
-                "description": "*Possible pagination: ?nextToken=token\nResponse:\n        {\n                \"jobs\": []\n                \"nextToken\": string\n        }",
+                "description": "*Possible pagination: ?nextToken=token\nResponse:\n    {\n        \"jobs\": []\n        \"nextToken\": string\n    }",
                 "security": [
                   {
                     "AuthPool": []
@@ -991,7 +548,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -999,7 +556,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "Return List of all job devices (map vins for each device)",
-                "description": "*Possible pagination: ?nextToken=token\nResponse:\n{\n        \"executionSummaries\": [\n        {\n                \"jobExecutionSummary\": {\n                        \"executionNumber\": number,\n                        \"lastUpdatedAt\": number,\n                        \"queuedAt\": number,\n                        \"startedAt\": number,\n                        \"status\": \"string\"\n                },\n                \"thingArn\": \"string\",\n                \"vin\": \"Z876SDF87HKJSDF\",\n                \"deviceId\": \"ECU-ZZYZYZYZ\",\n        }\n],\n\"nextToken\": \"string\"\n}",
+                "description": "*Possible pagination: ?nextToken=token\nResponse:\n{\n    \"executionSummaries\": [\n    {\n        \"jobExecutionSummary\": {\n            \"executionNumber\": number,\n            \"lastUpdatedAt\": number,\n            \"queuedAt\": number,\n            \"startedAt\": number,\n            \"status\": \"string\"\n        },\n        \"thingArn\": \"string\",\n        \"vin\": \"Z876SDF87HKJSDF\",\n        \"deviceId\": \"ECU-ZZYZYZYZ\",\n    }\n],\n\"nextToken\": \"string\"\n}",
                 "security": [
                   {
                     "AuthPool": []
@@ -1083,7 +640,7 @@
                     }
                   },
                   "uri": {
-                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
                   },
                   "passthroughBehavior": "when_no_match",
                   "httpMethod": "POST",
@@ -1091,7 +648,7 @@
                   "type": "aws_proxy"
                 },
                 "summary": "Return List of device statuses",
-                "description": "Parameters: ?filter=devId1,devId2,devId3\nLimit=20\n\nResponse:\n{\n        \"executionSummaries\": [\n        {\n                \"execution\": {\n                        \"approximateSecondsBeforeTimedOut\": number,\n                        \"executionNumber\": number,\n                        \"forceCanceled\": boolean,\n                        \"jobId\": \"string\",\n                        \"lastUpdatedAt\": number,\n                        \"queuedAt\": number,\n                        \"startedAt\": number,\n                        \"status\": \"string\",\n                        \"statusDetails\": {\n                        \"detailsMap\": {\n                                \"string\" : \"string\"\n                        }\n                        },\n                        \"thingArn\": \"string\",\n                        \"versionNumber\": number,\n                        \"deviceId\": \"ECU-ZZYZYZYZ\"\n                }\n        }\n        ]\n}",
+                "description": "Parameters: ?filter=devId1,devId2,devId3\nLimit=20\n\nResponse:\n{\n    \"executionSummaries\": [\n    {\n        \"execution\": {\n            \"approximateSecondsBeforeTimedOut\": number,\n            \"executionNumber\": number,\n            \"forceCanceled\": boolean,\n            \"jobId\": \"string\",\n            \"lastUpdatedAt\": number,\n            \"queuedAt\": number,\n            \"startedAt\": number,\n            \"status\": \"string\",\n            \"statusDetails\": {\n            \"detailsMap\": {\n                \"string\" : \"string\"\n            }\n            },\n            \"thingArn\": \"string\",\n            \"versionNumber\": number,\n            \"deviceId\": \"ECU-ZZYZYZYZ\"\n        }\n    }\n    ]\n}",
                 "security": [
                   {
                     "AuthPool": []
@@ -1105,6 +662,839 @@
                     "type": "string"
                   }
                 ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/vehicles/route/{trip_id}": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns route for vehicle",
+                "description": "Params:\n    - trip_id: bf638266-237b-11ea-9e0d-0242ac110002\nReturns:\n    Object:\n    geometry: encoded polyline (set of geo-coordinates)",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "trip_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/vehicles/{vin}/trips": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns all trip data per vin param and possible pagination param.",
+                "description": "Params:\n    - vin: QAPBQ88CXEA10002\n    - (Initial request = not required. All other requests = required)\n    pagination: [xxxxxxxxxxxx, yBbQ9XAB3_tVhPD0DI6e]\n    - dates: \"{\"date\":{\"start\":null,\"end\":null}}\"\nReturns:\n    Object:\n        trips: list of trip objects",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "vin",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/vehicles/aggregate": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns aggregated vehicle data (geohash) for UI map",
+                "description": "and paginated vehicle data (detailed) for UI list.\nIncoming bbox: [left,bottom,right,top]\nReturns:\nObeject:\n    - filters: object\n    - results:\n        - list of vehicle objects\n        - list of geohashes and counts\n\n{\n    \"clusters\":[\n        {\n        \"coordinates\":[-120.756226, 44.083639],\n            \"properties\":{\n                \"bbox\":[-124.541016, 42.032974, -116.982422,46.073231],\n                \"key\":\"u17gh\",\n                \"count\":1\n            }\n        }\n    ],\n    \"vehicles\":[],\n    \"nextTokens\":[]\n    }",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/vehicles/filter": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns filtered set of vehicles.",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/vehicles/{vin}": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns data for single vehicle per vin",
+                "description": "Returns:\n    Obeject:\n        - troubleCodes: list\n        - swVersion: string\n        - metadata: list\n        - results: list containing 1 object",
+                "security": [
+                  {
+                    "AuthPool": []
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "vin",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                  }
+                ]
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/dashboard/tirepressure": {
+              "post": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "return data from tire pressure table"
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/dashboard/battery": {
+              "post": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns battery information accessing battery table Current SOC, min max roc in last 24 hours"
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/dashboard/notcharging": {
+              "post": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "returns vehicle not charging from not charging table"
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/dashboard/efficency": {
+              "post": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "return efficency since last charge for battery"
+              },
+              "options": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    },
+                    "headers": {
+                      "Access-Control-Allow-Methods": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Origin": {
+                        "type": "string"
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "responseParameters": {
+                        "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+                      }
+                    }
+                  },
+                  "requestTemplates": {
+                    "application/json": "{\"statusCode\": 200}"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "type": "mock",
+                  "contentHandling": "CONVERT_TO_TEXT"
+                }
+              }
+            },
+            "/charts/stats": {
+              "get": {
+                "consumes": [
+                  "application/json"
+                ],
+                "produces": [
+                  "application/json"
+                ],
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "schema": {
+                      "$ref": "#/definitions/Empty"
+                    }
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "uri": {
+                    "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${APIHandler.Arn}/invocations"
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                },
+                "summary": "return data for charts"
               },
               "options": {
                 "consumes": [
@@ -1216,12 +1606,13 @@
     "APIHandler": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Runtime": "python3.8",
+        "Runtime": "python3.7",
         "Handler": "app.app",
         "CodeUri": "./deployment.zip",
         "Tags": {
-          "aws-chalice": "version=1.14.1:stage=dev:app=cdf-auto-fleetmanager-backend"
+          "aws-chalice": "version=1.26.6:stage=dev:app=cdf-auto-fleetmanager-backend"
         },
+        "Tracing": "PassThrough",
         "Timeout": 60,
         "MemorySize": 128,
         "Environment": {
@@ -1284,7 +1675,7 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": [
-            "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestAPIId}/*",
+            "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestAPIId}/*",
             {
               "RestAPIId": {
                 "Ref": "RestAPI"

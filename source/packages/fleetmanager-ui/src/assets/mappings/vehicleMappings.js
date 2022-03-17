@@ -11,15 +11,15 @@
  *  and limitations under the License.                                                                                *
  *********************************************************************************************************************/
 const vehicleMappings = {
-  "telemetry.currentSpeed": { label: "Current Speed", unit: "mph" },
-  "telemetry.fuelLevel": { label: "Fuel Level", unit: "gal" },
   "telemetry.odometer": { label: "Odometer", unit: "mi" },
-  "telemetry.oilTemp": { label: "Oil Temp", unit: "F" },
   transmission: { label: "Transmission" },
   fuelType: { label: "Fuel Type" },
-  // "telemetry.maxSpeed": { label: "Max Trip Speed", unit: "mph" },
+  "telemetry.fuelLevel": { label: "Fuel Level", unit: "gal" },
+  "telemetry.oilTemp": { label: "Oil Temp", unit: "F" },
+  "telemetry.currentSpeed": { label: "Current Speed", unit: "mph" },
+  "telemetry.maxSpeed": { label: "Max Speed", unit: "mph" },
+  "telemetry.avgSpeed": { label: "Avg Speed", unit: "mph" },
   bodyType: { label: "Vehicle Type" }
-  // ,"telemetry.tripFuel": { label: "Trip Fuel", unit: "gal" }
 };
 
 export default vehicleMappings;

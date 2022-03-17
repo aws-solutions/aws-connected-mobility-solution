@@ -1,0 +1,189 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "presigned_url": "wss://v-61a22014.kinesisvideo.us-west-2.amazonaws.com/?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-ChannelARN=arn%3Aaws%3Akinesisvideo%3Aus-west-2%3A798706540840%3Achannel%2FECU-AWS-2014-3_YWYRHF5T%2F1604992122005&X-Amz-ClientId=ECU-AWS-2014-3_YWYRHF5T-1604992595579&X-Amz-Credential=AKIA3T5U6UEUIR4R5DU5%2F20201110%2Fus-west-2%2Fkinesisvideo%2Faws4_request&X-Amz-Date=20201110T071635Z&X-Amz-Expires=3600&X-Amz-Security-Token=None&X-Amz-SignedHeaders=host&X-Amz-Signature=19e7f2a6bf47d577c976052749c1e90fec655e7f4a7fa363b190229a4be73678",
+            "wss_url": "wss://v-61a22014.kinesisvideo.us-west-2.amazonaws.com",
+            "ice_server_data": [
+                {
+                    "Uris": [
+                        "turn:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                        "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                        "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=tcp"
+                    ],
+                    "Username": "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU=",
+                    "Password": "Q4OH/FnYX0mYYEGdmpJPw/b8uUUHfDnf9/ZdmD12274=",
+                    "Ttl": 300
+                },
+                {
+                    "Uris": [
+                        "turn:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                        "turns:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                        "turns:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=tcp"
+                    ],
+                    "Username": "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU=",
+                    "Password": "Ik/aXbQ9keYzVY1HLDpeJH1qMpN/NcSCGbF3kN5niu8=",
+                    "Ttl": 300
+                }
+            ]
+        }
+    ],
+    "required": [
+        "presigned_url",
+        "wss_url",
+        "ice_server_data"
+    ],
+    "properties": {
+        "presigned_url": {
+            "$id": "#/properties/presigned_url",
+            "type": "string",
+            "title": "The presigned_url schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "wss://v-61a22014.kinesisvideo.us-west-2.amazonaws.com/?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-ChannelARN=arn%3Aaws%3Akinesisvideo%3Aus-west-2%3A798706540840%3Achannel%2FECU-AWS-2014-3_YWYRHF5T%2F1604992122005&X-Amz-ClientId=ECU-AWS-2014-3_YWYRHF5T-1604992595579&X-Amz-Credential=AKIA3T5U6UEUIR4R5DU5%2F20201110%2Fus-west-2%2Fkinesisvideo%2Faws4_request&X-Amz-Date=20201110T071635Z&X-Amz-Expires=3600&X-Amz-Security-Token=None&X-Amz-SignedHeaders=host&X-Amz-Signature=19e7f2a6bf47d577c976052749c1e90fec655e7f4a7fa363b190229a4be73678"
+            ]
+        },
+        "wss_url": {
+            "$id": "#/properties/wss_url",
+            "type": "string",
+            "title": "The wss_url schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "wss://v-61a22014.kinesisvideo.us-west-2.amazonaws.com"
+            ]
+        },
+        "ice_server_data": {
+            "$id": "#/properties/ice_server_data",
+            "type": "array",
+            "title": "The ice_server_data schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "Uris": [
+                            "turn:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                            "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                            "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=tcp"
+                        ],
+                        "Username": "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU=",
+                        "Password": "Q4OH/FnYX0mYYEGdmpJPw/b8uUUHfDnf9/ZdmD12274=",
+                        "Ttl": 300
+                    },
+                    {
+                        "Uris": [
+                            "turn:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                            "turns:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                            "turns:52-25-38-73.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=tcp"
+                        ],
+                        "Username": "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU=",
+                        "Password": "Ik/aXbQ9keYzVY1HLDpeJH1qMpN/NcSCGbF3kN5niu8=",
+                        "Ttl": 300
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/ice_server_data/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/ice_server_data/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "Uris": [
+                                    "turn:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                                    "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                                    "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=tcp"
+                                ],
+                                "Username": "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU=",
+                                "Password": "Q4OH/FnYX0mYYEGdmpJPw/b8uUUHfDnf9/ZdmD12274=",
+                                "Ttl": 300
+                            }
+                        ],
+                        "required": [
+                            "Uris",
+                            "Username",
+                            "Password",
+                            "Ttl"
+                        ],
+                        "properties": {
+                            "Uris": {
+                                "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Uris",
+                                "type": "array",
+                                "title": "The Uris schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        "turn:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                                        "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp"
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Uris/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Uris/items/anyOf/0",
+                                            "type": "string",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": "",
+                                            "examples": [
+                                                "turn:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp",
+                                                "turns:34-221-248-134.t-4f692171.kinesisvideo.us-west-2.amazonaws.com:443?transport=udp"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "Username": {
+                                "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Username",
+                                "type": "string",
+                                "title": "The Username schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "1604992659:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtd2VzdC0yOjc5ODcwNjU0MDg0MDpjaGFubmVsL0VDVS1BV1MtMjAxNC0zX1lXWVJIRjVULzE2MDQ5OTIxMjIwMDU="
+                                ]
+                            },
+                            "Password": {
+                                "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Password",
+                                "type": "string",
+                                "title": "The Password schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "Q4OH/FnYX0mYYEGdmpJPw/b8uUUHfDnf9/ZdmD12274="
+                                ]
+                            },
+                            "Ttl": {
+                                "$id": "#/properties/ice_server_data/items/anyOf/0/properties/Ttl",
+                                "type": "integer",
+                                "title": "The Ttl schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    300
+                                ]
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": true
+}

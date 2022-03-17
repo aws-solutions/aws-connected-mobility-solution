@@ -14,9 +14,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import Amplify, { Auth, API } from "aws-amplify";
+import Amplify from "aws-amplify";
 import AppWithAuth from "./AppWithAuth";
-import App from "./App";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/styles";
 import ErrorBoundary from "components/global/ErrorBoundary";
@@ -25,13 +24,7 @@ import awsConfig from "./awsConfig";
 import store from "store";
 import "assets/css/index.css";
 
-//Amplify.configure(awsConfig); creating x[e] TypeError with current configuration
-
-// >>New - Configuring Auth Module - fixes Auth entry
-Auth.configure(awsConfig);
-
-//Try new Amplify.configure with just API instantiation
-API.configure(awsConfig);
+Amplify.configure(awsConfig);
 
 const theme = createMuiTheme({
   typography: {
@@ -52,6 +45,3 @@ ReactDOM.render(
   </ErrorBoundary>,
   document.getElementById("root")
 );
-
-
-

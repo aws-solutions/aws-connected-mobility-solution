@@ -18,12 +18,17 @@ const FleetManager = React.lazy(() =>
   import("components/fleet-manager/FleetManager")
 );
 
+const Dashboard = React.lazy(() => import("components/dashboard/Dashboard"));
+const Analytics = React.lazy(() => import("components/analytics/Analytics"));
+
 const Routes = () => {
   return (
     <ErrorBoundary>
       <React.Suspense fallback={<div />}>
         <Switch>
-          <Route path="/" exact component={FleetManager} />
+          <Route path="/" exact component={Dashboard} />
+          <Route path="/map" component={FleetManager} />
+          <Route path="/analytics" component={Analytics} />
           <Redirect to="/" />
         </Switch>
       </React.Suspense>

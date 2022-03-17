@@ -112,11 +112,11 @@ Resources:
   Cloudfront:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-west-2.amazonaws.com/cms-demo-refactored-633228429465/packaged-cfn-artifacts/28879ecc589133c2e4e0227f41f5ae32.template
+      TemplateURL: https://s3.amazonaws.com/cms1-development-022035076260/packaged-cfn-artifacts/28879ecc589133c2e4e0227f41f5ae32.template
   Authorizer:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-west-2.amazonaws.com/cms-demo-refactored-633228429465/packaged-cfn-artifacts/9d47fa90fe1861d9ce0f74aa3a9c898c.template
+      TemplateURL: https://s3.amazonaws.com/cms1-development-022035076260/packaged-cfn-artifacts/8be0aae8ff0d54757b463bba328d53d6.template
       Parameters:
         CloudfrontDomain:
           Fn::GetAtt:
@@ -125,7 +125,7 @@ Resources:
   InfrastructurePre:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-west-2.amazonaws.com/cms-demo-refactored-633228429465/packaged-cfn-artifacts/c101f2590f8672bb29ce2fc23ed01907.template
+      TemplateURL: https://s3.amazonaws.com/cms1-development-022035076260/packaged-cfn-artifacts/1bfe33bb1e9753f9ecb4aa29a3d77d4e.template
       Parameters:
         ArtifactsBucket:
           Ref: ArtifactsBucket
@@ -136,7 +136,7 @@ Resources:
   CMS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-west-2.amazonaws.com/cms-demo-refactored-633228429465/packaged-cfn-artifacts/9a768af634823d25b0cbaf3cbfed6449.template
+      TemplateURL: https://s3.amazonaws.com/cms1-development-022035076260/packaged-cfn-artifacts/3412d2f689402dc02d7c8ac27467ac65.template
       Parameters:
         ArtifactsBucket:
           Ref: ArtifactsBucket
@@ -201,7 +201,7 @@ Resources:
   InfrastructurePost:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-west-2.amazonaws.com/cms-demo-refactored-633228429465/packaged-cfn-artifacts/576fec3431dcfe4b954f69203cbec360.template
+      TemplateURL: https://s3.amazonaws.com/cms1-development-022035076260/packaged-cfn-artifacts/b3ae8eba1bd2271a1ab358364d1bf441.template
       Parameters:
         CDFAssetLibraryFunctionName:
           Ref: CDFCoreAssetLibraryApiFunctionName

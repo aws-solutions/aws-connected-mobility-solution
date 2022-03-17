@@ -1,15 +1,8 @@
-#---------------------------------------------------------------------------------------------------------------------
-#  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.                                           *
-#                                                                                                                    *
-#  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance    *
-#  with the License. A copy of the License is located at                                                             *
-#                                                                                                                    *
-#      http://www.apache.org/licenses/LICENSE-2.0                                                                    *
-#                                                                                                                    *
-#  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES *
-#  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions    *
-#  and limitations under the License.                                                                                *
-#---------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------
+# Copyright (c) 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# This source code is subject to the terms found in the AWS Enterprise Customer Agreement.
+#---------------------------------------------------------------------------------
 """Util class for all cvra data in elasticsearch"""
 
 import os
@@ -17,7 +10,8 @@ import json
 import math
 import boto3
 import requests
-from collections import Counter
+from collections import Counter,OrderedDict
+import datetime
 import mercantile
 from chalice import BadRequestError, UnauthorizedError, NotFoundError, ChaliceViewError
 from requests_aws4auth import AWS4Auth
@@ -42,12 +36,12 @@ class CDFAutoUtils:
     """Helpers for vehicle methods"""
 
     @staticmethod
-    def url_builder(_index):
+    def url_builder(_index, action):
         """create elasticsearch url for request"""
 
         logger.info("Entering url_builder: %s", _index)
 
-        url = HOST + '/' + _index + '/_search'
+        url = HOST + '/' + _index + '/' + action
         logger.info("URL: %s", url)
         return url
 
@@ -64,6 +58,30 @@ class CDFAutoUtils:
         except Exception as err:
             logger.info("Error making elasticsearch request: %s", err)
             raise ChaliceViewError(err)
+
+    @staticmethod
+    def es_add_update(url, payload):
+        """add new or updated payload to index"""
+
+        logger.info("Entering es_add_update")
+
+        try:
+            es_response = requests.post(url, auth=AWSAUTH, headers=HEADERS, json=payload)
+            logger.info("Add/Update response {}:".format(es_response.text))
+        except Exception as err:
+            logger.error("Error response {}:".format(err))
+
+    @staticmethod
+    def es_delete(url):
+        """delete doc in index"""
+
+        logger.info("Entering es_delete")
+
+        try:
+            es_response = requests.delete(url, auth=AWSAUTH, headers=HEADERS)
+            logger.info("Delete response {}:".format(es_response.text))
+        except Exception as err:
+            logger.error("Error response {}:".format(err))
 
     @staticmethod
     def es_query_builder(query_type, payload, aggregated=None):
@@ -316,9 +334,908 @@ class CDFAutoUtils:
             es_query['route']['query']['bool']['filter'][2]['range']['creationtimestamp']['gte'] = payload['start']
             es_query['route']['query']['bool']['filter'][2]['range']['creationtimestamp']['lte'] = payload['end']
             return_query = es_query['route']
+        # current tire pressure query using location and vin 
+        
+        elif query_type == "get_notcharging":
+            query_list = []
+            if payload['filters']['pagination_count']>0:
+                pagination_count = payload['filters']['pagination_count']
+            else:
+                pagination_count = 15
 
-        logger.info("Final query: %s", json.dumps(return_query))
+            if payload['filters']['last_seen_offset']>0:
+                last_seen = payload['filters']['last_seen_offset']
+            else:
+                last_seen = 0
+            
+            vin_timestamp = OrderedDict()
+
+            if len(payload['filters']['vehicle']['vin']['options']) == 0:
+                url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                es_query_page = CDFAutoUtils.load_data_template('es_query_template.json')
+                es_query_page['not_charging_current']['size'] = pagination_count
+                es_query_page['not_charging_current']['from'] = last_seen*pagination_count
+                if len(payload['filters']['location']['options']) != 0:
+                    d_area = {
+                            "bool": {"should": []
+                            }}
+                    for each_location in payload['filters']['location']['options']:
+                        top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                        geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                        d_location = {
+                                        "bool": {
+                                        "must": [{
+                                        "geo_polygon" : {
+                                            "geolocation.location" : {
+                                                "points" : geolist
+                                            }
+                                        }
+                                        }
+                                            
+                                        ]
+                                        }
+                                    }
+                        d_area["bool"]["should"].append(d_location)
+
+                    es_query_page['not_charging_current']['query']['bool']['must'].append(d_area)
+                es_response = CDFAutoUtils.es_request(url,  es_query_page['not_charging_current'])
+                json_response = json.loads(es_response.text)
+                if len(json_response['hits']['hits']):
+                    for objects in json_response['hits']['hits']:
+                        vin_timestamp[objects["_source"]["vin"]] = objects["_source"]["sendtimestamp"]
+            else:
+                for each_vin in payload['filters']['vehicle']['vin']['options']:
+                    es_query = CDFAutoUtils.load_data_template('es_query_template.json')
+                    url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                    vin_query = {'terms': {'vin.keyword': [each_vin['label']]}}
+                    es_query['not_charging_current']['query']['bool']['filter'].append(vin_query)
+                    if len(payload['filters']['location']['options']) != 0:
+                        d_area = {
+                                "bool": {"should": []
+                                }}
+                        for each_location in payload['filters']['location']['options']:
+                            top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                            geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                            d_location = {
+                                            "bool": {
+                                            "must": [{
+                                            "geo_polygon" : {
+                                                "geolocation.location" : {
+                                                    "points" : geolist
+                                                }
+                                            }
+                                            }
+                                                
+                                            ]
+                                            }
+                                        }
+                            d_area["bool"]["should"].append(d_location)
+
+                        es_query['not_charging_current']['query']['bool']['must'].append(d_area)
+
+
+
+                    es_response = CDFAutoUtils.es_request(url, es_query['not_charging_current'])
+                    json_response = json.loads(es_response.text)
+
+                    if 'hits' in json_response.keys():
+                        if len(json_response['hits']['hits']):
+                            vin_timestamp[each_vin['label']] = json_response['hits']['hits'][0]["_source"]["sendtimestamp"]
+            
+            for each_vin_timestamp in vin_timestamp:     
+                es_query = CDFAutoUtils.load_data_template('es_query_template.json')   
+                vin_query = {'terms': {'vin.keyword': [each_vin_timestamp]}}
+                es_query['not_charging_individual']['query']['bool']['filter'].append(vin_query)
+                try:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S.%f')
+                except ValueError:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S')
+                date_time_24hoursago = date_time_obj - datetime.timedelta(hours = 24)
+
+                date_range = {
+                    'range': {
+                        'sendtimestamp': {
+                            'gte': datetime.datetime.strftime(date_time_24hoursago, '%Y-%m-%dT%H:%M:%S'),
+                            'lte': vin_timestamp[each_vin_timestamp]
+                        }
+                    }
+                }
+                es_query['not_charging_individual']['query']['bool']['filter'].append(date_range)
+                query_list.append(es_query['not_charging_individual'])
+
+            return_query = query_list
+
+
+        elif query_type == "get_efficency":
+            query_list = []
+            # change efficency calculation get energy out - in for each of 24 hours and the do similar calculation to pressure api 
+            if payload['filters']['pagination_count']>0:
+                pagination_count = payload['filters']['pagination_count']
+            else:
+                pagination_count = 15
+
+            if payload['filters']['last_seen_offset']>0:
+                last_seen = payload['filters']['last_seen_offset']
+            else:
+                last_seen = 0
+            
+            vin_timestamp = OrderedDict()
+            
+            if len(payload['filters']['vehicle']['vin']['options']) == 0:
+                url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                es_query_page = CDFAutoUtils.load_data_template('es_query_template.json')
+                es_query_page['efficency_current']['size'] = pagination_count
+                es_query_page['efficency_current']['from'] = last_seen*pagination_count
+                if len(payload['filters']['location']['options']) != 0:
+                    d_area = {
+                            "bool": {"should": []
+                            }}
+                    for each_location in payload['filters']['location']['options']:
+                        top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                        geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                        d_location = {
+                                        "bool": {
+                                        "must": [{
+                                        "geo_polygon" : {
+                                            "geolocation.location" : {
+                                                "points" : geolist
+                                            }
+                                        }
+                                        }
+                                            
+                                        ]
+                                        }
+                                    }
+                        d_area["bool"]["should"].append(d_location)
+
+                    es_query_page['efficency_current']['query']['bool']['must'].append(d_area)
+                es_response = CDFAutoUtils.es_request(url,  es_query_page['efficency_current'])
+                json_response = json.loads(es_response.text)
+                if len(json_response['hits']['hits']):
+                    for objects in json_response['hits']['hits']:
+                        vin_timestamp[objects["_source"]["vin"]] = objects["_source"]["sendtimestamp"]
+            else:
+                for each_vin in payload['filters']['vehicle']['vin']['options']:
+                    es_query = CDFAutoUtils.load_data_template('es_query_template.json')
+                    url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                    vin_query = {'terms': {'vin.keyword': [each_vin['label']]}}
+                    es_query['efficency_current']['query']['bool']['filter'].append(vin_query)
+                    if len(payload['filters']['location']['options']) != 0:
+                        d_area = {
+                                "bool": {"should": []
+                                }}
+                        for each_location in payload['filters']['location']['options']:
+                            top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                            geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                            d_location = {
+                                            "bool": {
+                                            "must": [{
+                                            "geo_polygon" : {
+                                                "geolocation.location" : {
+                                                    "points" : geolist
+                                                }
+                                            }
+                                            }
+                                                
+                                            ]
+                                            }
+                                        }
+                            d_area["bool"]["should"].append(d_location)
+
+                        es_query['efficency_current']['query']['bool']['must'].append(d_area)
+                    es_response = CDFAutoUtils.es_request(url, es_query['efficency_current'])
+                    json_response = json.loads(es_response.text)
+
+                    if 'hits' in json_response.keys():
+                        if len(json_response['hits']['hits']):
+                            vin_timestamp[each_vin['label']] = json_response['hits']['hits'][0]["_source"]["sendtimestamp"]
+            
+            for each_vin_timestamp in vin_timestamp:     
+                es_query = CDFAutoUtils.load_data_template('es_query_template.json')   
+                vin_query = {'terms': {'vin.keyword': [each_vin_timestamp]}}
+                es_query['efficency']['query']['bool']['filter'].append(vin_query)
+                try:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S.%f')
+                except ValueError:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S')
+                date_time_24hoursago = date_time_obj - datetime.timedelta(hours = 24)
+
+                date_range = {
+                    'range': {
+                        'sendtimestamp': {
+                            'gte': datetime.datetime.strftime(date_time_24hoursago, '%Y-%m-%dT%H:%M:%S'),
+                            'lte': vin_timestamp[each_vin_timestamp]
+                        }
+                    }
+                }
+                es_query['efficency']['query']['bool']['filter'].append(date_range)
+                query_list.append(es_query['efficency'])
+
+            return_query = query_list
+
+        elif query_type == "notcharging_current":
+            if len(payload['filters']['vehicle']['vin']['options']):
+                list_vin = []
+                for vins in payload['filters']['vehicle']['vin']['options']:
+                    list_vin.append(vins['label'])
+                vin_query = {'terms': {'vin.keyword': list_vin}}
+                es_query['not_charging_current']['query']['bool']['filter'].append(vin_query)
+            
+            
+            # if len(payload['filters']['location']['options']):
+            #     # add label#
+            #     geo_location = {'geo_polygon':{'geolocation.location':{'points':payload['filters']['location']['options']}}}
+            #     es_query['not_charging_current']['query']['bool']['filter'].append(geo_location)
+            if len(payload['filters']['location']['options']) != 0:
+                d_area = {
+                        "bool": {"should": []
+                        }}
+                for each_location in payload['filters']['location']['options']:
+                    top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                    geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                    d_location = {
+                                    "bool": {
+                                    "must": [{
+                                    "geo_polygon" : {
+                                        "geolocation.location" : {
+                                            "points" : geolist
+                                        }
+                                    }
+                                    }
+                                        
+                                    ]
+                                    }
+                                }
+                    d_area["bool"]["should"].append(d_location)
+
+                es_query['not_charging_current']['query']['bool']['must'].append(d_area)
+        
+            return_query = es_query['not_charging_current']
+
+
+        elif query_type == "efficency_current":
+            
+            if len(payload['filters']['vehicle']['vin']['options']):
+                list_vin = []
+                for vins in payload['filters']['vehicle']['vin']['options']:
+                    list_vin.append(vins['label'])
+                vin_query = {'terms': {'vin.keyword': list_vin}}
+                es_query['efficency_current']['query']['bool']['filter'].append(vin_query)
+            
+            
+            # if len(payload['filters']['location']['options']):
+            #     # add label#
+            #     geo_location = {'geo_polygon':{'geolocation.location':{'points':payload['filters']['location']['options']}}}
+            #     es_query['efficency_current']['query']['bool']['filter'].append(geo_location)
+            if len(payload['filters']['location']['options']) != 0:
+                d_area = {
+                        "bool": {"should": []
+                        }}
+                for each_location in payload['filters']['location']['options']:
+                    top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                    geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                    d_location = {
+                                    "bool": {
+                                    "must": [{
+                                    "geo_polygon" : {
+                                        "geolocation.location" : {
+                                            "points" : geolist
+                                        }
+                                    }
+                                    }
+                                        
+                                    ]
+                                    }
+                                }
+                    d_area["bool"]["should"].append(d_location)
+
+                es_query['efficency_current']['query']['bool']['must'].append(d_area)
+        
+            return_query = es_query['efficency_current']
+
+        elif query_type == "tire_pressure_current":
+            
+            
+            if len(payload['filters']['vehicle']['vin']['options']):
+                list_vin = []
+                for vins in payload['filters']['vehicle']['vin']['options']:
+                    list_vin.append(vins['label'])
+                vin_query = {'terms': {'vin.keyword': list_vin}}
+                es_query['tire_pressure_current']['query']['bool']['filter'].append(vin_query)
+            
+            
+            # if len(payload['filters']['location']['options']):
+            #     # add label#
+            #     geo_location = {'geo_polygon':{'geolocation.location':{'points':payload['filters']['location']['options']}}}
+            #     es_query['tire_pressure_current']['query']['bool']['filter'].append(geo_location)
+            if len(payload['filters']['location']['options']) != 0:
+                d_area = {
+                        "bool": {"should": []
+                        }}
+                for each_location in payload['filters']['location']['options']:
+                    top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                    geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                    d_location = {
+                                    "bool": {
+                                    "must": [{
+                                    "geo_polygon" : {
+                                        "geolocation.location" : {
+                                            "points" : geolist
+                                        }
+                                    }
+                                    }
+                                        
+                                    ]
+                                    }
+                                }
+                    d_area["bool"]["should"].append(d_location)
+
+                es_query['tire_pressure_current']['query']['bool']['must'].append(d_area)
+            return_query = es_query['tire_pressure_current']
+        
+        elif query_type == "tire_pressure_roc":
+            
+            query_list = []
+            
+            if payload['filters']['pagination_count']>0:
+                pagination_count = payload['filters']['pagination_count']
+            else:
+                pagination_count = 15
+
+            if payload['filters']['last_seen_offset']>0:
+                last_seen = payload['filters']['last_seen_offset']
+            else:
+                last_seen = 0
+            
+            vin_timestamp = OrderedDict()
+            
+            
+            if len(payload['filters']['vehicle']['vin']['options']) == 0:
+                url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                es_query_page = CDFAutoUtils.load_data_template('es_query_template.json')
+                es_query_page['tire_pressure_current']['size'] = pagination_count
+                es_query_page['tire_pressure_current']['from'] = last_seen*pagination_count
+                if len(payload['filters']['location']['options']) != 0:
+                    d_area = {
+                            "bool": {"should": []
+                            }}
+                    for each_location in payload['filters']['location']['options']:
+                        top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                        geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                        d_location = {
+                                        "bool": {
+                                        "must": [{
+                                        "geo_polygon" : {
+                                            "geolocation.location" : {
+                                                "points" : geolist
+                                            }
+                                        }
+                                        }
+                                            
+                                        ]
+                                        }
+                                    }
+                        d_area["bool"]["should"].append(d_location)
+
+                    es_query_page['tire_pressure_current']['query']['bool']['must'].append(d_area)
+                es_response = CDFAutoUtils.es_request(url,  es_query_page['tire_pressure_current'])
+                json_response = json.loads(es_response.text)
+                if len(json_response['hits']['hits']):
+                    for objects in json_response['hits']['hits']:
+                        vin_timestamp[objects["_source"]["vin"]] = objects["_source"]["sendtimestamp"]
+            else:
+                for each_vin in payload['filters']['vehicle']['vin']['options']:
+                    es_query = CDFAutoUtils.load_data_template('es_query_template.json')
+                    url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                    vin_query = {'terms': {'vin.keyword': [each_vin['label']]}}
+                    es_query['tire_pressure_current']['query']['bool']['filter'].append(vin_query)
+                    if len(payload['filters']['location']['options']) != 0:
+                        d_area = {
+                                "bool": {"should": []
+                                }}
+                        for each_location in payload['filters']['location']['options']:
+                            top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                            geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                            d_location = {
+                                            "bool": {
+                                            "must": [{
+                                            "geo_polygon" : {
+                                                "geolocation.location" : {
+                                                    "points" : geolist
+                                                }
+                                            }
+                                            }
+                                                
+                                            ]
+                                            }
+                                        }
+                            d_area["bool"]["should"].append(d_location)
+
+                        es_query['tire_pressure_current']['query']['bool']['must'].append(d_area)
+                    es_response = CDFAutoUtils.es_request(url, es_query['tire_pressure_current'])
+                    json_response = json.loads(es_response.text)
+
+                    if 'hits' in json_response.keys():
+                        if len(json_response['hits']['hits']):
+                            vin_timestamp[each_vin['label']] = json_response['hits']['hits'][0]["_source"]["sendtimestamp"]
+            
+            for each_vin_timestamp in vin_timestamp:     
+                es_query = CDFAutoUtils.load_data_template('es_query_template.json')   
+                vin_query = {'terms': {'vin.keyword': [each_vin_timestamp]}}
+                es_query['tire_pressure_roc']['query']['bool']['filter'].append(vin_query)
+                try:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S.%f')
+                except ValueError:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S')
+                date_time_24hoursago = date_time_obj - datetime.timedelta(hours = 24)
+
+                date_range = {
+                    'range': {
+                        'sendtimestamp': {
+                            'gte': datetime.datetime.strftime(date_time_24hoursago, '%Y-%m-%dT%H:%M:%S'),
+                            'lte': vin_timestamp[each_vin_timestamp]
+                        }
+                    }
+                }
+                es_query['tire_pressure_roc']['query']['bool']['filter'].append(date_range)
+                query_list.append(es_query['tire_pressure_roc'])
+
+            return_query = query_list
+            # return_query = es_query['tire_pressure_roc']
+        
+        elif query_type == "get_current_battery":
+            if len(payload['filters']['vehicle']['vin']['options']):
+                list_vin = []
+                for vins in payload['filters']['vehicle']['vin']['options']:
+                    list_vin.append(vins['label'])
+                vin_query = {'terms': {'vin.keyword': list_vin}}
+                es_query['battery_level_current']['query']['bool']['filter'].append(vin_query)
+            
+            
+            if len(payload['filters']['location']['options']) != 0:
+                d_area = {
+                        "bool": {"should": []
+                        }}
+                for each_location in payload['filters']['location']['options']:
+                    top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                    geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                    d_location = {
+                                    "bool": {
+                                    "must": [{
+                                    "geo_polygon" : {
+                                        "geolocation.location" : {
+                                            "points" : geolist
+                                        }
+                                    }
+                                    }
+                                        
+                                    ]
+                                    }
+                                }
+                    d_area["bool"]["should"].append(d_location)
+
+                es_query['battery_level_current']['query']['bool']['must'].append(d_area)
+
+                
+            return_query = es_query['battery_level_current']
+
+        elif query_type == "get_battery_levels":
+            query_list = []
+            if payload['filters']['pagination_count']>0:
+                pagination_count = payload['filters']['pagination_count']
+            else:
+                pagination_count = 15
+
+            if payload['filters']['last_seen_offset']>0:
+                last_seen = payload['filters']['last_seen_offset']
+            else:
+                last_seen = 0
+            
+            vin_timestamp = OrderedDict()
+            
+            # find latest time recorded for each vin
+            if len(payload['filters']['vehicle']['vin']['options']) == 0:
+                url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                
+                es_query_page = CDFAutoUtils.load_data_template('es_query_template.json')
+                es_query_page['battery_level_current']['size'] = pagination_count
+                es_query_page['battery_level_current']['from'] = last_seen*pagination_count
+                if len(payload['filters']['location']['options']) != 0:
+                    d_area = {
+                            "bool": {"should": []
+                            }}
+                    for each_location in payload['filters']['location']['options']:
+                        top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                        geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                        d_location = {
+                                        "bool": {
+                                        "must": [{
+                                        "geo_polygon" : {
+                                            "geolocation.location" : {
+                                                "points" : geolist
+                                            }
+                                        }
+                                        }
+                                            
+                                        ]
+                                        }
+                                    }
+                        d_area["bool"]["should"].append(d_location)
+
+                    es_query_page['battery_level_current']['query']['bool']['must'].append(d_area)
+                es_response = CDFAutoUtils.es_request(url, es_query_page['battery_level_current'])
+                json_response = json.loads(es_response.text)
+                if len(json_response['hits']['hits']):
+                    for objects in json_response['hits']['hits']:
+                        vin_timestamp[objects["_source"]["vin"]] = objects["_source"]["sendtimestamp"]
+            else:
+                for each_vin in payload['filters']['vehicle']['vin']['options']:
+                    es_query = CDFAutoUtils.load_data_template('es_query_template.json')
+                    url = CDFAutoUtils.url_builder('latest_telemetry', '_search')
+                    vin_query = {'terms': {'vin.keyword': [each_vin['label']]}}
+                    es_query['battery_level_current']['query']['bool']['filter'].append(vin_query)
+                    if len(payload['filters']['location']['options']) != 0:
+                        d_area = {
+                                "bool": {"should": []
+                                }}
+                        for each_location in payload['filters']['location']['options']:
+                            top_long,left_lat,bot_long,right_lat = each_location['bbox']
+                            geolist = [[top_long,left_lat],[top_long,right_lat],[bot_long,right_lat],[bot_long,left_lat],[top_long,left_lat]]
+                            d_location = {
+                                            "bool": {
+                                            "must": [{
+                                            "geo_polygon" : {
+                                                "geolocation.location" : {
+                                                    "points" : geolist
+                                                }
+                                            }
+                                            }
+                                                
+                                            ]
+                                            }
+                                        }
+                            d_area["bool"]["should"].append(d_location)
+
+                        es_query['battery_level_current']['query']['bool']['must'].append(d_area)
+                    es_response = CDFAutoUtils.es_request(url, es_query['battery_level_current'])
+                    json_response = json.loads(es_response.text)
+
+                    if 'hits' in json_response.keys():
+                        if len(json_response['hits']['hits']):
+                            vin_timestamp[each_vin['label']] = json_response['hits']['hits'][0]["_source"]["sendtimestamp"]
+            
+            # create query for each vin 
+            for each_vin_timestamp in vin_timestamp:     
+                es_query = CDFAutoUtils.load_data_template('es_query_template.json')   
+                vin_query = {'terms': {'vin.keyword': [each_vin_timestamp]}}
+                es_query['get_battery_info']['query']['bool']['filter'].append(vin_query)
+                try:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S.%f')
+                except ValueError:
+                    date_time_obj = datetime.datetime.strptime(vin_timestamp[each_vin_timestamp], '%Y-%m-%dT%H:%M:%S')
+                date_time_24hoursago = date_time_obj - datetime.timedelta(hours = 24)
+
+                date_range = {
+                    'range': {
+                        'sendtimestamp': {
+                            'gte': datetime.datetime.strftime(date_time_24hoursago, '%Y-%m-%dT%H:%M:%S'),
+                            'lte': vin_timestamp[each_vin_timestamp]
+                        }
+                    }
+                }
+                es_query['get_battery_info']['query']['bool']['filter'].append(date_range)
+                query_list.append(es_query['get_battery_info'])
+            return_query = query_list
+        elif query_type == "charts_analytics":
+            query_list = []
+            for weeks in range(40,44):
+                es_query = CDFAutoUtils.load_data_template('es_query_template.json')
+                d = "2020-W"+str(weeks)
+                date_time_org  = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
+                date_time_add = date_time_org + datetime.timedelta(days = 7)
+                
+                start = datetime.datetime.strftime(date_time_org, '%Y-%m-%dT%H:%M:%S')
+                end = datetime.datetime.strftime(date_time_add, '%Y-%m-%dT%H:%M:%S')
+                
+                
+                date_r = {
+                            "range": {
+                                "sendtimestamp" : {
+                                    "gte": start,
+                                    "lte": end
+                                }
+                                }
+                        }
+                print(date_r)
+                es_query['analytics_charts']['query']['bool']['must'].append(date_r)
+                query_list.append(es_query['analytics_charts'])
+            return_query = query_list
+
+        logger.info("Final query list : %s", json.dumps(return_query))
         return return_query
+    
+    @staticmethod
+    def get_chart_analytics(data):
+        "return the min/max presuure of tires of a set of vins"
+        final_stat_list = []
+        logger.info("Starting chart aggregation")
+        week = 40
+        kwh_thresh = 35
+        if len(data):
+            for inc_payload in data:
+                logger.info("inc_payload: {}".format(inc_payload))
+                weeks_agg = {}
+                weeks_agg['week'] = week
+                week+=1
+                if len(inc_payload["aggregations"]):
+                    weeks_agg['q1'] = inc_payload["aggregations"]["efficiency_stats"]["values"]["25.0"]
+                    weeks_agg['median'] = inc_payload["aggregations"]["efficiency_stats"]["values"]["50.0"]
+                    weeks_agg['q3'] = inc_payload["aggregations"]["efficiency_stats"]["values"]["75.0"]
+                    weeks_agg['average'] = inc_payload["aggregations"]["efficiency_mean"]["value"]
+                    weeks_agg['tp90'] = inc_payload["aggregations"]["distance_tp90"]["values"]["90.0"]
+                    weeks_agg['distance_average'] = inc_payload["aggregations"]["distance_avg"]["value"]
+                    count = 0 
+                    for docs in inc_payload["aggregations"]["vin_id"]["buckets"]:
+                        if docs["efficiency"]["value"]> kwh_thresh:
+                            count+=1
+                    weeks_agg['occurences'] = count
+                final_stat_list.append(weeks_agg)
+        return final_stat_list
+        
+    @staticmethod
+    def build_battery_level_list(data):
+        "return the min/max presuure of tires of a set of vins"
+        battery_min_max_list = []
+        logger.info("Startingbattery level calculation for multiple individual payloads ")
+        if len(data):
+            for inc_payload in data: 
+                logger.info("inc_payload: {}".format(inc_payload))
+                single_vin_roc_battery = {}
+                if len(inc_payload["aggregations"]["max_charge"]["hits"]["hits"]):
+                    single_vin_roc_battery["vin"] = inc_payload["aggregations"]["max_charge"]["hits"]["hits"][0]["_source"]["vin"]
+                    single_vin_roc_battery["min_soc"] = inc_payload["aggregations"]["min_charge"]["hits"]["hits"][0]["_source"]["stateofcharge"]
+                    single_vin_roc_battery["max_soc"] = inc_payload["aggregations"]["max_charge"]["hits"]["hits"][0]["_source"]["stateofcharge"]
+                    # single_vin_roc_battery["current_soc"] = inc_payload["hits"]["hits"][0]["_source"]["stateofcharge"]
+                battery_min_max_list.append(single_vin_roc_battery)
+        logger.info("Returning battery list")
+        return battery_min_max_list
+    
+    @staticmethod
+    def build_efficiency_current_list(data):
+        "return the min/max presure of tires of a set of vins"
+        efficiency_current_list = []
+        
+        for incoming_obj in data['hits']['hits']:
+            single_vin_efficiency = {}
+            single_vin_efficiency['vin'] = incoming_obj['_source']['vin']
+            single_vin_efficiency['current_battery'] = incoming_obj['_source']['stateofcharge']
+            
+            efficiency_current_list.append(single_vin_efficiency)
+        
+        return efficiency_current_list
+    
+    @staticmethod
+    def build_battery_current_list(data):
+        "return the min/max presure of tires of a set of vins"
+        battery_current_list = []
+        
+        for incoming_obj in data['hits']['hits']:
+            single_vin_roc_battery = {}
+            single_vin_roc_battery['vin'] = incoming_obj['_source']['vin']
+            single_vin_roc_battery['current_battery'] = incoming_obj['_source']['stateofcharge']
+            single_vin_roc_battery['electricenergyin'] = incoming_obj['_source']['electricenergyin']
+            single_vin_roc_battery['electricenergyout'] = incoming_obj['_source']['electricenergyout']
+            
+            battery_current_list.append(single_vin_roc_battery)
+        
+        return battery_current_list
+    @staticmethod
+    def build_notcharging_current_list(data):
+        "return current timestamp for set of vins"
+        notcharging_current_list = []
+        
+        for incoming_obj in data['hits']['hits']:
+            single_vin_notcharging = {}
+            single_vin_notcharging['vin'] = incoming_obj['_source']['vin']
+            single_vin_notcharging['current_battery'] = incoming_obj['_source']['sendtimestamp']
+            single_vin_notcharging['electricenergyin'] = incoming_obj['_source']['electricenergyin']
+            single_vin_notcharging['electricenergyout'] = incoming_obj['_source']['electricenergyout']
+            single_vin_notcharging['current_soc'] = incoming_obj['_source']['stateofcharge']
+            
+            notcharging_current_list.append(single_vin_notcharging)
+        
+        return notcharging_current_list
+   
+    @staticmethod
+    def notcharging_calc(data):
+        "return the timestamp of max charge in the last 24 hours"
+        notcharging_max_timestamp = []
+        logger.info("Starting notcharging timestamp calculation for multiple individual payloads")
+        if len(data):
+            for inc_payload in data: 
+                logger.info("inc_payload: {}".format(inc_payload))
+                single_vin_lastmaxtime = {}
+                if len(inc_payload["aggregations"]["max_charge"]["hits"]["hits"]):
+                    single_vin_lastmaxtime["vin"] = inc_payload["aggregations"]["max_charge"]["hits"]["hits"][0]["_source"]["vin"]
+                    single_vin_lastmaxtime["ttm"] = inc_payload["aggregations"]["max_charge"]["hits"]["hits"][0]["_source"]["sendtimestamp"]
+                notcharging_max_timestamp.append(single_vin_lastmaxtime)
+        logger.info("Returning notcharging list")
+        return notcharging_max_timestamp
+
+    @staticmethod
+    def efficency_cal(data):
+        "return the efficency"
+        obj_efficency_list = []
+        logger.info("Starting calculation for cummalative charge out difference")
+        if len(data):
+            for inc_payload in data:
+                logger.info("inc_payload: {}".format(inc_payload))
+                single_vin_efficency = {}
+                if len(inc_payload['aggregations']['byHour']['buckets']):
+                    for incoming_obj_inside in inc_payload['aggregations']['byHour']['buckets']:
+                        logger.info("incoming_obj_inside: {}".format(incoming_obj_inside))
+                        if len(incoming_obj_inside['doc']['hits']['hits']):
+                            incoming_obj = incoming_obj_inside['doc']['hits']['hits']
+                            if incoming_obj[0]['_source']['vin'] not in single_vin_efficency:
+                                single_vin_efficency[incoming_obj[0]['_source']['vin']] = {}
+                                if ('electricenergyin' in incoming_obj[0]['_source'].keys()) and ('electricenergyout' in incoming_obj[0]['_source'].keys()):
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['efficency_list_in'] = [int(float(incoming_obj[0]['_source']['electricenergyin']))]
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['efficency_list'] = [int(float(incoming_obj[0]['_source']['electricenergyout']))]
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['distance'] = [int(float(incoming_obj[0]['_source']['odometer']['metres']))/1000]
+                            else:
+                                if ('electricenergyin' in incoming_obj[0]['_source'].keys()) and ('electricenergyout' in incoming_obj[0]['_source'].keys()):
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['efficency_list_in'] = [int(float(incoming_obj[0]['_source']['electricenergyin']))]
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['efficency_list'].append(int(float(incoming_obj[0]['_source']['electricenergyout'])))
+                                    single_vin_efficency[incoming_obj[0]['_source']['vin']]['distance'].append(int(float(incoming_obj[0]['_source']['odometer']['metres']))/1000)
+                    obj_efficency_list.append(single_vin_efficency)
+        logger.info("Building efficency list")
+        efficency_list=[]
+        if len(obj_efficency_list):
+            for vins_dict in obj_efficency_list:
+                agg_roc = {}
+                agg_roc['vin']= list(vins_dict.keys())[0]
+                if len(vins_dict[agg_roc['vin']]['efficency_list']):
+                    energy_consumed = max(vins_dict[agg_roc['vin']]['efficency_list']) - min(vins_dict[agg_roc['vin']]['efficency_list'])
+                    distance_travelled = max(vins_dict[agg_roc['vin']]['distance'])-min(vins_dict[agg_roc['vin']]['distance'])
+                    if distance_travelled>0:
+                        agg_roc['efficiency'] = (energy_consumed*100)/distance_travelled
+                    else:
+                        agg_roc['efficiency'] = 0
+                    agg_roc['electricenergyout'] =  max(vins_dict[agg_roc['vin']]['efficency_list'])
+                    agg_roc['electricenergyin'] = max(vins_dict[agg_roc['vin']]['efficency_list_in'])
+                efficency_list.append(agg_roc)
+
+        logger.info("Returning roc pressure list")
+        return efficency_list
+
+    @staticmethod
+    def build_pressure_list(data):
+        "return the current presuure of tires of a set of vins"
+        logger.info("Starting latest telemetry pressure retrieval")
+        obj_pressure_list = []
+        for incoming_obj in data['hits']['hits']:
+            single_vin_pressure = {}
+            single_vin_pressure['vin'] = incoming_obj['_source']['vin']
+            if 'tires' in incoming_obj['_source'].keys() :
+                # convert to kilo pascals
+                single_vin_pressure['pressure_front_left'] = int(float(incoming_obj['_source']['tires']['pressure_front_left']))*0.145038
+                single_vin_pressure['pressure_front_right'] = int(float(incoming_obj['_source']['tires']['pressure_front_right']))*0.145038
+                single_vin_pressure['pressure_rear_left'] = int(float(incoming_obj['_source']['tires']['pressure_rear_left']))*0.145038
+                single_vin_pressure['pressure_rear_right'] = int(float(incoming_obj['_source']['tires']['pressure_rear_right']))*0.145038
+            obj_pressure_list.append(single_vin_pressure)
+        return obj_pressure_list
+
+    @staticmethod
+    def build_roc_pressure_list(data):
+        "return the historical pressure of tires are calculate 24 hours interval roc of a set of vins"
+        obj_pressure_roc_list = []
+        logger.info("Starting roc calculation for multiple individual payloads ")
+        if len(data):
+            for inc_payload in data:
+                logger.info("inc_payload: {}".format(inc_payload))
+                single_vin_roc_pressure = {}
+                if len(inc_payload['aggregations']['byHour']['buckets']):
+                    for incoming_obj_inside in inc_payload['aggregations']['byHour']['buckets']:
+                        logger.info("incoming_obj_inside: {}".format(incoming_obj_inside))
+
+                        ############################################################################################
+                        # make sure this is the behavior you want
+                        ############################################################################################
+                        if len(incoming_obj_inside['doc']['hits']['hits']):
+                            incoming_obj = incoming_obj_inside['doc']['hits']['hits']
+                            
+                            if incoming_obj[0]['_source']['vin'] not in single_vin_roc_pressure:
+                                single_vin_roc_pressure[incoming_obj[0]['_source']['vin']] = {}
+                                if 'tires' in incoming_obj[0]['_source'].keys():
+                                    single_vin_roc_pressure[incoming_obj[0]['_source']['vin']]['pressure_list'] = [{'pressure_front_left':int(float(incoming_obj[0]['_source']['tires']['pressure_front_left']))*0.145038,
+                                                                                        'pressure_front_right':int(float(incoming_obj[0]['_source']['tires']['pressure_front_right'] ))*0.145038,
+                                                                                        'pressure_rear_left':int(float(incoming_obj[0]['_source']['tires']['pressure_rear_left']))*0.145038,
+                                                                                        'pressure_rear_right':int(float(incoming_obj[0]['_source']['tires']['pressure_rear_right']))*0.145038}
+                                                                                        ]
+                            else:
+                                if 'tires' in incoming_obj[0]['_source'].keys():
+                                    single_vin_roc_pressure[incoming_obj[0]['_source']['vin']]['pressure_list'].append({'pressure_front_left':int(float(incoming_obj[0]['_source']['tires']['pressure_front_left']))*0.145038,
+                                                                                        'pressure_front_right':int(float(incoming_obj[0]['_source']['tires']['pressure_front_right'] ))*0.145038,
+                                                                                        'pressure_rear_left':int(float(incoming_obj[0]['_source']['tires']['pressure_rear_left']))*0.145038,
+                                                                                        'pressure_rear_right':int(float(incoming_obj[0]['_source']['tires']['pressure_rear_right']))*0.145038})
+                    obj_pressure_roc_list.append(single_vin_roc_pressure)
+        logger.info("Building roc pressure list")
+
+        ############################################################################################
+        # what behavior do we want if there is only 1 object in return?
+        ############################################################################################
+        roc_list=[]
+        if len(obj_pressure_roc_list):
+            for vins_dict in obj_pressure_roc_list:
+                logger.info("vins_dict: {}".format(vins_dict))
+                #logger.info("obj_pressure_roc_list[vins_dict]:{}".format(obj_pressure_roc_list[vins_dict]))
+
+                agg_roc = {}
+                agg_roc['vin']= list(vins_dict.keys())[0]
+                front_right_tire_roc_list = []
+                front_left_tire_roc_list = []
+                rear_right_tire_roc_list = []
+                rear_left_tire_roc_list = []
+
+                ############################################################################################
+                #logger.info("len(vins_dict['pressure_list']): {}".format(len(vins_dict['pressure_list'])))
+                # example of only 1
+                # vins_dict: {'1FTYR3XM0KKB33822':{'pressure_list': [{'pressure_front_left': 380, 'pressure_front_right': 392, 'pressure_rear_left': 476, 'pressure_rear_right': 476}]}
+                ############################################################################################
+                for pressure_dict_index in range(len(vins_dict[agg_roc['vin']]['pressure_list'])-1):
+                    
+                    try:
+                        roc_front_left = (vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index]['pressure_front_left'] - vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_front_left'])/vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_front_left']
+                        roc_front_right = (vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index]['pressure_front_right'] - vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_front_right'])/vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_front_right']
+                        roc_rear_left = (vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index]['pressure_rear_left'] - vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_rear_left'])/vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_rear_left']
+                        roc_rear_right = (vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index]['pressure_rear_right'] - vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_rear_right'])/vins_dict[agg_roc['vin']]['pressure_list'][pressure_dict_index+1]['pressure_rear_right']
+                    except:
+                        logger.info("divideby0: {}".format(vins_dict))
+                        roc_front_left = 0
+                        roc_front_right = 0
+                        roc_rear_left = 0
+                        roc_rear_right = 0
+
+
+                    front_right_tire_roc_list.append(roc_front_right*100)
+                    front_left_tire_roc_list.append(roc_front_left*100)
+                    rear_right_tire_roc_list.append(roc_rear_right*100)
+                    rear_left_tire_roc_list.append(roc_rear_left*100)
+                    
+
+                logger.info("front_left_tire_roc_list: {}".format(front_left_tire_roc_list))
+                logger.info("front_right_tire_roc_list: {}".format(front_right_tire_roc_list))
+                logger.info("rear_left_tire_roc_list: {}".format(rear_left_tire_roc_list))
+                logger.info("rear_right_tire_roc_list: {}".format(rear_right_tire_roc_list))
+
+                ############################################################################################
+                # added messy catch for 0 case so it doesnt break, 
+                # Should deal with this scenario before it even gets to this section
+                ############################################################################################
+                if len(front_left_tire_roc_list):
+                    agg_roc['roc_front_left'] =  sum(front_left_tire_roc_list)/len(front_left_tire_roc_list)
+                else:
+                    agg_roc['roc_front_left'] = 0
+
+                if len(front_left_tire_roc_list):
+                    agg_roc['roc_front_right'] = sum(front_right_tire_roc_list)/len(front_right_tire_roc_list)
+                else:
+                    agg_roc['roc_front_right'] = 0
+
+                if len(front_left_tire_roc_list):
+                    agg_roc['roc_rear_left'] =  sum(rear_left_tire_roc_list)/len(rear_left_tire_roc_list)
+                else:
+                    agg_roc['roc_rear_left'] = 0
+
+                if len(front_left_tire_roc_list):
+                    agg_roc['roc_rear_right'] = sum(rear_right_tire_roc_list)/len(rear_right_tire_roc_list)
+                else:
+                    agg_roc['roc_rear_right'] = 0
+
+                roc_list.append(agg_roc)
+
+        logger.info("Returning roc pressure list")
+        return roc_list
 
     @staticmethod
     def build_vehicle_list(data):
@@ -329,6 +1246,10 @@ class CDFAutoUtils:
         temp_vehicle_list = list()
 
         for incoming_obj in data['hits']['hits']:
+            logger.info("incoming_obj: {}".format(incoming_obj))
+
+            # vehicle template
+            vehicle_template = dict()
 
             # odometer to miles
             odometer_km = incoming_obj['_source']['odometer']['metres']
@@ -340,15 +1261,12 @@ class CDFAutoUtils:
             mph_max_speed = incoming_obj['_source']['speed']['max'] * conv_fac
             mph_ave_speed = incoming_obj['_source']['speed']['average'] * conv_fac
 
-            # convert fuel from l to gal * 
-            gallons = incoming_obj['_source']['fuel']*0.264
+            # convert fuel from ml to gal
+            gallons = incoming_obj['_source']['fuel'] * 0.000264
 
             # oiltemp
             if 'oiltemp' in incoming_obj['_source']:
                 oil_temp = incoming_obj['_source']['oiltemp']
-
-            # get vehicle template
-            vehicle_template = CDFAutoUtils.load_data_template('vehicle_template.json')
 
             # static
             vehicle_template['vin'] = incoming_obj['_source']['vin']
@@ -358,40 +1276,35 @@ class CDFAutoUtils:
                 vehicle_template['model'] = incoming_obj['_source']['attributes']['model']
                 vehicle_template['modelYear'] = incoming_obj['_source']['attributes']['modelyear']
                 vehicle_template['color'] = incoming_obj['_source']['attributes']['colorcode']
+
             # telemetry
-            vehicle_template['telemetry']['odometer'] = round(odometer_miles, 1)
-            vehicle_template['telemetry']['fuelLevel'] = round(gallons, 1)
+            vehicle_template['telemetry'] = dict()
+            vehicle_template['telemetry']['odometer'] = round(odometer_miles, 2)
+            vehicle_template['telemetry']['fuelLevel'] = round(gallons, 2)
             vehicle_template['telemetry']['oilTemp'] = round(oil_temp, 2)
-            vehicle_template['telemetry']['currentSpeed'] = round(mph_current_speed, 1)
-            vehicle_template['telemetry']['maxSpeed'] = round(mph_max_speed, 1)
-            vehicle_template['telemetry']['avgSpeed'] = round(mph_ave_speed, 1)
+            vehicle_template['telemetry']['currentSpeed'] = round(mph_current_speed, 2)
+            vehicle_template['telemetry']['maxSpeed'] = round(mph_max_speed, 2)
+            vehicle_template['telemetry']['avgSpeed'] = round(mph_ave_speed, 2)
+
             # meta
+            vehicle_template['geoLocation'] = dict()
             vehicle_template['geoLocation']['heading'] = incoming_obj['_source']['geolocation']['heading']
             vehicle_template['geoLocation']['coordinates'] = [float(incoming_obj['_source']['geolocation']['longitude']), float(incoming_obj['_source']['geolocation']['latitude'])]
+            
             # device data
             if 'devices' in incoming_obj['_source'].keys():
-                if len(incoming_obj['_source']['devices']):
-                    for device in incoming_obj['_source']['devices']:
-                        device_template = CDFAutoUtils.load_data_template('device_template.json')
-                        device_template['swVersion'] = device['softwareversion']
-                        device_template['deviceId'] = device['deviceid'].upper()
-                        vehicle_template['devices'].append(device_template)
+                logger.info("this has devices")
+                vehicle_template['devices'] = incoming_obj['_source']['devices']
 
-            trip_odometer = incoming_obj['_source']['odometer'].get('tripodometer')
-            fuelinfo = incoming_obj['_source'].get('fuelinfo')
-            if fuelinfo:
-                trip_fuel = fuelinfo.get('currenttripconsumption')
-                tankcapacity = fuelinfo.get('tankcapacity')
+            # service set data
+            if 'service_set' in incoming_obj['_source'].keys():
+                logger.info("this has service set")
+                vehicle_template['service_set'] = incoming_obj['_source']['service_set']
 
-            if trip_odometer:
-                vehicle_template['telemetry']['tripOdometer'] = round(trip_odometer*conv_fac, 2)
-            
-            if fuelinfo:
-                if trip_fuel:
-                    vehicle_template['telemetry']['tripFuel'] = round(trip_fuel*0.000264, 2)
-                if tankcapacity:
-                    vehicle_template['telemetry']['tankCapacity'] = round(tankcapacity, 2)
-
+            # service status data
+            if 'service_status' in incoming_obj['_source'].keys():
+                logger.info("this has service status")
+                vehicle_template['service_status'] = incoming_obj['_source']['service_status']
 
             temp_vehicle_list.append(vehicle_template)
 
@@ -477,7 +1390,7 @@ class CDFAutoUtils:
             mins = trip['_source']['tripsummary']['duration'] / 60000
 
             # convert ml to gallons
-            gallons = trip['_source']['tripsummary']['fuel'] * 0.000264;
+            gallons = trip['_source']['tripsummary']['fuel'] * 0.000264
 
             # mpg = miles/gallons
             mpg = miles / gallons if gallons else 0
@@ -740,3 +1653,21 @@ class CDFAutoUtils:
         # build respone for UI
         vehicle_data = CDFAutoUtils.build_vehicle_list(temp_vehicle_list_parent)
         return vehicle_data
+
+    @staticmethod
+    def lowercase(data):
+        """ Make dictionary keys lowercase """
+
+        if isinstance(data, dict):
+            return {key.lower(): CDFAutoUtils.lowercase(value) for key, value in data.items()}
+        elif isinstance(data, (list, set, tuple)):
+            data_type = type(data)
+            return data_type(CDFAutoUtils.lowercase(obj) for obj in data)
+        else:
+            return data
+
+    @staticmethod
+    def clean_data(data):
+        """convert stringified data to json"""
+        return json.loads(data)
+

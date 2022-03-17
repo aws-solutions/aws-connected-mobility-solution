@@ -35,7 +35,7 @@ const Filters = ({ filters, validMapboxToken, clearFilters }) => {
   }, []);
 
   const filteringMap = buildIsFilteringMap(filters);
-  const isFiltering = !Object.values(filteringMap).every(val => !val);
+  const isFiltering = !Object.values(filteringMap).every((val) => !val);
 
   React.useEffect(() => {
     updateMaxFilterMenuHeight();
@@ -56,7 +56,7 @@ const Filters = ({ filters, validMapboxToken, clearFilters }) => {
           keyName,
           Component,
           isFilteringFunc,
-          hasOptionsFunc
+          // hasOptionsFunc,
         } = filter;
 
         const filterData = filters[keyName];
@@ -68,7 +68,7 @@ const Filters = ({ filters, validMapboxToken, clearFilters }) => {
             filterData={filters[keyName]}
             isFiltering={isFilteringFunc(filterData)}
             keyName={keyName}
-            disabled={!validMapboxToken || !hasOptionsFunc(filterData)}
+            // disabled={!validMapboxToken || !hasOptionsFunc(filterData)}
             maxFilterMenuHeight={maxFilterMenuHeight}
             Component={Component}
           />
@@ -86,16 +86,16 @@ const Filters = ({ filters, validMapboxToken, clearFilters }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     filters,
-    map: { validMapboxToken }
+    map: { validMapboxToken },
   } = state;
   return { filters, validMapboxToken };
 };
 
-const mapDispatchToProps = dispatch => ({
-  clearFilters: () => dispatch(clearAllFilters())
+const mapDispatchToProps = (dispatch) => ({
+  clearFilters: () => dispatch(clearAllFilters()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filters);
@@ -113,23 +113,24 @@ const useStyles = makeStyles(() => ({
     minWidth: "1rem",
     "&:hover": {
       boxShadow: "none",
-      backgroundColor: "transparent"
+      backgroundColor: "transparent",
     },
     "&:disabled": {
       pointerEvents: "all",
-      cursor: "not-allowed"
+      cursor: "not-allowed",
     },
     "& .MuiButton-label": {
-      fontWeight: "normal"
-    }
-  }
+      fontWeight: "normal",
+    },
+  },
 }));
 
-const checkboxFilteringFunc = data => !data.options.every(op => !op.selected);
-const hasOptionsFunc = data => !!data.options.length;
-const multiBoxesCheckedFunc = data =>
-  data.options.filter(op => op.selected).length > 1;
-const multiOptionsSelectedFunc = data => data.options.length > 1;
+const checkboxFilteringFunc = (data) =>
+  !data.options.every((op) => !op.selected);
+const hasOptionsFunc = (data) => !!data.options.length;
+const multiBoxesCheckedFunc = (data) =>
+  data.options.filter((op) => op.selected).length > 1;
+const multiOptionsSelectedFunc = (data) => data.options.length > 1;
 
 export const filterComponents = [
   {
@@ -138,7 +139,7 @@ export const filterComponents = [
     Component: CheckboxGroup,
     selectedMultipleFiltersFunc: multiBoxesCheckedFunc,
     isFilteringFunc: checkboxFilteringFunc,
-    hasOptionsFunc
+    hasOptionsFunc,
   },
   {
     label: "Trouble Codes",
@@ -146,7 +147,7 @@ export const filterComponents = [
     Component: CheckboxGroup,
     selectedMultipleFiltersFunc: multiBoxesCheckedFunc,
     isFilteringFunc: checkboxFilteringFunc,
-    hasOptionsFunc
+    hasOptionsFunc,
   },
   {
     label: "Location",
@@ -154,30 +155,31 @@ export const filterComponents = [
     Component: LocationFilter,
     selectedMultipleFiltersFunc: multiOptionsSelectedFunc,
     isFilteringFunc: hasOptionsFunc,
-    hasOptionsFunc: () => true
+    hasOptionsFunc: () => true,
   },
   {
     label: "Vehicle",
     keyName: "vehicle",
     Component: VehicleFilter,
-    selectedMultipleFiltersFunc: data =>
+    selectedMultipleFiltersFunc: (data) =>
       multiOptionsSelectedFunc(data.vin) ||
       multiOptionsSelectedFunc(data.make) ||
       multiOptionsSelectedFunc(data.model) ||
       multiOptionsSelectedFunc(data.year),
-    isFilteringFunc: data =>
+    isFilteringFunc: (data) =>
       hasOptionsFunc(data.vin) ||
       hasOptionsFunc(data.make) ||
       hasOptionsFunc(data.model) ||
       hasOptionsFunc(data.year),
-    hasOptionsFunc: () => true
+    hasOptionsFunc: () => true,
   },
   {
     label: "Software",
     keyName: "software",
     Component: SoftwareFilter,
-    selectedMultipleFiltersFunc: data => multiOptionsSelectedFunc(data.version),
-    isFilteringFunc: data => hasOptionsFunc(data.version),
-    hasOptionsFunc: () => true
-  }
+    selectedMultipleFiltersFunc: (data) =>
+      multiOptionsSelectedFunc(data.version),
+    isFilteringFunc: (data) => hasOptionsFunc(data.version),
+    hasOptionsFunc: () => true,
+  },
 ];

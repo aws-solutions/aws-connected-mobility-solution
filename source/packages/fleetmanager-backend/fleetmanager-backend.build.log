@@ -1,0 +1,140 @@
+Invoking: ./bundle.bash 
+
+Collecting crhelper==2.0.5
+  Downloading crhelper-2.0.5-py3-none-any.whl (15 kB)
+Collecting boto3==1.21.4
+  Downloading boto3-1.21.4-py3-none-any.whl (132 kB)
+Collecting botocore==1.24.9
+  Downloading botocore-1.24.9-py3-none-any.whl (8.6 MB)
+Collecting elasticsearch==7.6.0
+  Downloading elasticsearch-7.6.0-py2.py3-none-any.whl (88 kB)
+Collecting more_itertools==8.2.0
+  Downloading more_itertools-8.2.0-py3-none-any.whl (43 kB)
+Collecting polyline==1.4.0
+  Downloading polyline-1.4.0-py2.py3-none-any.whl (4.4 kB)
+Collecting collections-extended==1.0.3
+  Downloading collections_extended-1.0.3-py2.py3-none-any.whl (19 kB)
+Collecting requests-aws4auth==0.9
+  Downloading requests_aws4auth-0.9-py2.py3-none-any.whl (54 kB)
+Collecting marshmallow==3.5.1
+  Downloading marshmallow-3.5.1-py2.py3-none-any.whl (45 kB)
+Collecting DateTime==4.3
+  Downloading DateTime-4.3-py2.py3-none-any.whl (60 kB)
+Collecting mercantile==1.1.4
+  Downloading mercantile-1.1.4-py3-none-any.whl (13 kB)
+Collecting chalice==1.26.6
+  Downloading chalice-1.26.6-py3-none-any.whl (264 kB)
+Requirement already satisfied: requests in /home/ec2-user/.local/lib/python3.7/site-packages (from crhelper==2.0.5->-r requirements.txt (line 1)) (2.25.1)
+Requirement already satisfied: s3transfer<0.6.0,>=0.5.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from boto3==1.21.4->-r requirements.txt (line 2)) (0.5.2)
+Requirement already satisfied: jmespath<1.0.0,>=0.7.1 in /usr/local/lib/python3.7/site-packages (from boto3==1.21.4->-r requirements.txt (line 2)) (0.10.0)
+Requirement already satisfied: urllib3<1.27,>=1.25.4 in /usr/local/lib/python3.7/site-packages (from botocore==1.24.9->-r requirements.txt (line 3)) (1.26.8)
+Requirement already satisfied: python-dateutil<3.0.0,>=2.1 in /usr/local/lib/python3.7/site-packages (from botocore==1.24.9->-r requirements.txt (line 3)) (2.8.2)
+Requirement already satisfied: six>=1.8.0 in /usr/local/lib/python3.7/site-packages (from polyline==1.4.0->-r requirements.txt (line 6)) (1.16.0)
+Requirement already satisfied: setuptools in /usr/lib/python3.7/site-packages (from collections-extended==1.0.3->-r requirements.txt (line 7)) (49.1.3)
+Requirement already satisfied: pytz in /usr/local/lib/python3.7/site-packages (from DateTime==4.3->-r requirements.txt (line 10)) (2021.3)
+Collecting zope.interface
+  Downloading zope.interface-5.4.0-cp37-cp37m-manylinux2010_x86_64.whl (251 kB)
+Requirement already satisfied: click>=3.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from mercantile==1.1.4->-r requirements.txt (line 11)) (7.1.2)
+Requirement already satisfied: pip<22.1,>=9 in /usr/lib/python3.7/site-packages (from chalice==1.26.6->-r requirements.txt (line 12)) (20.2.2)
+Collecting mypy-extensions==0.4.3
+  Downloading mypy_extensions-0.4.3-py2.py3-none-any.whl (4.5 kB)
+Requirement already satisfied: attrs<21.5.0,>=19.3.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice==1.26.6->-r requirements.txt (line 12)) (21.4.0)
+Collecting inquirer<3.0.0,>=2.7.0
+  Downloading inquirer-2.9.1-py3-none-any.whl (16 kB)
+Requirement already satisfied: pyyaml<7.0.0,>=5.3.1 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice==1.26.6->-r requirements.txt (line 12)) (5.4.1)
+Requirement already satisfied: wheel in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice==1.26.6->-r requirements.txt (line 12)) (0.37.1)
+Requirement already satisfied: idna<3,>=2.5 in /home/ec2-user/.local/lib/python3.7/site-packages (from requests->crhelper==2.0.5->-r requirements.txt (line 1)) (2.10)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ec2-user/.local/lib/python3.7/site-packages (from requests->crhelper==2.0.5->-r requirements.txt (line 1)) (2021.10.8)
+Requirement already satisfied: chardet<5,>=3.0.2 in /home/ec2-user/.local/lib/python3.7/site-packages (from requests->crhelper==2.0.5->-r requirements.txt (line 1)) (4.0.0)
+Collecting readchar>=2.0.1
+  Downloading readchar-3.0.5-py3-none-any.whl (7.0 kB)
+Collecting python-editor>=1.0.4
+  Downloading python_editor-1.0.4-py3-none-any.whl (4.9 kB)
+Collecting blessed>=1.19.0
+  Downloading blessed-1.19.1-py2.py3-none-any.whl (58 kB)
+Requirement already satisfied: wcwidth>=0.1.4 in /usr/local/lib/python3.7/site-packages (from blessed>=1.19.0->inquirer<3.0.0,>=2.7.0->chalice==1.26.6->-r requirements.txt (line 12)) (0.2.5)
+Installing collected packages: crhelper, botocore, boto3, elasticsearch, more-itertools, polyline, collections-extended, requests-aws4auth, marshmallow, zope.interface, DateTime, mercantile, mypy-extensions, readchar, python-editor, blessed, inquirer, chalice
+  Attempting uninstall: botocore
+    Found existing installation: botocore 1.24.10
+    Uninstalling botocore-1.24.10:
+      Successfully uninstalled botocore-1.24.10
+  Attempting uninstall: boto3
+    Found existing installation: boto3 1.21.10
+    Uninstalling boto3-1.21.10:
+      Successfully uninstalled boto3-1.21.10
+Successfully installed DateTime-4.3 blessed-1.19.1 boto3-1.21.4 botocore-1.24.9 chalice-1.26.6 collections-extended-1.0.3 crhelper-2.0.5 elasticsearch-7.6.0 inquirer-2.9.1 marshmallow-3.5.1 mercantile-1.1.4 more-itertools-8.2.0 mypy-extensions-0.4.3 polyline-1.4.0 python-editor-1.0.4 readchar-3.0.5 requests-aws4auth-0.9 zope.interface-5.4.0
+Requirement already satisfied: chalice in /home/ec2-user/.local/lib/python3.7/site-packages (1.26.6)
+Requirement already satisfied: wheel in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (0.37.1)
+Requirement already satisfied: botocore<2.0.0,>=1.14.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (1.24.9)
+Requirement already satisfied: pip<22.1,>=9 in /usr/lib/python3.7/site-packages (from chalice) (20.2.2)
+Requirement already satisfied: pyyaml<7.0.0,>=5.3.1 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (5.4.1)
+Requirement already satisfied: attrs<21.5.0,>=19.3.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (21.4.0)
+Requirement already satisfied: click<9.0,>=7 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (7.1.2)
+Requirement already satisfied: jmespath<1.0.0,>=0.9.3 in /usr/local/lib/python3.7/site-packages (from chalice) (0.10.0)
+Requirement already satisfied: inquirer<3.0.0,>=2.7.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (2.9.1)
+Requirement already satisfied: mypy-extensions==0.4.3 in /home/ec2-user/.local/lib/python3.7/site-packages (from chalice) (0.4.3)
+Requirement already satisfied: setuptools in /usr/lib/python3.7/site-packages (from chalice) (49.1.3)
+Requirement already satisfied: six<2.0.0,>=1.10.0 in /usr/local/lib/python3.7/site-packages (from chalice) (1.16.0)
+Requirement already satisfied: python-dateutil<3.0.0,>=2.1 in /usr/local/lib/python3.7/site-packages (from botocore<2.0.0,>=1.14.0->chalice) (2.8.2)
+Requirement already satisfied: urllib3<1.27,>=1.25.4 in /usr/local/lib/python3.7/site-packages (from botocore<2.0.0,>=1.14.0->chalice) (1.26.8)
+Requirement already satisfied: readchar>=2.0.1 in /home/ec2-user/.local/lib/python3.7/site-packages (from inquirer<3.0.0,>=2.7.0->chalice) (3.0.5)
+Requirement already satisfied: blessed>=1.19.0 in /home/ec2-user/.local/lib/python3.7/site-packages (from inquirer<3.0.0,>=2.7.0->chalice) (1.19.1)
+Requirement already satisfied: python-editor>=1.0.4 in /home/ec2-user/.local/lib/python3.7/site-packages (from inquirer<3.0.0,>=2.7.0->chalice) (1.0.4)
+Requirement already satisfied: wcwidth>=0.1.4 in /usr/local/lib/python3.7/site-packages (from blessed>=1.19.0->inquirer<3.0.0,>=2.7.0->chalice) (0.2.5)
+
+**********************************************************
+*******   CMS Fleetmanager: Packaging Lambdas     ********
+**********************************************************
+
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_anomaly_ddb_es.py
+  adding: cdf_auto_fleetmanager_anomaly_ddb_es.py (deflated 68%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_device_events.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_device_events.py (deflated 66%)
+  adding: device_events_validator.py (deflated 68%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_dtc_rule.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_dtc_rule.py (deflated 65%)
+  adding: dtc_rule_validator.py (deflated 68%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_elasticsearch_helper.py
+Elasticsearch helper, combine with json file...
+  adding: cdf_auto_fleetmanager_elasticsearch_helper.py (deflated 64%)
+  adding: elasticsearch_index_mapper.json (deflated 93%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_event_rule.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_event_rule.py (deflated 63%)
+  adding: event_rule_validator.py (deflated 68%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_groups_events.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_groups_events.py (deflated 70%)
+  adding: groups_events_validator.py (deflated 66%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_iot_event_config.py
+  adding: cdf_auto_fleetmanager_iot_event_config.py (deflated 65%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_ota_rule.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_ota_rule.py (deflated 67%)
+  adding: ota_rule_validator.py (deflated 65%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_telemetry_rule.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_telemetry_rule.py (deflated 70%)
+  adding: telemetry_rule_validator.py (deflated 72%)
+complete
+File path /home/ec2-user/environment/aws-connected-mobility-solution/source/packages/fleetmanager-backend/src/cdf_auto_fleetmanager_trips_rule.py
+File w/ validator...
+  adding: cdf_auto_fleetmanager_trips_rule.py (deflated 63%)
+  adding: trips_rule_validator.py (deflated 70%)
+complete
+
+**********************************************************
+*******  CMS Fleetmanager: Packaging CF Template  ********
+**********************************************************
+
+Creating deployment package.

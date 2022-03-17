@@ -175,5 +175,323 @@
                 "filter": []
             }
         }
-    }
+    },
+    "tire_pressure_roc":{
+        "size": 10000,
+        "query": {
+            "bool": {
+
+                "must": [
+                    {
+                      "match": {
+                        "stateofcharge": 0
+                      }
+                    }
+                  ],
+                "filter": [
+                  
+                ]
+            }
+        },
+       "aggs": {
+          "byHour": {
+              "date_histogram": {
+                  "field": "sendtimestamp",
+                  "interval": "hour",
+                  "format" : "H"
+                },
+                "aggs": {
+                  "doc": {
+                    "top_hits": {
+                      "size": 1,
+                      "sort": [{"vin.keyword": "desc"},{"sendtimestamp": "desc"}] 
+                    }
+                  }
+                }
+              }
+          }
+      },
+      "efficency_current":{
+        "size": 10000,
+        "query": {
+          "bool":{
+            "must":[
+                {
+                    "range": {
+                        "stateofcharge": {
+                            "gt":0.0,
+                            "lte":100.0
+                        }
+                    }
+                }
+              ],
+              "must_not": [
+                        {
+                          "match": {
+                            "electricenergyout": 0.0
+                          }
+                        }
+                      ],
+
+            "filter":[]
+          }
+          
+        },
+        "sort": [{"vin.keyword": "desc"}
+        ]
+      },
+    "tire_pressure_current":{
+        "size": 10000,
+        "query": {
+          "bool":{
+            "must": [
+                {
+                  "match": {
+                    "stateofcharge": 0
+                  }
+                }
+              ],
+
+            "filter":[]
+          }
+          
+        },
+        "sort": [{"vin.keyword": "desc"}
+        ]
+      },
+      "battery_level_current":{
+        "size": 10000,
+        "query": {
+          "bool":{
+            "must":[
+                {
+                    "range": {
+                        "stateofcharge": {
+                            "gt":0.0,
+                            "lte":100.0
+                        }
+                    }
+                }
+              ],
+            "filter":[]
+          }
+          
+        },
+        "sort": [{"vin.keyword": "desc"}
+        ]
+      },
+      "get_battery_info":{
+        "size": 10000,
+        "query": {
+            "bool": {
+                "must":[
+                    {
+                        "range": {
+                            "stateofcharge": {
+                                "gt":0.0,
+                                "lte":100.0
+                            }
+                        }
+                    }
+                  ],
+                "filter": []
+                    }
+            },
+            "aggs": {
+            "max_charge": {
+                "top_hits": {
+                    "size": 1,
+                    "sort": [ { "stateofcharge": { "order": "desc" } } ]
+                }
+            },
+            "min_charge": {
+                "top_hits": {
+                    "size": 1,
+                    "sort": [ { "stateofcharge": { "order": "asc" } } ]
+                }
+            }
+            }
+        
+    },
+    "efficency":{
+        "size": 10000,
+        "query": {
+            "bool": {
+
+                "must":[
+                    {
+                        "range": {
+                            "stateofcharge": {
+                                "gt":0.0,
+                                "lte":100.0
+                            }
+                        }
+                    }
+                  ],
+                  "must_not": [
+                            {
+                              "match": {
+                                "electricenergyout": 0.0
+                              }
+                            }
+                          ],
+                "filter": [
+                  
+                ]
+            }
+        },
+       "aggs": {
+          "byHour": {
+              "date_histogram": {
+                  "field": "sendtimestamp",
+                  "interval": "hour",
+                  "format" : "H"
+                },
+                "aggs": {
+                  "doc": {
+                    "top_hits": {
+                      "size": 1,
+                      "sort": [{"vin.keyword": "desc"},{"sendtimestamp": "desc"}] 
+                    }
+                  }
+                }
+              }
+          }
+      },
+      "not_charging_current":{
+        "size": 10000,
+        "query": {
+          "bool":{
+            "must": [
+                {
+                    "range": {
+                        "stateofcharge": {
+                            "gt":0.0,
+                            "lte":85.0
+                        }
+                    }
+                }
+              ],
+
+            "filter":[]
+          }
+          
+        },
+        "sort": [{"vin.keyword": "desc"}
+        ]
+      },
+      "not_charging_individual":{
+        "size": 10000,
+        "query": {
+            "bool": {
+                "filter": []
+            }
+        },"aggs": {
+                    "max_charge": {
+                       "top_hits": {
+                          "size": 1,
+                          "sort": [ { "stateofcharge": { "order": "desc" } } ]
+                       }
+            }}
+      
+      },"analytics_charts":
+      {  "size": 10000,
+        "query": { 
+          
+          
+          "bool": {
+            
+            "must": [{
+                          "prefix": {
+                              "vin.keyword": "WDF"
+                          }
+                      }
+            ],
+            "must_not": [
+                      {
+                        "match": {
+                          "electricenergyout": 0.0
+                        }
+                      }
+                    ]
+          }
+        },
+         "aggs": {
+              "vin_id": {
+                "terms": {
+                  "field": "vin.keyword","size": 10000
+                },"aggs": {
+                  "odometer_reading": {
+                    "nested": {
+                      "path": "odometer"
+                    },
+                    "aggs": {
+                      "min_dist": {
+                        "min": {
+                          "field": "odometer.metres"
+                        }
+                      },"max_dist": {
+                        "max": {
+                          "field": "odometer.metres"
+                        }
+                      }
+                      
+                    }
+                  },"distance": {
+                "bucket_script": {
+                  "buckets_path": {
+                    "minval": "odometer_reading>min_dist",
+                    "maxval": "odometer_reading>max_dist"
+                  },
+                  "script": "params.maxval/1000 - params.minval/1000"
+                }
+              },"min_electricenergyout": {
+                        "min": {
+                          "field": "electricenergyout"
+                        }
+                      },"max_electricenergyout": {
+                        "max": {
+                          "field": "electricenergyout"
+                        }
+                      },"energyconsumed": {
+                "bucket_script": {
+                  "buckets_path": {
+                    "minval": "min_electricenergyout",
+                    "maxval": "max_electricenergyout"
+                  },
+                  "script": "params.maxval - params.minval"
+                }
+              },"efficiency": {
+                "bucket_script": {
+                  "buckets_path": {
+                    "energy": "energyconsumed",
+                    "dist": "distance"
+                  },
+                  "script": "100*params.energy/params.dist"
+                }
+              }
+                }
+          },"distance_tp90":{
+        "percentiles_bucket": {
+          "buckets_path": "vin_id>distance","percents":[90]
+        }},"efficiency_mean":{
+        "avg_bucket": {
+          "buckets_path": "vin_id>efficiency"
+        }},"distance_avg":{
+        "avg_bucket": {
+          "buckets_path": "vin_id>distance"
+        }},"efficiency_stats":{
+        "percentiles_bucket": {
+          "buckets_path": "vin_id>efficiency","percents":[25,50,75]
+        }}
+      }}
 }
+
+
+
+
+
+
+
+
+

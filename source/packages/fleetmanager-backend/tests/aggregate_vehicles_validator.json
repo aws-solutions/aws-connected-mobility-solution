@@ -1,0 +1,895 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "vehicleCount": 38,
+            "filters": {
+                "anomalies": [
+                    {
+                        "id": "OilTemp",
+                        "count": 28
+                    }
+                ],
+                "troubleCodes": [
+                    {
+                        "id": "P1734",
+                        "count": 8
+                    }
+                ]
+            },
+            "vehicles": [
+                {
+                    "vin": "5AZYB53IXEE10036",
+                    "make": "AMZ",
+                    "model": "4",
+                    "modelYear": 2019,
+                    "color": "254",
+                    "telemetry": {
+                        "odometer": 3027.74,
+                        "fuelLevel": 0.05,
+                        "oilTemp": 286.66,
+                        "currentSpeed": 20.08,
+                        "maxSpeed": 20.08,
+                        "avgSpeed": 0.0
+                    },
+                    "devices": [
+                        {
+                            "swVersion": "2.2",
+                            "deviceId": "ECU-AWS-2014-GCXKIINFSOV"
+                        }
+                    ],
+                    "geoLocation": {
+                        "heading": 350.3769180104864,
+                        "coordinates": [
+                            -115.13324000557736,
+                            36.036310026600006
+                        ]
+                    }
+                },
+                {
+                    "vin": "5AZYB49QXDB10031",
+                    "make": "AMZ",
+                    "model": "3",
+                    "modelYear": 2012,
+                    "color": "252",
+                    "telemetry": {
+                        "odometer": 52603.17,
+                        "fuelLevel": 0.14,
+                        "oilTemp": 279.66,
+                        "currentSpeed": 54.43,
+                        "maxSpeed": 54.43,
+                        "avgSpeed": 0.0
+                    },
+                    "devices": [
+                        {
+                            "swVersion": "1.6",
+                            "deviceId": "ECU-AWS-2017-G6AJNTFH0NC"
+                        }
+                    ],
+                    "geoLocation": {
+                        "heading": 90.60044426545056,
+                        "coordinates": [
+                            -115.21897987745746,
+                            36.17388999896328
+                        ]
+                    }
+                }
+            ],
+            "clusters": [
+                {
+                    "coordinates": [
+                        -115.15869140625,
+                        36.191090014029356
+                    ],
+                    "properties": {
+                        "bbox": [
+                            -115.1806640625,
+                            36.17335693522159,
+                            -115.13671875,
+                            36.20882309283712
+                        ],
+                        "key": "13/1475/3211",
+                        "count": 3
+                    }
+                },
+                {
+                    "coordinates": [
+                        -115.24658203125,
+                        36.191090014029356
+                    ],
+                    "properties": {
+                        "bbox": [
+                            -115.2685546875,
+                            36.17335693522159,
+                            -115.224609375,
+                            36.20882309283712
+                        ],
+                        "key": "13/1473/3211",
+                        "count": 3
+                    }
+                }
+            ],
+            "offset": 2
+        }
+    ],
+    "required": [
+        "vehicleCount",
+        "filters",
+        "vehicles",
+        "clusters",
+        "offset"
+    ],
+    "properties": {
+        "vehicleCount": {
+            "$id": "#/properties/vehicleCount",
+            "type": "integer",
+            "title": "The vehicleCount schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                38
+            ]
+        },
+        "filters": {
+            "$id": "#/properties/filters",
+            "type": "object",
+            "title": "The filters schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "anomalies": [
+                        {
+                            "id": "OilTemp",
+                            "count": 28
+                        }
+                    ],
+                    "troubleCodes": [
+                        {
+                            "id": "P1734",
+                            "count": 8
+                        },
+                        {
+                            "id": "P0521",
+                            "count": 7
+                        },
+                        {
+                            "id": "P1703",
+                            "count": 6
+                        },
+                        {
+                            "id": "P0301",
+                            "count": 5
+                        },
+                        {
+                            "id": "U1627",
+                            "count": 3
+                        }
+                    ]
+                }
+            ],
+            "required": [
+                "anomalies",
+                "troubleCodes"
+            ],
+            "properties": {
+                "anomalies": {
+                    "$id": "#/properties/filters/properties/anomalies",
+                    "type": "array",
+                    "title": "The anomalies schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            {
+                                "id": "OilTemp",
+                                "count": 28
+                            }
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/filters/properties/anomalies/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/filters/properties/anomalies/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "id": "OilTemp",
+                                        "count": 28
+                                    }
+                                ],
+                                "required": [
+                                    "id",
+                                    "count"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "$id": "#/properties/filters/properties/anomalies/items/anyOf/0/properties/id",
+                                        "type": "string",
+                                        "title": "The id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "OilTemp"
+                                        ]
+                                    },
+                                    "count": {
+                                        "$id": "#/properties/filters/properties/anomalies/items/anyOf/0/properties/count",
+                                        "type": "integer",
+                                        "title": "The count schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            28
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                },
+                "troubleCodes": {
+                    "$id": "#/properties/filters/properties/troubleCodes",
+                    "type": "array",
+                    "title": "The troubleCodes schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            {
+                                "id": "P1734",
+                                "count": 8
+                            },
+                            {
+                                "id": "P0521",
+                                "count": 7
+                            }
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/filters/properties/troubleCodes/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/filters/properties/troubleCodes/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "id": "P1734",
+                                        "count": 8
+                                    }
+                                ],
+                                "required": [
+                                    "id",
+                                    "count"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "$id": "#/properties/filters/properties/troubleCodes/items/anyOf/0/properties/id",
+                                        "type": "string",
+                                        "title": "The id schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "P1734"
+                                        ]
+                                    },
+                                    "count": {
+                                        "$id": "#/properties/filters/properties/troubleCodes/items/anyOf/0/properties/count",
+                                        "type": "integer",
+                                        "title": "The count schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            8
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": true
+        },
+        "vehicles": {
+            "$id": "#/properties/vehicles",
+            "type": "array",
+            "title": "The vehicles schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "vin": "5AZYB53IXEE10036",
+                        "make": "AMZ",
+                        "model": "4",
+                        "modelYear": 2019,
+                        "color": "254",
+                        "telemetry": {
+                            "odometer": 3027.74,
+                            "fuelLevel": 0.05,
+                            "oilTemp": 286.66,
+                            "currentSpeed": 20.08,
+                            "maxSpeed": 20.08,
+                            "avgSpeed": 0.0
+                        },
+                        "devices": [
+                            {
+                                "swVersion": "2.2",
+                                "deviceId": "ECU-AWS-2014-GCXKIINFSOV"
+                            }
+                        ],
+                        "geoLocation": {
+                            "heading": 350.3769180104864,
+                            "coordinates": [
+                                -115.13324000557736,
+                                36.036310026600006
+                            ]
+                        }
+                    },
+                    {
+                        "vin": "5AZYB49QXDB10031",
+                        "make": "AMZ",
+                        "model": "3",
+                        "modelYear": 2012,
+                        "color": "252",
+                        "telemetry": {
+                            "odometer": 52603.17,
+                            "fuelLevel": 0.14,
+                            "oilTemp": 279.66,
+                            "currentSpeed": 54.43,
+                            "maxSpeed": 54.43,
+                            "avgSpeed": 0.0
+                        },
+                        "devices": [
+                            {
+                                "swVersion": "1.6",
+                                "deviceId": "ECU-AWS-2017-G6AJNTFH0NC"
+                            }
+                        ],
+                        "geoLocation": {
+                            "heading": 90.60044426545056,
+                            "coordinates": [
+                                -115.21897987745746,
+                                36.17388999896328
+                            ]
+                        }
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/vehicles/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/vehicles/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "vin": "5AZYB53IXEE10036",
+                                "make": "AMZ",
+                                "model": "4",
+                                "modelYear": 2019,
+                                "color": "254",
+                                "telemetry": {
+                                    "odometer": 3027.74,
+                                    "fuelLevel": 0.05,
+                                    "oilTemp": 286.66,
+                                    "currentSpeed": 20.08,
+                                    "maxSpeed": 20.08,
+                                    "avgSpeed": 0.0
+                                },
+                                "devices": [
+                                    {
+                                        "swVersion": "2.2",
+                                        "deviceId": "ECU-AWS-2014-GCXKIINFSOV"
+                                    }
+                                ],
+                                "geoLocation": {
+                                    "heading": 350.3769180104864,
+                                    "coordinates": [
+                                        -115.13324000557736,
+                                        36.036310026600006
+                                    ]
+                                }
+                            }
+                        ],
+                        "required": [
+                            "vin",
+                            "make",
+                            "model",
+                            "modelYear",
+                            "color",
+                            "telemetry",
+                            "devices",
+                            "geoLocation"
+                        ],
+                        "properties": {
+                            "vin": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/vin",
+                                "type": "string",
+                                "title": "The vin schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "5AZYB53IXEE10036"
+                                ]
+                            },
+                            "make": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/make",
+                                "type": "string",
+                                "title": "The make schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "AMZ"
+                                ]
+                            },
+                            "model": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/model",
+                                "type": "string",
+                                "title": "The model schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "4"
+                                ]
+                            },
+                            "modelYear": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/modelYear",
+                                "type": "integer",
+                                "title": "The modelYear schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": 0,
+                                "examples": [
+                                    2019
+                                ]
+                            },
+                            "color": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/color",
+                                "type": "string",
+                                "title": "The color schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "254"
+                                ]
+                            },
+                            "telemetry": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry",
+                                "type": "object",
+                                "title": "The telemetry schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "odometer": 3027.74,
+                                        "fuelLevel": 0.05,
+                                        "oilTemp": 286.66,
+                                        "currentSpeed": 20.08,
+                                        "maxSpeed": 20.08,
+                                        "avgSpeed": 0.0
+                                    }
+                                ],
+                                "required": [
+                                    "odometer",
+                                    "fuelLevel",
+                                    "oilTemp",
+                                    "currentSpeed",
+                                    "maxSpeed",
+                                    "avgSpeed"
+                                ],
+                                "properties": {
+                                    "odometer": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/odometer",
+                                        "type": "number",
+                                        "title": "The odometer schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            3027.74
+                                        ]
+                                    },
+                                    "fuelLevel": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/fuelLevel",
+                                        "type": "number",
+                                        "title": "The fuelLevel schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            0.05
+                                        ]
+                                    },
+                                    "oilTemp": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/oilTemp",
+                                        "type": "number",
+                                        "title": "The oilTemp schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            286.66
+                                        ]
+                                    },
+                                    "currentSpeed": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/currentSpeed",
+                                        "type": "number",
+                                        "title": "The currentSpeed schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            20.08
+                                        ]
+                                    },
+                                    "maxSpeed": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/maxSpeed",
+                                        "type": "number",
+                                        "title": "The maxSpeed schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            20.08
+                                        ]
+                                    },
+                                    "avgSpeed": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/telemetry/properties/avgSpeed",
+                                        "type": "number",
+                                        "title": "The avgSpeed schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            0.0
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            },
+                            "devices": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/devices",
+                                "type": "array",
+                                "title": "The devices schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        {
+                                            "swVersion": "2.2",
+                                            "deviceId": "ECU-AWS-2014-GCXKIINFSOV"
+                                        }
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/vehicles/items/anyOf/0/properties/devices/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/vehicles/items/anyOf/0/properties/devices/items/anyOf/0",
+                                            "type": "object",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": {},
+                                            "examples": [
+                                                {
+                                                    "swVersion": "2.2",
+                                                    "deviceId": "ECU-AWS-2014-GCXKIINFSOV"
+                                                }
+                                            ],
+                                            "required": [
+                                                "swVersion",
+                                                "deviceId"
+                                            ],
+                                            "properties": {
+                                                "swVersion": {
+                                                    "$id": "#/properties/vehicles/items/anyOf/0/properties/devices/items/anyOf/0/properties/swVersion",
+                                                    "type": "string",
+                                                    "title": "The swVersion schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": "",
+                                                    "examples": [
+                                                        "2.2"
+                                                    ]
+                                                },
+                                                "deviceId": {
+                                                    "$id": "#/properties/vehicles/items/anyOf/0/properties/devices/items/anyOf/0/properties/deviceId",
+                                                    "type": "string",
+                                                    "title": "The deviceId schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": "",
+                                                    "examples": [
+                                                        "ECU-AWS-2014-GCXKIINFSOV"
+                                                    ]
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        }
+                                    ]
+                                }
+                            },
+                            "geoLocation": {
+                                "$id": "#/properties/vehicles/items/anyOf/0/properties/geoLocation",
+                                "type": "object",
+                                "title": "The geoLocation schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "heading": 350.3769180104864,
+                                        "coordinates": [
+                                            -115.13324000557736,
+                                            36.036310026600006
+                                        ]
+                                    }
+                                ],
+                                "required": [
+                                    "heading",
+                                    "coordinates"
+                                ],
+                                "properties": {
+                                    "heading": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/geoLocation/properties/heading",
+                                        "type": "number",
+                                        "title": "The heading schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0.0,
+                                        "examples": [
+                                            350.3769180104864
+                                        ]
+                                    },
+                                    "coordinates": {
+                                        "$id": "#/properties/vehicles/items/anyOf/0/properties/geoLocation/properties/coordinates",
+                                        "type": "array",
+                                        "title": "The coordinates schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": [],
+                                        "examples": [
+                                            [
+                                                -115.13324000557736,
+                                                36.036310026600006
+                                            ]
+                                        ],
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/vehicles/items/anyOf/0/properties/geoLocation/properties/coordinates/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/vehicles/items/anyOf/0/properties/geoLocation/properties/coordinates/items/anyOf/0",
+                                                    "type": "number",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": 0.0,
+                                                    "examples": [
+                                                        -115.13324000557736,
+                                                        36.036310026600006
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "clusters": {
+            "$id": "#/properties/clusters",
+            "type": "array",
+            "title": "The clusters schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "coordinates": [
+                            -115.15869140625,
+                            36.191090014029356
+                        ],
+                        "properties": {
+                            "bbox": [
+                                -115.1806640625,
+                                36.17335693522159,
+                                -115.13671875,
+                                36.20882309283712
+                            ],
+                            "key": "13/1475/3211",
+                            "count": 3
+                        }
+                    },
+                    {
+                        "coordinates": [
+                            -115.24658203125,
+                            36.191090014029356
+                        ],
+                        "properties": {
+                            "bbox": [
+                                -115.2685546875,
+                                36.17335693522159,
+                                -115.224609375,
+                                36.20882309283712
+                            ],
+                            "key": "13/1473/3211",
+                            "count": 3
+                        }
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/clusters/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/clusters/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "coordinates": [
+                                    -115.15869140625,
+                                    36.191090014029356
+                                ],
+                                "properties": {
+                                    "bbox": [
+                                        -115.1806640625,
+                                        36.17335693522159,
+                                        -115.13671875,
+                                        36.20882309283712
+                                    ],
+                                    "key": "13/1475/3211",
+                                    "count": 3
+                                }
+                            }
+                        ],
+                        "required": [
+                            "coordinates",
+                            "properties"
+                        ],
+                        "properties": {
+                            "coordinates": {
+                                "$id": "#/properties/clusters/items/anyOf/0/properties/coordinates",
+                                "type": "array",
+                                "title": "The coordinates schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": [],
+                                "examples": [
+                                    [
+                                        -115.15869140625,
+                                        36.191090014029356
+                                    ]
+                                ],
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/clusters/items/anyOf/0/properties/coordinates/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/clusters/items/anyOf/0/properties/coordinates/items/anyOf/0",
+                                            "type": "number",
+                                            "title": "The first anyOf schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": 0.0,
+                                            "examples": [
+                                                -115.15869140625,
+                                                36.191090014029356
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "properties": {
+                                "$id": "#/properties/clusters/items/anyOf/0/properties/properties",
+                                "type": "object",
+                                "title": "The properties schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "bbox": [
+                                            -115.1806640625,
+                                            36.17335693522159,
+                                            -115.13671875,
+                                            36.20882309283712
+                                        ],
+                                        "key": "13/1475/3211",
+                                        "count": 3
+                                    }
+                                ],
+                                "required": [
+                                    "bbox",
+                                    "key",
+                                    "count"
+                                ],
+                                "properties": {
+                                    "bbox": {
+                                        "$id": "#/properties/clusters/items/anyOf/0/properties/properties/properties/bbox",
+                                        "type": "array",
+                                        "title": "The bbox schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": [],
+                                        "examples": [
+                                            [
+                                                -115.1806640625,
+                                                36.17335693522159
+                                            ]
+                                        ],
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/clusters/items/anyOf/0/properties/properties/properties/bbox/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/clusters/items/anyOf/0/properties/properties/properties/bbox/items/anyOf/0",
+                                                    "type": "number",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": 0.0,
+                                                    "examples": [
+                                                        -115.1806640625,
+                                                        36.17335693522159
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "key": {
+                                        "$id": "#/properties/clusters/items/anyOf/0/properties/properties/properties/key",
+                                        "type": "string",
+                                        "title": "The key schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "13/1475/3211"
+                                        ]
+                                    },
+                                    "count": {
+                                        "$id": "#/properties/clusters/items/anyOf/0/properties/properties/properties/count",
+                                        "type": "integer",
+                                        "title": "The count schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": 0,
+                                        "examples": [
+                                            3
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        },
+        "offset": {
+            "$id": "#/properties/offset",
+            "type": "integer",
+            "title": "The offset schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                26
+            ]
+        }
+    },
+    "additionalProperties": true
+}

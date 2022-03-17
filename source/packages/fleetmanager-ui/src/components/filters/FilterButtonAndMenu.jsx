@@ -29,7 +29,7 @@ const FilterButtonAndMenu = ({
   toggleFilterMenu,
   filterData,
   maxFilterMenuHeight,
-  Component
+  Component,
 }) => {
   const [leftOffset, setLeftOffset] = React.useState(0);
   const classes = useStyles();
@@ -54,7 +54,7 @@ const FilterButtonAndMenu = ({
         onClick={handleClick}
         disabled={disabled}
         className={clsx(classes.button, {
-          [classes.activeButton]: isActive
+          [classes.activeButton]: isActive,
         })}
       >
         {label}
@@ -80,19 +80,19 @@ FilterButtonAndMenu.propTypes = {
   label: PropTypes.string.isRequired,
   isFiltering: PropTypes.bool.isRequired,
   maxFilterMenuHeight: PropTypes.number.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  Component: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired
+  // disabled: PropTypes.bool.isRequired,
+  Component: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    views: { filterIdOpen }
+    views: { filterIdOpen },
   } = state;
   return { filterIdOpen };
 };
 
-const mapDispatchToProps = dispatch => ({
-  toggleFilterMenu: keyName => dispatch(toggleFilterIdOpen(keyName))
+const mapDispatchToProps = (dispatch) => ({
+  toggleFilterMenu: (keyName) => dispatch(toggleFilterIdOpen(keyName)),
 });
 
 export default connect(
@@ -103,7 +103,7 @@ export default connect(
 const useStyles = makeStyles(() => ({
   wrapper: {
     position: "relative",
-    display: "inline-block"
+    display: "inline-block",
   },
   button: {
     backgroundColor: veryLightGray,
@@ -119,18 +119,18 @@ const useStyles = makeStyles(() => ({
     "&:hover": {
       backgroundColor: offPink,
       color: white,
-      boxShadow: "none"
+      boxShadow: "none",
     },
     "& .MuiButton-label": {
-      fontWeight: "normal"
+      fontWeight: "normal",
     },
     "&:disabled .MuiButton-label": {
       color: darkNavyText,
-      opacity: 0.65
-    }
+      opacity: 0.65,
+    },
   },
   activeButton: {
     backgroundColor: offPink,
-    color: white
-  }
+    color: white,
+  },
 }));

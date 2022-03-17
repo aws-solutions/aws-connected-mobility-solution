@@ -43,3 +43,39 @@ body,
 #root > div {
   height: 100%;
 }
+
+.MuiToolbar-root {
+  background-color: #171e2d;
+  color: white;
+}
+
+.MuiTableCell-head {
+  background-color: #3f51b5 !important;
+  color: white !important;
+  font-weight: 400 !important;
+  z-index: 13 !important;
+}
+
+.MuiTableCell-root {
+  font-family: AmazonEmber !important;
+  font-weight: 400;
+}
+
+.MuiTableCell-body {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+.MuiTablePagination-caption {
+  font-family: AmazonEmber !important;
+  font-weight: 200 !important;
+}
+
+.rec.rec-arrow:hover {
+  background-color: #3f51b5 !important;
+}
+
+.rec.rec-dot_active {
+  box-shadow: 0 0 1px 3px #3f51b5;
+  background-color: #3f51b5;
+}
