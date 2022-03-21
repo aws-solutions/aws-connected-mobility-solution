@@ -76,6 +76,7 @@ Resources:
             - cloudformation:DescribeStackResource
             - cloudformation:DescribeStackResources
             - ec2:DescribeInstances
+            - ec2:DescribeIamInstanceProfileAssociations
             - ec2:AssociateIamInstanceProfile
             - ec2:ModifyInstanceAttribute
             - ec2:ReplaceIamInstanceProfileAssociation
@@ -174,10 +175,10 @@ Resources:
                       try:
                         response = ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance['InstanceId'])
                       except:
-                        response = client.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                        response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
                         while response['IamInstanceProfileAssociations'][0]['State'] != 'associated':
-                          response = client.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
-                        response = client.replace_iam_instance_profile_association(
+                          response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                        response = ec2.replace_iam_instance_profile_association(
                           IamInstanceProfile=iam_instance_profile,
                           AssociationId=response['IamInstanceProfileAssociations'][0]['AssociationId']
                         )
@@ -279,6 +280,7 @@ Resources:
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
             - git apply provisioning.patch
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
+            - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
             - node common/scripts/install-run-rush.js install
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS4"
