@@ -175,9 +175,10 @@ Resources:
                       try:
                         response = ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance['InstanceId'])
                       except:
-                        response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                        instanceId =instance['InstanceId']
+                        response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values': [instanceId] }])
                         while response['IamInstanceProfileAssociations'][0]['State'] != 'associated':
-                          response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                          response = ec2.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':[instanceId]}])
                         response = ec2.replace_iam_instance_profile_association(
                           IamInstanceProfile=iam_instance_profile,
                           AssociationId=response['IamInstanceProfileAssociations'][0]['AssociationId']
@@ -290,8 +291,9 @@ Resources:
             runCommand:
             - "#!/bin/bash"
             - export HOME=/home/ec2-user/
+            - . /home/ec2-user/.bashrc
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
-            - . /home/ec2-user/.nvm/nvm.sh && nvm use 14 
+            - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
             - node common/scripts/install-run-rush.js bundle
             - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
