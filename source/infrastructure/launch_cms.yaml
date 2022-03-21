@@ -144,7 +144,7 @@ Resources:
               responseData = {}
 
               if event['RequestType'] == 'Delete':
-                  responseData = {'Success': 'Delete started for instance: '+instance['InstanceId']}
+                  responseData = {'Success': 'Delete started for instance'}
                   cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, 'CustomResourcePhysicalID')
 
               if event['RequestType'] == 'Create':
@@ -163,19 +163,24 @@ Resources:
                           'Name': event['ResourceProperties']['LabIdeInstanceProfileName']
                       }
                       # logger.info('iam_instance_profile: {}'.format(iam_instance_profile))
-          
                       # Wait for Instance to become ready before adding Role
                       instance_state = instance['State']['Name']
-                      # logger.info('instance_state: {}'.format(instance_state))
                       while instance_state != 'running':
                           time.sleep(5)
                           instance_state = ec2.describe_instances(InstanceIds=[instance['InstanceId']])
                           # logger.info('instance_state: {}'.format(instance_state))
           
                       # attach instance profile
-                      response = ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance['InstanceId'])
-                      # logger.info('response - associate_iam_instance_profile: {}'.format(response))
-                      r_ec2 = boto3.resource('ec2')
+                      try:
+                        response = ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance['InstanceId'])
+                      except:
+                        response = client.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                        while response['IamInstanceProfileAssociations'][0]['State'] != 'associated':
+                          response = client.describe_iam_instance_profile_associations(Filters=[{'Name':'instance-id','Values':['InstanceId']}])
+                        response = client.replace_iam_instance_profile_association(
+                          IamInstanceProfile=iam_instance_profile,
+                          AssociationId=response['IamInstanceProfileAssociations'][0]['AssociationId']
+                        )
   
                       responseData = {'Success': 'Started bootstrapping for instance: '+instance['InstanceId']}
                       cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, 'CustomResourcePhysicalID')
@@ -252,14 +257,13 @@ Resources:
             - sudo -H -u ec2-user bash -c "pip3 install --no-warn-script-location --user -U boto boto3 botocore awscli aws-sam-cli"
             - echo '=== Clone the CDF & CMS repositories ===' 
             - git clone -b 1.0.5 https://github.com/aws/aws-connected-device-framework.git /home/ec2-user/environment/aws-connected-device-framework/
-            - git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution
-            - chown -R ec2-user:ec2-user /home/ec2-user/environment/*
+            - git clone -b evdashboard https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution/
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - echo '=== INSTALL Node + Rush  ==='
-            - sudo -H -u ec2-user bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash"
-            - sudo -H -u ec2-user bash -c ". /home/ec2-user/.bashrc"
-            - sudo -H -u ec2-user bash -c ". /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14"
-            - chown -R ec2-user:ec2-user /home/ec2-user/
+            - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            - . /home/ec2-user/.bashrc
+            - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS3"
           nextStep: "AWSIoTC9bootstrapS4"
@@ -270,7 +274,11 @@ Resources:
             - export HOME=/home/ec2-user/
             - . /home/ec2-user/.bashrc
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
-            - . /home/ec2-user/.nvm/nvm.sh && nvm use 14 
+            - . /home/ec2-user/.bashrc
+            - cd /home/ec2-user/environment/aws-connected-device-framework/source/packages/services/provisioning/src/config
+            - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
+            - git apply provisioning.patch
+            - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - node common/scripts/install-run-rush.js install
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS4"
@@ -280,10 +288,10 @@ Resources:
             runCommand:
             - "#!/bin/bash"
             - export HOME=/home/ec2-user/
-            - . /home/ec2-user/.bashrc
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - . /home/ec2-user/.nvm/nvm.sh && nvm use 14 
             - node common/scripts/install-run-rush.js bundle
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS5"
           nextStep: "AWSIoTC9bootstrapS6"        
@@ -295,7 +303,7 @@ Resources:
             - !Sub export REGION=${AWS::Region}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms2-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms3-$ENV_NAME-$AWS_ACCOUNT_ID
             - aws s3 mb s3://$CMS_BUCKET_NAME --region $REGION
             - export KEYPAIR_NAME=cdf2-dev-key
             - rm -f /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
@@ -304,6 +312,7 @@ Resources:
             - echo '=== BUILD & DEPLOY CMS  ==='
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - ./infrastructure/deploy-core-single-stack.bash -e $ENV_NAME -b $CMS_BUCKET_NAME -p $KEYPAIR_NAME -y s3://$CMS_BUCKET_NAME/template-snippets/ -i 0.0.0.0/0 -Y -B -R $REGION
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS6"
           nextStep: "AWSIoTC9bootstrapS7" 
@@ -317,6 +326,7 @@ Resources:
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
             - . /home/ec2-user/.nvm/nvm.sh && nvm use 14
             - node common/scripts/install-run-rush.js install  
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS7"
           nextStep: "AWSIoTC9bootstrapS8"
@@ -335,6 +345,7 @@ Resources:
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
             - . /home/ec2-user/.nvm/nvm.sh && nvm use 14
             - node common/scripts/install-run-rush.js bundle
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
           name: "AWSIoTC9bootstrapS8"
           isEnd: true
@@ -348,13 +359,13 @@ Resources:
             - !Sub export CMS_ADMIN_EMAIL=${CMSAdminEmail}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms2-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms3-$ENV_NAME-$AWS_ACCOUNT_ID
             - export KEY_ID=$(aws kms create-key --description "CMS KMS Test Key" --query KeyMetadata.KeyId --output text)
             - echo '=== DEPLOY CMS  ==='
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
             - chmod 777 infrastructure/deploy.bash
             - ./infrastructure/deploy.bash -e $ENV_NAME -l $ENV_NAME -b $CMS_BUCKET_NAME -h $CMS_ADMIN_EMAIL -k $KEY_ID -b $CMS_BUCKET_NAME -Y -B -R $REGION
-
+            - chown -R ec2-user:ec2-user /home/ec2-user/*
   AWSIoTC9BootstrapAssociation: 
     Type: AWS::SSM::Association
     DependsOn: AWSIoTC9OutputBucket 
