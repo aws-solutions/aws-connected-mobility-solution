@@ -307,13 +307,13 @@ Resources:
             - !Sub export REGION=${AWS::Region}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms3-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms10-$ENV_NAME-$AWS_ACCOUNT_ID
             - aws s3 mb s3://$CMS_BUCKET_NAME --region $REGION
-            - export KEYPAIR_NAME=cdf2-dev-key
+            - export KEYPAIR_NAME=cdfB-dev-key
             - rm -f /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
             - aws ec2 create-key-pair --key-name $KEYPAIR_NAME --query 'KeyMaterial' --output text >/home/ec2-user/.ssh/$KEYPAIR_NAME.pem --region $REGION
             - chmod 400 /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
-            - echo '=== BUILD & DEPLOY CMS  ==='
+            - echo '=== BUILD & DEPLOY CDF  ==='
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - ./infrastructure/deploy-core-single-stack.bash -e $ENV_NAME -b $CMS_BUCKET_NAME -p $KEYPAIR_NAME -y s3://$CMS_BUCKET_NAME/template-snippets/ -i 0.0.0.0/0 -Y -B -R $REGION
             - chown -R ec2-user:ec2-user /home/ec2-user/*
@@ -328,7 +328,7 @@ Resources:
             - rm -rf /home/ec2-user/node_modules
             - . /home/ec2-user/.bashrc
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
-            - . /home/ec2-user/.nvm/nvm.sh && nvm use 14
+            - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
             - node common/scripts/install-run-rush.js install  
             - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
@@ -347,7 +347,7 @@ Resources:
             - echo '=== BUILD CMS  ==='
             - PATH=/root/.local/bin:$PATH
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
-            - . /home/ec2-user/.nvm/nvm.sh && nvm use 14
+            - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
             - node common/scripts/install-run-rush.js bundle
             - chown -R ec2-user:ec2-user /home/ec2-user/*
         - action: "aws:runShellScript"
@@ -363,7 +363,7 @@ Resources:
             - !Sub export CMS_ADMIN_EMAIL=${CMSAdminEmail}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms3-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms10-$ENV_NAME-$AWS_ACCOUNT_ID
             - export KEY_ID=$(aws kms create-key --description "CMS KMS Test Key" --query KeyMetadata.KeyId --output text)
             - echo '=== DEPLOY CMS  ==='
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
