@@ -259,7 +259,7 @@ Resources:
             - sudo -H -u ec2-user bash -c "pip3 install --no-warn-script-location --user -U boto boto3 botocore awscli aws-sam-cli"
             - echo '=== Clone the CDF & CMS repositories ===' 
             - git clone -b 1.0.5 https://github.com/aws/aws-connected-device-framework.git /home/ec2-user/environment/aws-connected-device-framework/
-            - git clone -b evdashboard https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution/
+            - git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution/
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - echo '=== INSTALL Node + Rush  ==='
             - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
