@@ -307,9 +307,9 @@ Resources:
             - !Sub export REGION=${AWS::Region}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms10-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms15ab-$ENV_NAME-$AWS_ACCOUNT_ID
             - aws s3 mb s3://$CMS_BUCKET_NAME --region $REGION
-            - export KEYPAIR_NAME=cdfB-dev-key
+            - export KEYPAIR_NAME=cdfBa-dev-key
             - rm -f /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
             - aws ec2 create-key-pair --key-name $KEYPAIR_NAME --query 'KeyMaterial' --output text >/home/ec2-user/.ssh/$KEYPAIR_NAME.pem --region $REGION
             - chmod 400 /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
@@ -363,7 +363,7 @@ Resources:
             - !Sub export CMS_ADMIN_EMAIL=${CMSAdminEmail}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms10-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export CMS_BUCKET_NAME=cms15ab-$ENV_NAME-$AWS_ACCOUNT_ID
             - export KEY_ID=$(aws kms create-key --description "CMS KMS Test Key" --query KeyMetadata.KeyId --output text)
             - echo '=== DEPLOY CMS  ==='
             - cd /home/ec2-user/environment/aws-connected-mobility-solution/source
