@@ -1,0 +1,1242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2-SNAPSHOT 76579c6">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="cdf-auto-provisioning" enabled="true">
+      <stringProp name="TestPlan.comments">Simulation of user creation, and device provisioning flow.</stringProp>
+      <boolProp name="TestPlan.functional_mode">true</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="awsIotHost" elementType="Argument">
+            <stringProp name="Argument.name">awsIotHost</stringProp>
+            <stringProp name="Argument.value">${__P(aws.iot.host)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="awsRegion" elementType="Argument">
+            <stringProp name="Argument.name">awsRegion</stringProp>
+            <stringProp name="Argument.value">${__P(aws.region)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfAssetLibraryAccept" elementType="Argument">
+            <stringProp name="Argument.name">cdfAssetLibraryAccept</stringProp>
+            <stringProp name="Argument.value">${__P(cdf.assetlibrary.mimetype)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfAssetLibraryContentType" elementType="Argument">
+            <stringProp name="Argument.name">cdfAssetLibraryContentType</stringProp>
+            <stringProp name="Argument.value">${__P(cdf.assetlibrary.mimetype)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfAssetLibraryApiFunctionName" elementType="Argument">
+            <stringProp name="Argument.name">cdfAssetLibraryApiFunctionName</stringProp>
+            <stringProp name="Argument.value">${__P(cdf.assetlibrary.apiFunctionName)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfFacadeAccept" elementType="Argument">
+            <stringProp name="Argument.name">cdfFacadeAccept</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.facadeMimetype,application/vnd.aws-cdf-v1.0+json)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfFacadeContentType" elementType="Argument">
+            <stringProp name="Argument.name">cdfFacadeContentType</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.facadeMimetype,application/vnd.aws-cdf-v1.0+json)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="cdfFacadeApiFunctionName" elementType="Argument">
+            <stringProp name="Argument.name">cdfFacadeApiFunctionName</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.facadeApiFunctionName)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="certificateId" elementType="Argument">
+            <stringProp name="Argument.name">certificateId</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.certificateId)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="dataDir" elementType="Argument">
+            <stringProp name="Argument.name">dataDir</stringProp>
+            <stringProp name="Argument.value">${__P(dataDir)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="deviceTotal" elementType="Argument">
+            <stringProp name="Argument.name">deviceTotal</stringProp>
+            <stringProp name="Argument.value">${__P(deviceTotal)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="instanceId" elementType="Argument">
+            <stringProp name="Argument.name">instanceId</stringProp>
+            <stringProp name="Argument.value">${__P(instanceId)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="region1" elementType="Argument">
+            <stringProp name="Argument.name">region1</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.region1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="region2" elementType="Argument">
+            <stringProp name="Argument.name">region2</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.region2)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="region3" elementType="Argument">
+            <stringProp name="Argument.name">region3</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.region3)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="region4" elementType="Argument">
+            <stringProp name="Argument.name">region4</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.region4)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="region5" elementType="Argument">
+            <stringProp name="Argument.name">region5</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.region5)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3Bucket" elementType="Argument">
+            <stringProp name="Argument.name">s3Bucket</stringProp>
+            <stringProp name="Argument.value">${__P(aws.s3.bucket)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3CaKey" elementType="Argument">
+            <stringProp name="Argument.name">s3CaKey</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.ca)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3CertificateKey" elementType="Argument">
+            <stringProp name="Argument.name">s3CertificateKey</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.certificate)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3DataGeneratorKey" elementType="Argument">
+            <stringProp name="Argument.name">s3DataGeneratorKey</stringProp>
+            <stringProp name="Argument.value">${__P(modules.dataGenerator)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3PrivateKeyKey" elementType="Argument">
+            <stringProp name="Argument.name">s3PrivateKeyKey</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.privateKey)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3SimulationEngineKey" elementType="Argument">
+            <stringProp name="Argument.name">s3SimulationEngineKey</stringProp>
+            <stringProp name="Argument.value">${__P(modules.simulationEngine)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3UploadDir" elementType="Argument">
+            <stringProp name="Argument.name">s3UploadDir</stringProp>
+            <stringProp name="Argument.value">${__P(aws.s3.uploadDir)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="simulationId" elementType="Argument">
+            <stringProp name="Argument.name">simulationId</stringProp>
+            <stringProp name="Argument.value">${__P(simulationId)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="supplierTemplate" elementType="Argument">
+            <stringProp name="Argument.name">supplierTemplate</stringProp>
+            <stringProp name="Argument.value">${__P(attributes.supplierTemplate)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="threadsCount" elementType="Argument">
+            <stringProp name="Argument.name">threadsCount</stringProp>
+            <stringProp name="Argument.value">${__P(threads.number)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="threadsLoopCount" elementType="Argument">
+            <stringProp name="Argument.name">threadsLoopCount</stringProp>
+            <stringProp name="Argument.value">${__P(threads.loopcount)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="threadsRampupSecs" elementType="Argument">
+            <stringProp name="Argument.name">threadsRampupSecs</stringProp>
+            <stringProp name="Argument.value">${__P(threads.rampup)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptestnow</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Download datasets, certs and modules" enabled="true">
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters">awsRegion,s3Bucket,s3SimulationEngineKey,dataDir,s3CertificateKey,s3PrivateKeyKey,s3CaKey,s3DataGeneratorKey</stringProp>
+          <stringProp name="script">import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.services.s3.AmazonS3
+        import com.amazonaws.services.s3.AmazonS3ClientBuilder
+        import com.amazonaws.services.s3.model.GetObjectRequest
+        import com.amazonaws.services.s3.model.S3Object
+        import com.amazonaws.auth.BasicAWSCredentials
+        import com.amazonaws.auth.AWSStaticCredentialsProvider
+        import com.amazonaws.services.s3.S3CredentialsProviderChain
+        import java.nio.file.Path;
+        import java.nio.file.Paths;
+
+        def awsRegion = vars.get(&quot;awsRegion&quot;)
+        def s3Bucket = vars.get(&quot;s3Bucket&quot;)
+        def s3CertificateKey = vars.get(&quot;s3CertificateKey&quot;)
+        def s3PrivateKeyKey = vars.get(&quot;s3PrivateKeyKey&quot;)
+        def s3CaKey = vars.get(&quot;s3CaKey&quot;)
+        def s3SimulationEngineKey = vars.get(&quot;s3SimulationEngineKey&quot;)
+        def s3DataGeneratorKey = vars.get(&quot;s3DataGeneratorKey&quot;)
+        def dataDir = vars.get(&quot;dataDir&quot;)
+        def instanceId = vars.get(&quot;instanceId&quot;)
+        def simulationId = vars.get(&quot;simulationId&quot;)
+        def certificateId = vars.get(&quot;certificateId&quot;)
+        def deviceTotal = vars.get(&quot;deviceTotal&quot;)
+        def region1 = vars.get(&quot;region1&quot;)
+
+        log.info(&quot;awsRegion: &quot; + awsRegion)
+        log.info(&quot;s3Bucket: &quot; + s3Bucket)
+        log.info(&quot;s3SimulationEngineKey: &quot; + s3SimulationEngineKey)
+        log.info(&quot;s3CertificateKey: &quot; + s3CertificateKey)
+        log.info(&quot;s3PrivateKeyKey: &quot; + s3PrivateKeyKey)
+        log.info(&quot;s3CaKey: &quot; + s3CaKey)
+        log.info(&quot;s3DataGeneratorKey: &quot; + s3DataGeneratorKey)
+        log.info(&quot;instanceId: &quot; + instanceId)
+        log.info(&quot;simulationId: &quot; + simulationId)
+        log.info(&quot;certificateId: &quot; + certificateId)
+        log.info(&quot;deviceTotal: &quot; + deviceTotal)
+        log.info(&quot;region1: &quot; + region1)
+        log.info(&quot;outputDir: &quot; + dataDir)
+
+        def s3Client = AmazonS3ClientBuilder.standard().withRegion(awsRegion).build()
+
+        try {
+          // download everything we need for the test
+          def toDownload = [s3CertificateKey, s3PrivateKeyKey, s3CaKey, s3SimulationEngineKey, s3DataGeneratorKey]
+          for (def f in toDownload) {
+            log.info(&apos;Downloading from bucket: &apos; + s3Bucket + &apos;, key: &apos; + f)
+            def s3Object = s3Client.getObject(new GetObjectRequest(s3Bucket, f))
+            def s3is = s3Object.getObjectContent();
+            def destination = new File(dataDir, Paths.get(f).getFileName().toString())
+            def fos = new FileOutputStream(destination);
+            def read_buf = new byte[1024];
+            def read_len = 0;
+            while ((read_len = s3is.read(read_buf)) &gt; 0) {
+              fos.write(read_buf, 0, read_len);
+            }
+            s3is.close();
+            fos.close();
+          }
+
+        } catch(Exception e) {
+          log.error(e.getMessage());
+        }</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Unzip the simulation-engine" enabled="true">
+          <stringProp name="TestPlan.comments">Way faster using the unzip command instead of java unzip libraries</stringProp>
+          <boolProp name="SystemSampler.checkReturnCode">false</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">unzip</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">simulation-engine.zip</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">-d</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">simulation-engine</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}</stringProp>
+        </SystemSampler>
+        <hashTree/>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Unzip the data-generator" enabled="true">
+          <stringProp name="TestPlan.comments">Way faster using the unzip command instead of java unzip libraries</stringProp>
+          <boolProp name="SystemSampler.checkReturnCode">false</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">unzip</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">data-generator.zip</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">-d</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">data-generator</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}</stringProp>
+        </SystemSampler>
+        <hashTree/>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Install node dependencies (data-generator)" enabled="true">
+          <boolProp name="SystemSampler.checkReturnCode">true</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">npm</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">install</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="NODE_CONFIG" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG</stringProp>
+                <stringProp name="Argument.value">{&quot;aws&quot;:{&quot;region&quot;:&quot;${awsRegion}&quot;,&quot;iot&quot;:{&quot;keyPath&quot;:&quot;${dataDir}/private.pem.key&quot;,&quot;certPath&quot;:&quot;${dataDir}/certificate.pem.crt&quot;,&quot;caPath&quot;:&quot;${dataDir}/aws-ca.pem&quot;,&quot;host&quot;:&quot;${awsIotHost}&quot;}},&quot;cvra&quot;:{&quot;templates&quot;:{&quot;carData&quot;:&quot;templates/cardata.template&quot;,&quot;dtc&quot;:&quot;templates/dtc.template&quot;,&quot;event&quot;:&quot;templates/event.template&quot;,&quot;trip&quot;:&quot;templates/trip.template&quot;}}}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="NODE_CONFIG_DIR" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG_DIR</stringProp>
+                <stringProp name="Argument.value">./config</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}/data-generator</stringProp>
+          <stringProp name="SystemSampler.stdout">${dataDir}/data-generator-nodeSetup-stdout.txt</stringProp>
+          <stringProp name="SystemSampler.stderr">${dataDir}/data-generator-nodeSetup-stderr.txt</stringProp>
+        </SystemSampler>
+        <hashTree/>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Install node dependencies (auto-simulation)" enabled="true">
+          <boolProp name="SystemSampler.checkReturnCode">true</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">npm</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">install</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="NODE_CONFIG" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG</stringProp>
+                <stringProp name="Argument.value">{&quot;aws&quot;:{&quot;region&quot;:&quot;${awsRegion}&quot;,&quot;iot&quot;:{&quot;keyPath&quot;:&quot;${dataDir}/private.pem.key&quot;,&quot;certPath&quot;:&quot;${dataDir}/certificate.pem.crt&quot;,&quot;caPath&quot;:&quot;${dataDir}/aws-ca.pem&quot;,&quot;host&quot;:&quot;${awsIotHost}&quot;}},&quot;cvra&quot;:{&quot;templates&quot;:{&quot;carData&quot;:&quot;templates/cardata.template&quot;,&quot;dtc&quot;:&quot;templates/dtc.template&quot;,&quot;event&quot;:&quot;templates/event.template&quot;,&quot;trip&quot;:&quot;templates/trip.template&quot;}}}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="NODE_CONFIG_DIR" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG_DIR</stringProp>
+                <stringProp name="Argument.value">./config</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}/simulation-engine</stringProp>
+          <stringProp name="SystemSampler.stdout">${dataDir}/simulation-engine-nodeSetup-stdout.txt</stringProp>
+          <stringProp name="SystemSampler.stderr">${dataDir}/simulation-engine-nodeSetup-stderr.txt</stringProp>
+        </SystemSampler>
+        <hashTree/>
+      </hashTree>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Data generation" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptestnow</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Run the data generator" enabled="true">
+          <boolProp name="SystemSampler.checkReturnCode">true</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">node</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">app.js</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--simulationId=${simulationId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--instanceId=${instanceId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--deviceTotal=${deviceTotal}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--certificateId=${certificateId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--outputDir=${dataDir}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--region=${region1}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--region=${region2}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--region=${region3}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--region=${region4}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--region=${region5}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="NODE_CONFIG_DIR" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG_DIR</stringProp>
+                <stringProp name="Argument.value">./config</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="NODE_CONFIG" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG</stringProp>
+                <stringProp name="Argument.value">{&quot;aws&quot;:{&quot;region&quot;:&quot;${awsRegion}&quot;},&quot;paths&quot;:{&quot;suppliers&quot;:{&quot;parent&quot;: &quot;/auto/suppliers&quot;}}}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}/data-generator</stringProp>
+          <stringProp name="SystemSampler.stdout">${dataDir}/dataGenerator-stdout.txt</stringProp>
+          <stringProp name="SystemSampler.stderr">${dataDir}/dataGenerator-stderr.txt</stringProp>
+        </SystemSampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Upload datasets/logs to S3" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters">awsRegion,s3Bucket,dataDir,s3UploadDir,simulationId,instanceId</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+        import com.amazonaws.services.s3.model.ObjectMetadata;
+        import com.amazonaws.services.s3.model.PutObjectRequest;
+
+        import java.io.File;
+        import java.io.IOException;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def dataDir = vars.get(&apos;dataDir&apos;)
+        def s3Bucket = vars.get(&apos;s3Bucket&apos;)
+        def s3UploadDir = vars.get(&apos;s3UploadDir&apos;)
+        def simulationId = vars.get(&apos;simulationId&apos;)
+        def instanceId = vars.get(&apos;instanceId&apos;)
+
+        def s3Client = AmazonS3ClientBuilder.standard().withRegion(awsRegion).build()
+
+        try {
+          // upload all csv&apos;s (datasets) and txt (log) files
+          new File(dataDir).eachFile(FILES) {
+            log.info it.name
+            if (it.name.endsWith(&apos;.csv&apos;) || it.name.endsWith(&apos;.txt&apos;) || it.name.endsWith(&apos;.log&apos;)) {
+              def uploadKey = String.format(&quot;%s${it.name}&quot;, s3UploadDir)
+              log.info &apos;Uploading &apos; + it.name + &apos; to &apos; + uploadKey
+              def request = new PutObjectRequest(s3Bucket, uploadKey, it);
+              s3Client.putObject(request);
+            }
+          }
+
+        } catch(Exception e) {
+          log.error(e.getMessage());
+        }</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create suppliers" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptestnow</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${threadsLoopCount}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threadsCount}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${threadsRampupSecs}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Read" enabled="true">
+          <stringProp name="filename">${dataDir}/suppliers.csv</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames"></stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">true</boolProp>
+          <boolProp name="recycle">false</boolProp>
+          <boolProp name="stopThread">true</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Create suppliers" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"> awsRegion,cdfAssetLibraryAccept,cdfAssetLibraryContentType,cdfAssetLibraryApiFunctionName,supplierTemplate,parentPath,name,externalId</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.lambda.AWSLambda;
+        import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+        import com.amazonaws.services.lambda.model.InvokeRequest;
+        import com.amazonaws.services.lambda.model.InvokeResult;
+
+        import java.io.IOException;
+        import java.nio.charset.StandardCharsets;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def accept = vars.get(&apos;cdfAssetLibraryAccept&apos;)
+        def contentType = vars.get(&apos;cdfAssetLibraryContentType&apos;)
+        def functionName = vars.get(&apos;cdfAssetLibraryApiFunctionName&apos;)
+        def supplierTemplate = vars.get(&apos;supplierTemplate&apos;)
+        def parentPath = vars.get(&apos;parentPath&apos;)
+        def name = vars.get(&apos;name&apos;)
+        def externalId = vars.get(&apos;externalId&apos;)
+
+        def awsLambda = AWSLambdaClientBuilder.standard().withRegion(awsRegion).build()
+
+
+        // body represents the post request body, which needs to be stringifed
+        def body = &quot;&quot;&quot;{\\&quot;templateId\\&quot;: \\&quot;$supplierTemplate\\&quot;,\\&quot;parentPath\\&quot;: \\&quot;$parentPath\\&quot;,\\&quot;name\\&quot;: \\&quot;$name\\&quot;,\\&quot;attributes\\&quot;: {\\&quot;externalId\\&quot;: \\&quot;$externalId\\&quot;}}&quot;&quot;&quot;
+
+
+        // payload is the lambda request payload that includes all request attributes
+        def payload = &quot;&quot;&quot;
+        {
+          &quot;resource&quot;: &quot;/{proxy+}&quot;,
+          &quot;httpMethod&quot;: &quot;POST&quot;,
+          &quot;path&quot;: &quot;/groups&quot;,
+          &quot;body&quot;: &quot;$body&quot;,
+          &quot;headers&quot;: {
+            &quot;Accept&quot;: &quot;$accept&quot;,
+            &quot;Content-Type&quot;: &quot;$contentType&quot;
+          }
+        }
+        &quot;&quot;&quot;
+
+        try {
+
+          def invokeRequest = new InvokeRequest()
+                        .withFunctionName(functionName)
+                        .withPayload(payload)
+
+          def invokeResult = awsLambda.invoke(invokeRequest)
+
+          def ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8)
+          return ans
+
+        } catch(Exception e) {
+          log.error(e.getMessage())
+        }</stringProp>
+          <stringProp name="TestPlan.comments">Creates suppliers by invoking the CDF Asset Library rest lambda directly</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create users" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptestnow</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${threadsLoopCount}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threadsCount}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${threadsRampupSecs}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Read" enabled="true">
+          <stringProp name="filename">${dataDir}/users.csv</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames"></stringProp>
+          <boolProp name="ignoreFirstLine">true</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">true</boolProp>
+          <boolProp name="recycle">false</boolProp>
+          <boolProp name="stopThread">true</boolProp>
+          <stringProp name="shareMode">shareMode.group</stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Create owners" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"> awsRegion,cdfFacadeAccept,cdfFacadeContentType,cdfFacadeApiFunctionName,username,firstname,lastname</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.lambda.AWSLambda;
+        import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+        import com.amazonaws.services.lambda.model.InvokeRequest;
+        import com.amazonaws.services.lambda.model.InvokeResult;
+
+        import java.io.IOException;
+        import java.nio.charset.StandardCharsets;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def accept = vars.get(&apos;cdfFacadeAccept&apos;)
+        def contentType = vars.get(&apos;cdfFacadeContentType&apos;)
+        def functionName = vars.get(&apos;cdfFacadeApiFunctionName&apos;)
+        def username = vars.get(&apos;username&apos;)
+        def firstname = vars.get(&apos;firstname&apos;)
+        def lastname = vars.get(&apos;lastname&apos;)
+
+        def awsLambda = AWSLambdaClientBuilder.standard().withRegion(awsRegion).build()
+
+        // body represents the post request body, which needs to be stringifed
+        def body = &quot;&quot;&quot;{\\&quot;username\\&quot;: \\&quot;$username\\&quot;,\\&quot;firstName\\&quot;:\\&quot;$firstname\\&quot;,\\&quot;lastName\\&quot;: \\&quot;$lastname\\&quot;}&quot;&quot;&quot;
+
+        // payload is the lambda request payload that includes all request attributes
+        def payload = &quot;&quot;&quot;
+        {
+          &quot;resource&quot;: &quot;/{proxy+}&quot;,
+          &quot;httpMethod&quot;: &quot;POST&quot;,
+          &quot;path&quot;: &quot;/users&quot;,
+          &quot;body&quot;: &quot;$body&quot;,
+          &quot;headers&quot;: {
+            &quot;Accept&quot;: &quot;$accept&quot;,
+            &quot;Content-Type&quot;: &quot;$contentType&quot;
+          }
+        }
+        &quot;&quot;&quot;
+
+        try {
+
+          def invokeRequest = new InvokeRequest()
+                        .withFunctionName(functionName)
+                        .withPayload(payload)
+
+          def invokeResult = awsLambda.invoke(invokeRequest)
+
+          def ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8)
+          return ans
+
+        } catch(Exception e) {
+          log.error(e.getMessage())
+        }</stringProp>
+          <stringProp name="TestPlan.comments">Creates owners by invoking the CDF Asset Library rest lambda directly</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Provisioning Steps" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${threadsLoopCount}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threadsCount}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${threadsRampupSecs}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.delayedStart">true</boolProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Read" enabled="true">
+          <stringProp name="filename">${dataDir}/vehicles.csv</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames"></stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">true</boolProp>
+          <boolProp name="recycle">false</boolProp>
+          <boolProp name="stopThread">true</boolProp>
+          <stringProp name="shareMode">shareMode.group</stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Device registration" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters">awsRegion,cdfFacadeAccept,cdfFacadeContentType,cdfFacadeApiFunctionName,ecuType,certificateId,supplierExternalId,ecuId</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.lambda.AWSLambda;
+        import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+        import com.amazonaws.services.lambda.model.InvokeRequest;
+        import com.amazonaws.services.lambda.model.InvokeResult;
+
+        import java.io.IOException;
+        import java.nio.charset.StandardCharsets;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def accept = vars.get(&apos;cdfFacadeAccept&apos;)
+        def contentType = vars.get(&apos;cdfFacadeContentType&apos;)
+        def functionName = vars.get(&apos;cdfFacadeApiFunctionName&apos;)
+        def ecuType = vars.get(&apos;ecuType&apos;)
+        def certificateId = vars.get(&apos;certificateId&apos;)
+        def supplierExternalId = vars.get(&apos;supplierExternalId&apos;)
+        def ecuId = vars.get(&apos;ecuId&apos;)
+
+        log.info(&quot;awsRegion: $awsRegion&quot;)
+        log.info(&quot;accept: $accept&quot;)
+        log.info(&quot;contentType: $contentType&quot;)
+        log.info(&quot;facadeFunctionName: $functionName&quot;)
+        log.info(&quot;ecuType: $ecuType&quot;)
+        log.info(&quot;certificateId: $certificateId&quot;)
+        log.info(&quot;supplierExternalId: $supplierExternalId&quot;)
+        log.info(&quot;ecuId: $ecuId&quot;)
+
+        def awsLambda = AWSLambdaClientBuilder.standard().withRegion(awsRegion).build()
+
+        // body represents the post request body, which needs to be stringifed
+        def body = &quot;&quot;&quot;{\\\&quot;templateId\\\&quot;: \\\&quot;auto_ecu\\\&quot;,\\\&quot;attributes\\\&quot;: {\\\&quot;type\\\&quot;: \\\&quot;tcu\\\&quot;,\\\&quot;model\\\&quot;: \\\&quot;$ecuType\\\&quot;},\\\&quot;certificateId\\\&quot;: \\\&quot;$certificateId\\\&quot;}&quot;&quot;&quot;
+
+        def path = &quot;/suppliers/${supplierExternalId}/devices/${ecuId}/register&quot;
+
+        // payload is the lambda request payload that includes all request attributes
+        def payload = &quot;&quot;&quot;
+        {
+          &quot;resource&quot;: &quot;/{proxy+}&quot;,
+          &quot;httpMethod&quot;: &quot;POST&quot;,
+          &quot;path&quot;: &quot;$path&quot;,
+          &quot;body&quot;: &quot;$body&quot;,
+          &quot;headers&quot;: {
+            &quot;Accept&quot;: &quot;$accept&quot;,
+            &quot;Content-Type&quot;: &quot;$contentType&quot;
+          }
+        }
+        &quot;&quot;&quot;
+
+        log.info(&quot;compiledPayload: $payload&quot;)
+
+        try {
+
+          def invokeRequest = new InvokeRequest()
+                        .withFunctionName(functionName)
+                        .withPayload(payload)
+
+          def invokeResult = awsLambda.invoke(invokeRequest)
+
+          def ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8)
+          log.info(&quot;lambdaInvokeResult: $ans&quot;)
+          return ans
+
+        } catch(Exception e) {
+          log.error(e.getMessage())
+        }</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Device activation" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters">awsRegion,cdfFacadeAccept,cdfFacadeContentType,cdfFacadeApiFunctionName,supplierExternalId,ecuId,make,model,modelYear,vin,bodyType,fuelType,transmissionType,colorCode,iviType,ecuSoftwareVersion</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.lambda.AWSLambda;
+        import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+        import com.amazonaws.services.lambda.model.InvokeRequest;
+        import com.amazonaws.services.lambda.model.InvokeResult;
+
+        import java.io.IOException;
+        import java.nio.charset.StandardCharsets;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def accept = vars.get(&apos;cdfFacadeAccept&apos;)
+        def contentType = vars.get(&apos;cdfFacadeContentType&apos;)
+        def functionName = vars.get(&apos;cdfFacadeApiFunctionName&apos;)
+        def supplierExternalId = vars.get(&apos;supplierExternalId&apos;)
+        def ecuId = vars.get(&apos;ecuId&apos;)
+        def make = vars.get(&apos;make&apos;)
+        def model = vars.get(&apos;model&apos;)
+        def modelYear = vars.get(&apos;modelYear&apos;)
+        def vin = vars.get(&apos;vin&apos;)
+        def bodyType = vars.get(&apos;bodyType&apos;)
+        def fuelType = vars.get(&apos;fuelType&apos;)
+        def transmissionType = vars.get(&apos;transmissionType&apos;)
+        def colorCode = vars.get(&apos;colorCode&apos;)
+        def iviType = vars.get(&apos;iviType&apos;)
+        def ecuSoftwareVersion = vars.get(&apos;ecuSoftwareVersion&apos;)
+
+        log.info(&quot;awsRegion: $awsRegion&quot;)
+        log.info(&quot;accept: $accept&quot;)
+        log.info(&quot;contentType: $contentType&quot;)
+        log.info(&quot;facadeFunctionName: $functionName&quot;)
+        log.info(&quot;supplierExternalId: $supplierExternalId&quot;)
+        log.info(&quot;ecuId: $ecuId&quot;)
+        log.info(&quot;make: $make&quot;)
+        log.info(&quot;model: $model&quot;)
+        log.info(&quot;modelYear: $modelYear&quot;)
+        log.info(&quot;vin: $vin&quot;)
+        log.info(&quot;bodyType: $bodyType&quot;)
+        log.info(&quot;fuelType: $fuelType&quot;)
+        log.info(&quot;transmissionType: $transmissionType&quot;)
+        log.info(&quot;colorCode: $colorCode&quot;)
+        log.info(&quot;iviType: $iviType&quot;)
+        log.info(&quot;ecuSoftwareVersion: $ecuSoftwareVersion&quot;)
+
+        def awsLambda = AWSLambdaClientBuilder.standard().withRegion(awsRegion).build()
+
+        // body represents the post request body, which needs to be stringifed
+        def body = &quot;&quot;&quot;{\\\&quot;vehicle\\\&quot;:{\\\&quot;make\\\&quot;:\\\&quot;$make\\\&quot;,\\\&quot;model\\\&quot;:\\\&quot;$model\\\&quot;,\\\&quot;modelYear\\\&quot;:\\\&quot;$modelYear\\\&quot;,\\\&quot;vin\\\&quot;:\\\&quot;$vin\\\&quot;,\\\&quot;bodyType\\\&quot;:\\\&quot;$bodyType\\\&quot;,\\\&quot;fuelType\\\&quot;:\\\&quot;$fuelType\\\&quot;,\\\&quot;transmissionType\\\&quot;:\\\&quot;$transmissionType\\\&quot;,\\\&quot;colorCode\\\&quot;:\\\&quot;$colorCode\\\&quot;,\\\&quot;iviType\\\&quot;:\\\&quot;$iviType\\\&quot;,\\\&quot;ecus\\\&quot;:[{\\\&quot;type\\\&quot;:\\\&quot;tcu\\\&quot;,\\\&quot;id\\\&quot;:\\\&quot;$ecuId\\\&quot;,\\\&quot;softwareVersion\\\&quot;:\\\&quot;$ecuSoftwareVersion\\\&quot;}]}}&quot;&quot;&quot;
+
+        def path = &quot;/suppliers/${supplierExternalId}/devices/${ecuId}/activate&quot;
+
+        // payload is the lambda request payload that includes all request attributes
+        def payload = &quot;&quot;&quot;
+        {
+          &quot;resource&quot;: &quot;/{proxy+}&quot;,
+          &quot;httpMethod&quot;: &quot;POST&quot;,
+          &quot;path&quot;: &quot;$path&quot;,
+          &quot;body&quot;: &quot;$body&quot;,
+          &quot;headers&quot;: {
+            &quot;Accept&quot;: &quot;$accept&quot;,
+            &quot;Content-Type&quot;: &quot;$contentType&quot;
+          }
+        }
+        &quot;&quot;&quot;
+
+        log.info(&quot;compiledPayload: $payload&quot;)
+
+        try {
+
+          def invokeRequest = new InvokeRequest()
+                        .withFunctionName(functionName)
+                        .withPayload(payload)
+
+          def invokeResult = awsLambda.invoke(invokeRequest)
+
+          def ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8)
+          log.info(&quot;lambdaInvokeResult: $ans&quot;)
+          return ans
+
+        } catch(Exception e) {
+          log.error(e.getMessage())
+        }</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Register vehicle owner" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters">awsRegion,cdfFacadeAccept,cdfFacadeContentType,cdfFacadeApiFunctionName,vin,owner</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.lambda.AWSLambda;
+        import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+        import com.amazonaws.services.lambda.model.InvokeRequest;
+        import com.amazonaws.services.lambda.model.InvokeResult;
+
+        import java.io.IOException;
+        import java.nio.charset.StandardCharsets;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def accept = vars.get(&apos;cdfFacadeAccept&apos;)
+        def contentType = vars.get(&apos;cdfFacadeContentType&apos;)
+        def functionName = vars.get(&apos;cdfFacadeApiFunctionName&apos;)
+        def supplierExternalId = vars.get(&apos;supplierExternalId&apos;)
+        def vin = vars.get(&apos;vin&apos;)
+        def make = vars.get(&apos;make&apos;)
+        def model = vars.get(&apos;model&apos;)
+
+        log.info(&quot;awsRegion: $awsRegion&quot;)
+        log.info(&quot;accept: $accept&quot;)
+        log.info(&quot;contentType: $contentType&quot;)
+        log.info(&quot;facadeFunctionName: $functionName&quot;)
+        log.info(&quot;supplierExternalId: $supplierExternalId&quot;)
+        log.info(&quot;make: $make&quot;)
+        log.info(&quot;model: $model&quot;)
+        log.info(&quot;vin: $vin&quot;)
+
+
+
+        def awsLambda = AWSLambdaClientBuilder.standard().withRegion(awsRegion).build()
+
+        // body represents the post request body, which needs to be stringifed
+        def body = &quot;&quot;&quot;{\\\&quot;pairingCode\\\&quot;:\\\&quot;12345\\\&quot;}&quot;&quot;&quot;
+
+        def path = &quot;/vehicles/${vin}/owners/${owner}&quot;
+
+        // payload is the lambda request payload that includes all request attributes
+        def payload = &quot;&quot;&quot;
+        {
+          &quot;resource&quot;: &quot;/{proxy+}&quot;,
+          &quot;httpMethod&quot;: &quot;POST&quot;,
+          &quot;path&quot;: &quot;$path&quot;,
+          &quot;body&quot;: &quot;$body&quot;,
+          &quot;headers&quot;: {
+            &quot;Accept&quot;: &quot;$accept&quot;,
+            &quot;Content-Type&quot;: &quot;$contentType&quot;
+          }
+        }
+        &quot;&quot;&quot;
+
+        log.info(&quot;compiledPayload: $payload&quot;)
+
+        try {
+
+          def invokeRequest = new InvokeRequest()
+                        .withFunctionName(functionName)
+                        .withPayload(payload)
+
+          def invokeResult = awsLambda.invoke(invokeRequest)
+
+          def ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8)
+          log.info(&quot;lambdaInvokeResult: $ans&quot;)
+          return ans
+
+        } catch(Exception e) {
+          log.error(e.getMessage())
+        }</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <SystemSampler guiclass="SystemSamplerGui" testclass="SystemSampler" testname="Publish initial vehicle state" enabled="true">
+          <boolProp name="SystemSampler.checkReturnCode">true</boolProp>
+          <stringProp name="SystemSampler.expectedReturnCode">0</stringProp>
+          <stringProp name="SystemSampler.command">node</stringProp>
+          <elementProp name="SystemSampler.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">app.js</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--deviceId=${ecuId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--vin=${vin}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--odometer=${odometer}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--fuelTankCapacity=50</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--latitude=${latitude}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--longitude=${longitude}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Argument">
+                <stringProp name="Argument.name"></stringProp>
+                <stringProp name="Argument.value">--simulationId=${simulationId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="SystemSampler.environment" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="NODE_CONFIG" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG</stringProp>
+                <stringProp name="Argument.value">{&quot;aws&quot;:{&quot;region&quot;:&quot;${awsRegion}&quot;,&quot;iot&quot;:{&quot;keyPath&quot;:&quot;${dataDir}/private.pem.key&quot;,&quot;certPath&quot;:&quot;${dataDir}/certificate.pem.crt&quot;,&quot;caPath&quot;:&quot;${dataDir}/aws-ca.pem&quot;,&quot;host&quot;:&quot;${awsIotHost}&quot;}},&quot;cvra&quot;:{&quot;templates&quot;:{&quot;carData&quot;:&quot;templates/cardata.template&quot;,&quot;dtc&quot;:&quot;templates/dtc.template&quot;,&quot;event&quot;:&quot;templates/event.template&quot;,&quot;trip&quot;:&quot;templates/trip.template&quot;}}}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="NODE_CONFIG_DIR" elementType="Argument">
+                <stringProp name="Argument.name">NODE_CONFIG_DIR</stringProp>
+                <stringProp name="Argument.value">./config</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="SystemSampler.directory">${dataDir}/simulation-engine</stringProp>
+          <stringProp name="SystemSampler.stdout">${dataDir}/simulationEngine-stdout.txt</stringProp>
+          <stringProp name="SystemSampler.stderr">${dataDir}/simulationEngine-stderr.txt</stringProp>
+        </SystemSampler>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <PostThreadGroup guiclass="PostThreadGroupGui" testclass="PostThreadGroup" testname="tearDown" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </PostThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Upload datasets/logs to S3" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters">awsRegion,s3Bucket,dataDir,s3UploadDir,simulationId,instanceId</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import static groovy.io.FileType.FILES
+
+        import java.io.IOException
+        import java.io.InputStream
+        import java.util.Properties
+
+        import com.amazonaws.AmazonServiceException;
+        import com.amazonaws.SdkClientException;
+        import com.amazonaws.regions.Regions;
+        import com.amazonaws.services.s3.AmazonS3;
+        import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+        import com.amazonaws.services.s3.model.ObjectMetadata;
+        import com.amazonaws.services.s3.model.PutObjectRequest;
+
+        import java.io.File;
+        import java.io.IOException;
+
+        def awsRegion = vars.get(&apos;awsRegion&apos;)
+        def dataDir = vars.get(&apos;dataDir&apos;)
+        def s3Bucket = vars.get(&apos;s3Bucket&apos;)
+        def s3UploadDir = vars.get(&apos;s3UploadDir&apos;)
+        def simulationId = vars.get(&apos;simulationId&apos;)
+        def instanceId = vars.get(&apos;instanceId&apos;)
+
+        def s3Client = AmazonS3ClientBuilder.standard().withRegion(awsRegion).build()
+
+        try {
+          // upload all csv&apos;s (datasets) and txt (log) files
+          new File(dataDir).eachFile(FILES) {
+            log.info it.name
+            if (it.name.endsWith(&apos;.csv&apos;) || it.name.endsWith(&apos;.txt&apos;) || it.name.endsWith(&apos;.log&apos;)) {
+              def uploadKey = String.format(&quot;%s${it.name}&quot;, s3UploadDir)
+              log.info &apos;Uploading &apos; + it.name + &apos; to &apos; + uploadKey
+              def request = new PutObjectRequest(s3Bucket, uploadKey, it);
+              s3Client.putObject(request);
+            }
+          }
+
+        } catch(Exception e) {
+          log.error(e.getMessage());
+        }</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

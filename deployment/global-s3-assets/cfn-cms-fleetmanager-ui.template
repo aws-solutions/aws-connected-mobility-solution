@@ -1,0 +1,147 @@
+#---------------------------------------------------------------------------------------------------------------------
+#  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.                                           *
+#                                                                                                                    *
+#  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance    *
+#  with the License. A copy of the License is located at                                                             *
+#                                                                                                                    *
+#      http://www.apache.org/licenses/LICENSE-2.0                                                                    *
+#                                                                                                                    *
+#  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES *
+#  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions    *
+#  and limitations under the License.                                                                                *
+#---------------------------------------------------------------------------------------------------------------------
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: CMS - Fleetmanager UI Stack
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Name of environment.  Used to name the created resources.
+    MinLength: 1
+  UserPoolId:
+    Type: String
+    Description: Cognito User Pool ID.
+  UserPoolClientId:
+    Type: String
+    Description: Cognito User Pool Client ID.
+  FleetmanagerApiGatewayUrl:
+    Type: String
+    Description: CMS Fleetmanager API Gateway URL
+  CopyAssetsFromSource:
+    Type: String
+    AllowedValues: [true, false]
+    Default: false
+    Description: Copy artifacts from public Solutions bucket
+  WebsiteBucket:
+    Type: String
+    Description: Bucket Name of CMS Website
+
+Conditions:
+  CopySolutionsAssets: !Equals [true, !Ref CopyAssetsFromSource]
+
+Mappings:
+  SourceCode:
+    General:
+      S3Bucket: ""
+      KeyPrefix: ""
+
+Resources:
+  # IAM
+  UIHelperRole:
+    Type: "AWS::IAM::Role"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "role reviewed with least priviledge access"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "UIHelperPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: !Join ["",["arn:aws:logs:",Ref: "AWS::Region",":",Ref: "AWS::AccountId",":log-group:/aws/lambda/*:*",],]
+              - Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                Resource:
+                  - "arn:aws:s3:::*"
+              - Effect: "Allow"
+                Action:
+                  - "s3:PutObject"
+                Resource:
+                  - !Join ["", ["arn:aws:s3:::", Ref: WebsiteBucket, "/*"]]
+
+  # Lambda
+  UIHelper:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      Description: "CMS UI deployment helper"
+      CodeUri: ./helper/build/cms-fleetmanager-ui-helper.zip
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt UIHelperRole.Arn
+      Timeout: 300
+      MemorySize: 256
+
+  # Microservices
+  UIWebsite:
+    Type: "Custom::LoadLambda"
+    Condition: CopySolutionsAssets
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - "UIHelper"
+          - "Arn"
+      Region:
+        - Ref: "AWS::Region"
+      manifestKey: !Join [ "/", [!FindInMap ["SourceCode", "General", "KeyPrefix"], "cms-fleetmanager-ui/site-manifest.json"]]
+      sourceS3Bucket: !Join ["-", [!FindInMap ["SourceCode", "General", "S3Bucket"], Ref: "AWS::Region"]]
+      sourceS3key: !Join ["/", [!FindInMap ["SourceCode", "General", "KeyPrefix"], "cms-fleetmanager-ui" ]]
+      destS3Bucket: !Ref WebsiteBucket
+      customAction: "copyS3assets"
+
+  UIConfig:
+    Type: "Custom::LoadLambda"
+    Condition: CopySolutionsAssets
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - "UIHelper"
+          - "Arn"
+      Region:
+        - Ref: "AWS::Region"
+      destS3Bucket: !Ref WebsiteBucket
+      destS3key: "assets/appVariables.js"
+      configItem:
+        USER_POOL_ID: !Ref UserPoolId
+        USER_POOL_CLIENT_ID: !Ref UserPoolClientId
+        CDF_AUTO_ENDPOINT: !Ref FleetmanagerApiGatewayUrl
+        REGION:
+          Fn::Sub: "${AWS::Region}"
+      customAction: "putConfigFile"
+    DependsOn:
+      - UIWebsite
+
+Outputs:
+  StackName:
+    Description: Stack Name
+    Value:
+      Fn::Sub: "${AWS::StackName}"
+

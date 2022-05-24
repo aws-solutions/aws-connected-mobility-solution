@@ -1,0 +1,10 @@
+**/*-output.yml
+.DS_Store
+node_modules
+dist
+.chalice
+.rush
+__pycache__*
+build*
+*.zip
+*.log

@@ -1,0 +1,45 @@
+@font-face {
+  font-family: "AmazonEmber";
+  src: url("../fonts/amazonember_rg-webfont.woff2") format("woff2"),
+    url("../fonts/amazonember_rg-webfont.woff") format("woff");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "AmazonEmber";
+  src: url("../fonts/amazonember_lt-webfont.woff2") format("woff2"),
+    url("../fonts/amazonember_lt-webfont.woff") format("woff");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "AmazonEmber";
+  src: url("../fonts/AmazonEmberMd.woff2") format("woff2"),
+    url("../fonts/AmazonEmberMd.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AmazonEmber";
+  src: url("../fonts/amazonember-webfont.woff2") format("woff2"),
+    url("../fonts/amazonember-webfont.woff") format("woff");
+  font-weight: bold;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "AmazonEmber" !important;
+}
+
+#root > div {
+  height: 100%;
+}

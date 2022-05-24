@@ -1,0 +1,24 @@
+.mapboxgl-map + div > .overlays {
+  box-shadow: inset 0px 11px 10px -10px rgba(0, 0, 0, 0.4);
+}
+
+.mapboxgl-ctrl-group:first-of-type {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mapboxgl-ctrl-group > button + button {
+  box-shadow: 0px -1px 0px 0px #ddd;
+}
+
+.mapboxgl-ctrl-group > button {
+  color: #333333;
+}
+
+.mapboxgl-ctrl-group button:focus {
+  box-shadow: none;
+}
+
+.mapboxgl-ctrl-group > button + button:focus {
+  box-shadow: 0px -1px 0px 0px #ddd;
+}

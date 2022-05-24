@@ -1,0 +1,159 @@
+{
+    "shared_cardata": {
+        "mappings": {
+            "properties": {
+                "geolocation.location": {
+                    "type": "geo_point"
+                },
+                "trouble_codes": {
+                    "type": "nested",
+                    "properties": {
+                        "code": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "anomalies": {
+                    "type": "nested",
+                    "properties": {
+                        "anomaly_type": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "devices": {
+                    "type": "nested",
+                    "properties": {
+                        "deviceid": {
+                            "type": "keyword"
+                        },
+                        "softwareversion": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "cardata": {
+        "mappings": {
+            "properties": {
+                "geolocation.location": {
+                    "type": "geo_point"
+                },
+                "sendtimestamp": {
+                    "type": "date",
+                    "format": "date_optional_time"
+                },
+                "trouble_codes": {
+                    "type": "nested",
+                    "properties": {
+                        "code": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "anomalies": {
+                    "type": "nested",
+                    "properties": {
+                        "anomaly_type": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "devices": {
+                    "type": "nested",
+                    "properties": {
+                        "deviceid": {
+                            "type": "keyword"
+                        },
+                        "softwareversion": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "latest_telemetry": {
+        "mappings": {
+            "properties": {
+                "geolocation.location": {
+                    "type": "geo_point"
+                },
+                "sendtimestamp": {
+                    "type": "date",
+                    "format": "date_optional_time"
+                },
+                "devices": {
+                    "type": "nested",
+                    "properties": {
+                        "deviceid": {
+                            "type": "keyword"
+                        },
+                        "softwareversion": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "trouble_codes": {
+                    "type": "nested",
+                    "properties": {
+                        "code": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                "anomalies": {
+                    "type": "nested",
+                    "properties": {
+                        "anomaly_type": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "trip": {
+        "mappings": {
+            "properties": {
+                "sendtimestamp": {
+                "type": "date",
+                "format": "date_optional_time"
+                }
+            }
+        }
+    },
+    "event": {
+        "mappings": {
+            "properties": {
+                "sendtimestamp": {
+                "type": "date",
+                "format": "date_optional_time"
+                }
+            }
+        }
+    },
+    "devices": {},
+    "dtc": {
+        "mappings": {
+            "properties": {
+                "sendtimestamp": {
+                "type": "date",
+                "format": "date_optional_time"
+                }
+            }
+        }
+    },
+    "anomaly": {
+        "mappings": {
+            "properties": {
+                "sendtimestamp": {
+                "type": "date",
+                "format": "date_optional_time"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "MessageId": "{{vin}}-{{timestamp}}",
+    "SimulationId": "{{simulationId}}",
+    "CreationTimeStamp": "{{timestamp}}",
+    "SendTimeStamp": "{{timestamp}}",
+    "VIN": "{{vin}}",
+    "TripId": "{{tripId}}",
+    "DriverID": "",
+    "GeoLocation": {
+        "Latitude": {{location.latitude}},
+        "Longitude": {{location.longitude}},
+        "Altitude": 0,
+        "Heading": {{location.bearing}},
+        "Speed": {{vehicle_speed}}
+    },
+    "Communications": {
+        "GSM": {
+            "Satelites": "",
+            "Fix": "",
+            "NetworkType": "",
+            "MNC": "",
+            "MCC": "",
+            "LAC": "",
+            "CID": ""
+        },
+        "WiFi": {
+            "NetworkID ": ""
+        },
+        "Wired": {
+            "NetworkID ": ""
+        }
+    },
+    "Acceleration": {
+        "MaxLongitudinal": {
+            "Axis": 0,
+            "Value": {{acceleration}}
+        },
+        "MaxLateral": {
+            "Axis": 0,
+            "Value": {{acceleration}}
+        }
+    },
+    "Throttle": {
+        "Max": {{accelerator_pedal_position}},
+        "Average": {{accelerator_pedal_position_mean}}
+    },
+    "Speed": {
+        "Max": {{vehicle_speed}},
+        "Average": {{vehicle_speed_mean}}
+    },
+    "Odometer": {
+        "Metres": {{odometer}},
+        "TicksFL": 0,
+        "TicksFR": 0,
+        "TicksRL": 0,
+        "TicksRR": 0
+    },
+    "Fuel": {{fuel_level}},
+    "Name": "{{route.name}}",
+    "OilTemp": {{oil_temp}},
+
+    "FuelInfo": {
+        "CurrentTripConsumption": {{fuel_spent}},
+        "TankCapacity": {{fuelTankCapacity}}
+    },
+    "IgnitionStatus": "{{ignition_status}}"
+}

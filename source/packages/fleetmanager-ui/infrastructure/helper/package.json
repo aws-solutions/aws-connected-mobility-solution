@@ -1,0 +1,19 @@
+{
+  "name": "ui-framework-helper",
+  "description": "UI Framework custom resource helper Lambda function",
+  "main": "index.js",
+  "author": {
+    "name": "hassan khokhar"
+  },
+  "version": "0.0.1",
+  "private": "true",
+  "devDependencies": {
+    "aws-sdk": "2.804.0"
+  },
+  "scripts": {
+    "build:init": "rm -rf build && rm -rf node_modules",
+    "build:zip": "zip -rq cms-fleetmanager-ui-helper.zip .",
+    "build": "rm -rf build && rm -rf node_modules && zip -rq cms-fleetmanager-ui-helper.zip . && mkdir build && mv cms-fleetmanager-ui-helper.zip build/",
+    "bundle": "npm run build:init && npm run build:zip && npm run build"
+  }
+}

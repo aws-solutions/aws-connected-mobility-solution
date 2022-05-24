@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: CDF Simulator - Data Generator for Auto
+
+Parameters:  
+  Environment:
+    Description:  Name of environment.  Used to name the created resources.
+    Type: String
+    MinLength: 1
+  ApplicationConfigurationOverride:
+    Description: This allows you to override any configuration application configuration. Must be a JSON formatted string. Any configurations contained in this will override the configurations found and merged from the config files.
+    Type: String
+    MinLength: 1
+
+Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+        - !Ref SNSPolicy
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+    DependsOn:
+      - SNSPolicy
+
+  SNSPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: "cdf-data-generator-auto policy"
+      Path: "/cdf/simulation/"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - 'sns:Publish'
+            Effect: Allow
+            Resource: 
+              - !Ref SnsTopic
+
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../bundle.zip
+      Handler: packages/simulation-modules/data-generator-auto/src/sns_proxy.handler
+      MemorySize: 1024
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: nodejs12.x
+      Timeout: 300
+      Environment:
+        Variables:
+          NODE_CONFIG_DIR: './config'
+          NODE_CONFIG: !Ref ApplicationConfigurationOverride
+      Tracing: Active
+    DependsOn:
+      - LambdaExecutionRole
+
+  SnsTopic:
+    Type: AWS::SNS::Topic
+
+  SnsTopicSubscription:
+    Type: AWS::SNS::Subscription   
+    Properties:
+      TopicArn: !Ref SnsTopic
+      Endpoint: !GetAtt LambdaFunction.Arn
+      Protocol: "lambda"
+    DependsOn:
+      - LambdaFunction
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref SnsTopic
+
+
+Outputs:
+  LambdaFunctionConsoleUrl:
+    Description: Console URL for the Lambda Function.
+    Value: !Sub "https://{AWS::Region}.console.aws.amazon.com/lambda/home?region={AWS::Region}#/functions/{LambdaFunction}"
+  LambdaFunction:
+    Description: Data Generation (Auto) Lambda Function
+    Value: !Sub '${LambdaFunction.Arn}'
+    Export:
+        Name: !Sub '${AWS::StackName}-LambdaFunction'
+  SnsTopic:
+    Description: SNS topic
+    Value: !Ref SnsTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-SnsTopic'

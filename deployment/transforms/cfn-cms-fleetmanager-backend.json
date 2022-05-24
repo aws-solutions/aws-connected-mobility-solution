@@ -1,0 +1,469 @@
+{
+  "Mappings": {
+    "SourceCode": {
+      "General": {
+        "S3Bucket": "%%BUCKET_NAME%%",
+        "KeyPrefix": "%%SOLUTION_NAME%%/%%VERSION%%",
+        "TemplateBucket": "%%TEMPLATE_BUCKET_NAME%%"
+      }
+    }
+  },
+  "Resources": {
+    "APIHandler": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_api.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "LambdaLayer": {
+      "Properties": {
+        "ContentUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_lambdalayer.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "DeviceEvent": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_device_events.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "GroupEvent": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_groups_events.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "OtaRule": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_ota_rule.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "TelemetryRule": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_telemetry_rule.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "TripsRule": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_trips_rule.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "DtcRule": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_dtc_rule.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "EventRule": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_event_rule.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "AddIndexMappingsES": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_elasticsearch_helper.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "IotEventJobConfig": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_iot_event_config.zip"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "AnomalyDataES": {
+      "Properties": {
+        "CodeUri": {
+          "Bucket": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "S3Bucket"
+                  ]
+                },
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "Key": {
+            "Fn::Join": [
+              "/",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "SourceCode",
+                    "General",
+                    "KeyPrefix"
+                  ]
+                },
+                "cdf_auto_fleetmanager_anomaly_ddb_es.zip"
+              ]
+            ]
+          }
+        }
+      }
+    }
+  }
+}

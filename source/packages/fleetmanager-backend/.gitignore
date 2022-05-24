@@ -1,0 +1,9 @@
+**/*-output.yml
+.DS_Store
+node_modules
+dist
+.chalice/deployments/*.zip
+.rush
+__pycache__*
+chalicelib/deployments/*.zip
+/build/*.zip

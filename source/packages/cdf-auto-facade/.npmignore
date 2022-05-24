@@ -1,0 +1,7 @@
+.nyc_output
+.rush
+*.log
+tsconfig.tsbuildinfo
+*.zip
+node_modules
+src
