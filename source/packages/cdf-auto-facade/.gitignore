@@ -1,6 +1,0 @@
-node_modules/
-.rush
-*.zip
-dist
-*.zip
-*.log
