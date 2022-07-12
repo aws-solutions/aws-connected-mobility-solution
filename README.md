@@ -1,6 +1,22 @@
 # AWS Connected Mobility Solution (CMS)
 Connected Mobility Solution (CMS) enters its next generation of well architected design, following the original Connected Vehicle Reference Architecture in 2017. CMS has added capability based on lessons learned from hundreds of partner engagements and thousands of activations. CMS aids OEMs and suppliers in their journey to becoming mobility service providers. It includes the broadest and most advanced set of building blocks to accelerate the development and global scale deployment on a pay-as-you-go basis for these capabilities. 
 
+## Build with a single command
+
+**New** Use the [launch_cms.yaml](https://github.com/aws-solutions/aws-connected-mobility-solution/blob/develop/source/infrastructure/launch_cms.yaml) to build the entire AWS Connected Mobility Solution.
+
+1. Log into your AWS console and select **CloudFormation**
+
+2. Download the launch_cms.yaml file from the AWS Connected Mobility Solution github repository to your local machine.
+
+3. Select *Create a stack from existing resources* and select the launch_cms.yaml file you downloaded in step 2.
+
+4. Select the defaults (or change the Cloud9 instance to large) and enter your email address in CMS Administrator field.
+
+5. Click Next and Acknowledge this stack will create IAM resources.
+
+6. This stack will create a Cloud9 instance which will then kick off two CloudFormation scripts, CDF and CMS.  You will receive an email after about 1.5 hours indicating sucess of the stack.
+
 ## Prerequisites
 We recommend using your [AWS Cloud9 IDE](https://aws.amazon.com/cloud9) to build and deploy CMS. In all the other cases, make sure you have installed Python 3.7, [Git](https://git-scm.com/downloads) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
