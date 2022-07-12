@@ -1,9 +1,9 @@
 # AWS Connected Mobility Solution (CMS)
 Connected Mobility Solution (CMS) enters its next generation of well architected design, following the original Connected Vehicle Reference Architecture in 2017. CMS has added capability based on lessons learned from hundreds of partner engagements and thousands of activations. CMS aids OEMs and suppliers in their journey to becoming mobility service providers. It includes the broadest and most advanced set of building blocks to accelerate the development and global scale deployment on a pay-as-you-go basis for these capabilities. 
 
-## Build with a single command
+## Build and Deploy from AWS CloudFormation
 
-**New** Use the [launch_cms.yaml](https://github.com/aws-solutions/aws-connected-mobility-solution/blob/develop/source/infrastructure/launch_cms.yaml) to build the entire AWS Connected Mobility Solution.
+**New!** Use the [launch_cms.yaml](https://github.com/aws-solutions/aws-connected-mobility-solution/blob/develop/source/infrastructure/launch_cms.yaml) to build and launch the entire AWS Connected Mobility Solution.
 
 1. Log into your AWS console and select **CloudFormation**
 
@@ -18,6 +18,8 @@ Connected Mobility Solution (CMS) enters its next generation of well architected
 6. This stack will create a Cloud9 instance which will then kick off two CloudFormation scripts, CDF and CMS.  You will receive an email after about 1.5 hours indicating sucess of the stack.
 
 ## Prerequisites
+If you would rather build the two solutions manually, follow the below instructions.
+
 We recommend using your [AWS Cloud9 IDE](https://aws.amazon.com/cloud9) to build and deploy CMS. In all the other cases, make sure you have installed Python 3.7, [Git](https://git-scm.com/downloads) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
 1. [Create a AWS Cloud9 environment](https://console.aws.amazon.com/cloud9/home/create) in the region of your choice, preferibly selecting a  *m5.large* instance type. 
@@ -57,7 +59,7 @@ The following steps will guide you to build and install AWS CDF. Feel free to re
 3. Clone CDF repo
 
     ```
-    git clone https://github.com/aws/aws-connected-device-framework.git
+    git clone -b 1.0.5 https://github.com/aws/aws-connected-device-framework.git /home/ec2-user/environment/aws-connected-device-framework/
     ```
 
 4. Apply patch to fix simulator provisioning service in CDF.
@@ -67,7 +69,13 @@ The following steps will guide you to build and install AWS CDF. Feel free to re
     wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
     git apply provisioning.patch
     ```
+5. Apply patch to fix Neptune default instance issue in CDF:
 
+    ```
+        cd /home/ec2-user/environment/aws-connected-device-framework/source
+        wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/neptune.patch
+        git apply < /home/ec2-user/environment/aws-connected-device-framework/source/neptune.patch
+    ```
 5. Use the below commannd to then deploy CDF
 
     ```
@@ -86,7 +94,7 @@ The following steps will allow you to build and deploy CMS into your account.
 1. Clone the CMS repository using the following command
 
     ```
-    git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git
+    git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution/
     ```
 
 2. Build CMS (approximately 10 minutes)
@@ -123,6 +131,14 @@ The following steps will allow you to build and deploy CMS into your account.
 ## Let's get things moving
 We proposed two ways to onboard some vehicles and simulate them while they move around, generating events and other telemetry data.
 
+### Manual fleet
+---
+If you need more control over the creation of your fleet, AWS provides a sample set of tooling for creating single vehicles and posting sample telemetry called the [AWS CMS Telemetry Demo](https://github.com/aws-samples/aws-cms-telemetry-demo). This repository allows more control over the types of vehicles you create, and provides an automated way to provision all required attributes of vehicles into the Connected Mobility System on AWS.
+
+The above repository automates using Python scripts the below process, if you wish to perform provisioning manually, follow the below steps.
+
+This process describes the steps needed to create a new vehicle in CDF (Asset Library) and CMS (Fleet Manager). After completing these steps, you can create new device to send telemetry data (see “Connecting a Telematics Source”).
+
 ### Simulation Manager
 ---
 CMS has a build-in vehicle simulator which is based on CDF base modules. Download and install [Postman](https://www.postman.com/downloads/) and import the [collection](/source/packages/simulation-modules/CMS-Simulators.postman_collection.json) before proceeding.
@@ -145,13 +161,6 @@ CMS has a build-in vehicle simulator which is based on CDF base modules. Downloa
 
     > **_NOTE:_**  The simulation provisioning takes 5 min or longer depending from the number of vehicles. If the provisioning has not been completed the request to run the simulation at following point will timeout, this is expected behavior.
 
-### Manual fleet
----
-If you need more control over the creation of your fleet, AWS provides a sample set of tooling for creating single vehicles and posting sample telemetry called the [AWS CMS Telemetry Demo](https://github.com/aws-samples/aws-cms-telemetry-demo). This repository allows more control over the types of vehicles you create, and provides an automated way to provision all required attributes of vehicles into the Connected Mobility System on AWS.
-
-The above repository automates using Python scripts the below process, if you wish to perform provisioning manually, follow the below steps.
-
-This process describes the steps needed to create a new vehicle in CDF (Asset Library) and CMS (Fleet Manager). After completing these steps, you can create new device to send telemetry data (see “Connecting a Telematics Source”).
 
 ### Monitoring the process
 To see the response from the Connected Device Framework, open up the AWS IoT Management Console, navigate to Test, and subscribe to cdf/#
