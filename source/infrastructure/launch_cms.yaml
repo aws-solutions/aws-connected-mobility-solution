@@ -309,9 +309,10 @@ Resources:
             - !Sub export REGION=${AWS::Region}
             - export ENV_NAME=development
             - export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            - export CMS_BUCKET_NAME=cms15ab-$ENV_NAME-$AWS_ACCOUNT_ID
+            - export rand=$RANDOM
+            - export CMS_BUCKET_NAME=cms-$rand-$ENV_NAME-$AWS_ACCOUNT_ID
             - aws s3 mb s3://$CMS_BUCKET_NAME --region $REGION
-            - export KEYPAIR_NAME=cdfBa-dev-key
+            - export KEYPAIR_NAME=cdfBa-$rand-dev-key
             - rm -f /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
             - aws ec2 create-key-pair --key-name $KEYPAIR_NAME --query 'KeyMaterial' --output text >/home/ec2-user/.ssh/$KEYPAIR_NAME.pem --region $REGION
             - chmod 400 /home/ec2-user/.ssh/$KEYPAIR_NAME.pem
