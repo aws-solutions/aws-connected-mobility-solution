@@ -1,7 +1,7 @@
 diff --git a/source/packages/services/provisioning/src/config/default.yaml b/source/packages/services/provisioning/src/config/default.yaml
 index a794fe3..65386bc 100644
---- a/source/packages/services/provisioning/src/config/default.yaml
-+++ b/source/packages/services/provisioning/src/config/default.yaml
+--- a/default.yaml
++++ b/default.yaml
 @@ -18,7 +18,7 @@ aws:
      roleArn:
      templates:
