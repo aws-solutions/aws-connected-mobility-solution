@@ -1,7 +1,7 @@
 diff --git a/source/infrastructure/cfn-cdf-core-services-A.yaml b/source/infrastructure/cfn-cdf-core-services-A.yaml
 index 996a28c..71f74f5 100644
---- a/source/infrastructure/cfn-cdf-core-services-A.yaml
-+++ b/source/infrastructure/cfn-cdf-core-services-A.yaml
+--- a/infrastructure/cfn-cdf-core-services-A.yaml
++++ b/infrastructure/cfn-cdf-core-services-A.yaml
 @@ -270,14 +270,7 @@ Parameters:
    NeptuneDbInstanceType:
      Description: Neptune DB instance type
@@ -20,8 +20,8 @@ index 996a28c..71f74f5 100644
    NeptuneSnapshotIdentifier:
 diff --git a/source/infrastructure/cfn-cdf-core-single-stack.yaml b/source/infrastructure/cfn-cdf-core-single-stack.yaml
 index 335e5d6..69be5b4 100644
---- a/source/infrastructure/cfn-cdf-core-single-stack.yaml
-+++ b/source/infrastructure/cfn-cdf-core-single-stack.yaml
+--- a/infrastructure/cfn-cdf-core-single-stack.yaml
++++ b/infrastructure/cfn-cdf-core-single-stack.yaml
 @@ -306,14 +306,7 @@ Parameters:
    NeptuneDbInstanceType:
      Description: Neptune DB instance type
@@ -40,8 +40,8 @@ index 335e5d6..69be5b4 100644
  Conditions:
 diff --git a/source/infrastructure/deploy-core-single-stack.bash b/source/infrastructure/deploy-core-single-stack.bash
 index 3b89415..d461624 100755
---- a/source/infrastructure/deploy-core-single-stack.bash
-+++ b/source/infrastructure/deploy-core-single-stack.bash
+--- a/infrastructure/deploy-core-single-stack.bash
++++ b/infrastructure/deploy-core-single-stack.bash
 @@ -65,13 +65,7 @@ OPTIONAL ARGUMENTS
      -m (string)   Asset Library mode ('full' or 'lite').  Defaults to full if not provided.
      -p (string)   The name of the key pair to use to deploy the Bastion EC2 host (required for Asset Library (full) mode or Private auth mode).
@@ -59,8 +59,8 @@ index 3b89415..d461624 100755
      ------------------
 diff --git a/source/infrastructure/deploy-core.bash b/source/infrastructure/deploy-core.bash
 index 6e04fe2..68a6ff8 100755
---- a/source/infrastructure/deploy-core.bash
-+++ b/source/infrastructure/deploy-core.bash
+--- a/infrastructure/deploy-core.bash
++++ b/infrastructure/deploy-core.bash
 @@ -79,14 +79,7 @@ OPTIONAL ARGUMENTS
      -m (string)   Asset Library mode ('full' or 'lite').  Defaults to full if not provided.
      -p (string)   The name of the key pair to use to deploy the Bastion EC2 host (required for Asset Library (full) mode or Private auth mode).
@@ -79,8 +79,8 @@ index 6e04fe2..68a6ff8 100755
  
 diff --git a/source/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml b/source/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml
 index 2814ddb..4ded8de 100644
---- a/source/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml
-+++ b/source/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml
+--- a/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml
++++ b/packages/services/assetlibrary/infrastructure/cfn-assetLibrary-parent.yaml
 @@ -100,14 +100,7 @@ Parameters:
    NeptuneDbInstanceType:
      Description: Neptune DB instance type
@@ -99,8 +99,8 @@ index 2814ddb..4ded8de 100644
    CustomResourceVPCLambdaArn:
 diff --git a/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml b/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
 index 731097b..0b1b513 100644
---- a/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
-+++ b/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
+--- a/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
++++ b/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
 @@ -33,14 +33,7 @@ Parameters:
    DbInstanceType:
      Description: Neptune DB instance type
@@ -119,8 +119,8 @@ index 731097b..0b1b513 100644
      Description: Create a read replica for MultiAZ?
 diff --git a/source/packages/services/assetlibrary/infrastructure/deploy-cfn.bash b/source/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
 index bbcf0aa..33ed889 100755
---- a/source/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
-+++ b/source/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
+--- a/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
++++ b/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
 @@ -48,13 +48,7 @@ OPTIONAL ARGUMENTS:
                    - LambdaToken
                    - ApiKey
