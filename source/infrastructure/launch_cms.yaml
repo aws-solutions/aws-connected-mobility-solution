@@ -278,9 +278,9 @@ Resources:
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/neptune.patch
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/neptune2.patch
-            - . /home/ec2-user/.bashrc
+            - . /home/ec2-user/.bashrc 
             - git apply < /home/ec2-user/environment/aws-connected-device-framework/source/neptune.patch
-            - git apply < /home/ec2-user/environment/aws-connected-device-framework/source/neptune2.patch
+            - patch -p1 < /home/ec2-user/environment/aws-connected-device-framework/source/neptune2.patch
             - cd /home/ec2-user/environment/aws-connected-device-framework/source/packages/services/provisioning/src/config
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
             - git apply provisioning.patch
