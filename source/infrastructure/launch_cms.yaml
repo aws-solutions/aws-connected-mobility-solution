@@ -261,7 +261,7 @@ Resources:
             - git clone -b 1.0.5 https://github.com/aws/aws-connected-device-framework.git /home/ec2-user/environment/aws-connected-device-framework/
             - git clone -b develop https://github.com/aws-solutions/aws-connected-mobility-solution.git /home/ec2-user/environment/aws-connected-mobility-solution/
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
-            - echo '=== INSTALL Node + Rush  ==='
+            - echo '=== INSTALL Node + Rush  ===' 
             - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             - . /home/ec2-user/.bashrc
             - . /home/ec2-user/.nvm/nvm.sh --no-use && nvm install 14
@@ -277,8 +277,10 @@ Resources:
             - . /home/ec2-user/.bashrc
             - cd /home/ec2-user/environment/aws-connected-device-framework/source
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/neptune.patch
+            - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/neptune2.patch
             - . /home/ec2-user/.bashrc
             - git apply < /home/ec2-user/environment/aws-connected-device-framework/source/neptune.patch
+            - git apply < /home/ec2-user/environment/aws-connected-device-framework/source/neptune2.patch
             - cd /home/ec2-user/environment/aws-connected-device-framework/source/packages/services/provisioning/src/config
             - wget --no-check-certificate --content-disposition https://raw.githubusercontent.com/aws-solutions/aws-connected-mobility-solution/develop/source/common/config/provisioning.patch
             - git apply provisioning.patch
