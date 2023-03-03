@@ -122,7 +122,7 @@ index bbcf0aa..33ed889 100755
 --- a/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
 +++ b/packages/services/assetlibrary/infrastructure/deploy-cfn.bash
 @@ -48,13 +48,7 @@ OPTIONAL ARGUMENTS:
-                   - LambdaToken
+                   - LambdaToken 
                    - ApiKey
                    - IAM
 -    -u (string)   The Neptune DB Instance type. Must be from the following list (default is db.r4.xlarge):

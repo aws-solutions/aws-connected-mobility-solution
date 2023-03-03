@@ -245,7 +245,7 @@ Resources:
               sudo xfs_growfs -d /
 
         - action: "aws:runShellScript"
-          name: "AWSIoTC9bootstrapS2"
+          name: "AWSIoTC9bootstrapS2" 
           nextStep: "AWSIoTC9bootstrapS3"
           inputs:
             timeoutSeconds: '3048'
