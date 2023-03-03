@@ -136,3 +136,25 @@ index bbcf0aa..33ed889 100755
  
      Required if deploying in full mode, or private api auth:
      --------------------------------------------------------
+diff --git a/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml b/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
+index 731097b..25ecdc0 100644
+--- a/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
++++ b/source/packages/services/assetlibrary/infrastructure/cfn-neptune.yaml
+@@ -257,7 +257,7 @@ Resources:
+   NeptuneDBClusterParameterGroup:
+     Type: 'AWS::Neptune::DBClusterParameterGroup'
+     Properties:
+-      Family: neptune1
++      Family: neptune1.2
+       Description: CDF parameters
+       Parameters:
+         neptune_enable_audit_log: !Ref NeptuneEnableAuditLog
+@@ -270,7 +270,7 @@ Resources:
+   NeptuneDBParameterGroup:
+     Type: 'AWS::Neptune::DBParameterGroup'
+     Properties:
+-      Family: neptune1
++      Family: neptune1.2
+       Description: CDF parameters
+       Parameters:
+         neptune_query_timeout: !Ref NeptuneQueryTimeout
